@@ -5,7 +5,6 @@ import re
 
 from odoo import api, fields, models, tools
 from odoo.tools import DEFAULT_SERVER_DATE_FORMAT
-from odoo.exceptions import UserError
 
 _logger = logging.getLogger(__name__)
 
@@ -314,22 +313,33 @@ class GzaStockLocationReportWizard(models.TransientModel):
             period_dest_qty_sum = sum(period_dest_lines.mapped('quantity'))
             period_source_qty_sum = sum(period_source_lines.mapped('quantity'))
 
-            # raise UserError(
-            #     "DEBUG STOCK CHECK\n"
-            #     "====================\n"
-            #     f"date_from: {date_from_str}\n"
-            #     f"date_to: {date_to_str}\n"
-            #     f"date_from_start_str: {date_from_start_str}\n"
-            #     f"date_to_end_str: {date_to_end_str}\n"
-            #     "--------------------\n"
-            #     f"initial location_dest_id=266 sum(quantity), date < date_from_start: {initial_qty_sum}\n"
-            #     f"initial location_id=266 sum(quantity), date < date_from_start: {initial_source_qty_sum}\n"
-            #     f"initial computed (dest - source): {initial_computed_qty}\n"
-            #     "--------------------\n"
-            #     "between period (date_from_start <= date <= date_to_end)\n"
-            #     f"location_dest_id=266 -> count: {len(period_dest_lines)}, sum(quantity): {period_dest_qty_sum}\n"
-            #     f"location_id=266 -> count: {len(period_source_lines)}, sum(quantity): {period_source_qty_sum}"
-            # )
+            _logger.info(
+                "DEBUG STOCK CHECK\n"
+                "====================\n"
+                "date_from: %s\n"
+                "date_to: %s\n"
+                "date_from_start_str: %s\n"
+                "date_to_end_str: %s\n"
+                "--------------------\n"
+                "initial location_dest_id=266 sum(quantity), date < date_from_start: %s\n"
+                "initial location_id=266 sum(quantity), date < date_from_start: %s\n"
+                "initial computed (dest - source): %s\n"
+                "--------------------\n"
+                "between period (date_from_start <= date <= date_to_end)\n"
+                "location_dest_id=266 -> count: %s, sum(quantity): %s\n"
+                "location_id=266 -> count: %s, sum(quantity): %s",
+                date_from_str,
+                date_to_str,
+                date_from_start_str,
+                date_to_end_str,
+                initial_qty_sum,
+                initial_source_qty_sum,
+                initial_computed_qty,
+                len(period_dest_lines),
+                period_dest_qty_sum,
+                len(period_source_lines),
+                period_source_qty_sum,
+            )
 
             # Force refresh stored stock.move.line.value so report generation
             # always uses values recalculated by _compute_line_value().
@@ -376,9 +386,7 @@ class GzaStockLocationReportWizard(models.TransientModel):
                             SUM(sml.quantity) AS qty
                         FROM stock_move_line sml
                         JOIN stock_move sm ON sml.move_id = sm.id
-                        JOIN stock_location sl_dest ON sml.location_dest_id = sl_dest.id
                         WHERE sm.state = 'done'
-                        AND sl_dest.usage = 'internal'
                         AND sml.date >= %s
                         AND sml.date <= %s
                         GROUP BY sml.product_id, sml.location_dest_id
@@ -390,9 +398,7 @@ class GzaStockLocationReportWizard(models.TransientModel):
                             SUM(ABS(COALESCE(sml.value, 0))) AS amount
                         FROM stock_move_line sml
                         JOIN stock_move sm ON sml.move_id = sm.id
-                        JOIN stock_location sl_dest ON sml.location_dest_id = sl_dest.id
                         WHERE sm.state = 'done'
-                        AND sl_dest.usage = 'internal'
                         AND sml.date >= %s
                         AND sml.date <= %s
                         GROUP BY sml.product_id, sml.location_dest_id
@@ -404,9 +410,7 @@ class GzaStockLocationReportWizard(models.TransientModel):
                             SUM(sml.quantity) AS qty
                         FROM stock_move_line sml
                         JOIN stock_move sm ON sml.move_id = sm.id
-                        JOIN stock_location sl_source ON sml.location_id = sl_source.id
                         WHERE sm.state = 'done'
-                        AND sl_source.usage = 'internal'
                         AND sml.date >= %s
                         AND sml.date <= %s
                         GROUP BY sml.product_id, sml.location_id
@@ -418,9 +422,7 @@ class GzaStockLocationReportWizard(models.TransientModel):
                             SUM(ABS(COALESCE(sml.value, 0))) AS amount
                         FROM stock_move_line sml
                         JOIN stock_move sm ON sml.move_id = sm.id
-                        JOIN stock_location sl_source ON sml.location_id = sl_source.id
                         WHERE sm.state = 'done'
-                        AND sl_source.usage = 'internal'
                         AND sml.date >= %s
                         AND sml.date <= %s
                         GROUP BY sml.product_id, sml.location_id
@@ -429,8 +431,7 @@ class GzaStockLocationReportWizard(models.TransientModel):
                         SELECT sml.product_id, sml.location_dest_id AS location_id, SUM(sml.quantity) AS qty
                         FROM stock_move_line sml
                         JOIN stock_move sm ON sml.move_id = sm.id
-                        JOIN stock_location sl_dest ON sml.location_dest_id = sl_dest.id
-                        WHERE sm.state = 'done' AND sl_dest.usage = 'internal'
+                        WHERE sm.state = 'done'
                         AND sml.date >= %s
                         GROUP BY sml.product_id, sml.location_dest_id
                     ),
@@ -438,8 +439,7 @@ class GzaStockLocationReportWizard(models.TransientModel):
                         SELECT sml.product_id, sml.location_id AS location_id, SUM(sml.quantity) AS qty
                         FROM stock_move_line sml
                         JOIN stock_move sm ON sml.move_id = sm.id
-                        JOIN stock_location sl_source ON sml.location_id = sl_source.id
-                        WHERE sm.state = 'done' AND sl_source.usage = 'internal'
+                        WHERE sm.state = 'done'
                         AND sml.date >= %s
                         GROUP BY sml.product_id, sml.location_id
                     ),
@@ -447,8 +447,7 @@ class GzaStockLocationReportWizard(models.TransientModel):
                         SELECT sml.product_id, sml.location_dest_id AS location_id, SUM(sml.quantity) AS qty
                         FROM stock_move_line sml
                         JOIN stock_move sm ON sml.move_id = sm.id
-                        JOIN stock_location sl_dest ON sml.location_dest_id = sl_dest.id
-                        WHERE sm.state = 'done' AND sl_dest.usage = 'internal'
+                        WHERE sm.state = 'done'
                         AND sml.date > %s
                         GROUP BY sml.product_id, sml.location_dest_id
                     ),
@@ -456,8 +455,7 @@ class GzaStockLocationReportWizard(models.TransientModel):
                         SELECT sml.product_id, sml.location_id AS location_id, SUM(sml.quantity) AS qty
                         FROM stock_move_line sml
                         JOIN stock_move sm ON sml.move_id = sm.id
-                        JOIN stock_location sl_source ON sml.location_id = sl_source.id
-                        WHERE sm.state = 'done' AND sl_source.usage = 'internal'
+                        WHERE sm.state = 'done'
                         AND sml.date > %s
                         GROUP BY sml.product_id, sml.location_id
                     ),
@@ -465,8 +463,7 @@ class GzaStockLocationReportWizard(models.TransientModel):
                         SELECT sml.product_id, sml.location_dest_id AS location_id, SUM(sml.quantity) AS qty
                         FROM stock_move_line sml
                         JOIN stock_move sm ON sml.move_id = sm.id
-                        JOIN stock_location sl_dest ON sml.location_dest_id = sl_dest.id
-                        WHERE sm.state = 'done' AND sl_dest.usage = 'internal'
+                        WHERE sm.state = 'done'
                         AND sml.date < %s
                         GROUP BY sml.product_id, sml.location_dest_id
                     ),
@@ -474,8 +471,7 @@ class GzaStockLocationReportWizard(models.TransientModel):
                         SELECT sml.product_id, sml.location_dest_id AS location_id, SUM(ABS(COALESCE(sml.value, 0))) AS amount
                         FROM stock_move_line sml
                         JOIN stock_move sm ON sml.move_id = sm.id
-                        JOIN stock_location sl_dest ON sml.location_dest_id = sl_dest.id
-                        WHERE sm.state = 'done' AND sl_dest.usage = 'internal'
+                        WHERE sm.state = 'done'
                         AND sml.date < %s
                         GROUP BY sml.product_id, sml.location_dest_id
                     ),
@@ -483,8 +479,7 @@ class GzaStockLocationReportWizard(models.TransientModel):
                         SELECT sml.product_id, sml.location_id AS location_id, SUM(sml.quantity) AS qty
                         FROM stock_move_line sml
                         JOIN stock_move sm ON sml.move_id = sm.id
-                        JOIN stock_location sl_source ON sml.location_id = sl_source.id
-                        WHERE sm.state = 'done' AND sl_source.usage = 'internal'
+                        WHERE sm.state = 'done'
                         AND sml.date < %s
                         GROUP BY sml.product_id, sml.location_id
                     ),
@@ -492,8 +487,7 @@ class GzaStockLocationReportWizard(models.TransientModel):
                         SELECT sml.product_id, sml.location_id AS location_id, SUM(ABS(COALESCE(sml.value, 0))) AS amount
                         FROM stock_move_line sml
                         JOIN stock_move sm ON sml.move_id = sm.id
-                        JOIN stock_location sl_source ON sml.location_id = sl_source.id
-                        WHERE sm.state = 'done' AND sl_source.usage = 'internal'
+                        WHERE sm.state = 'done'
                         AND sml.date < %s
                         GROUP BY sml.product_id, sml.location_id
                     ),
