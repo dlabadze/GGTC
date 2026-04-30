@@ -314,22 +314,22 @@ class GzaStockLocationReportWizard(models.TransientModel):
             period_dest_qty_sum = sum(period_dest_lines.mapped('quantity'))
             period_source_qty_sum = sum(period_source_lines.mapped('quantity'))
 
-            raise UserError(
-                "DEBUG STOCK CHECK\n"
-                "====================\n"
-                f"date_from: {date_from_str}\n"
-                f"date_to: {date_to_str}\n"
-                f"date_from_start_str: {date_from_start_str}\n"
-                f"date_to_end_str: {date_to_end_str}\n"
-                "--------------------\n"
-                f"initial location_dest_id=266 sum(quantity), date < date_from_start: {initial_qty_sum}\n"
-                f"initial location_id=266 sum(quantity), date < date_from_start: {initial_source_qty_sum}\n"
-                f"initial computed (dest - source): {initial_computed_qty}\n"
-                "--------------------\n"
-                "between period (date_from_start <= date <= date_to_end)\n"
-                f"location_dest_id=266 -> count: {len(period_dest_lines)}, sum(quantity): {period_dest_qty_sum}\n"
-                f"location_id=266 -> count: {len(period_source_lines)}, sum(quantity): {period_source_qty_sum}"
-            )
+            # raise UserError(
+            #     "DEBUG STOCK CHECK\n"
+            #     "====================\n"
+            #     f"date_from: {date_from_str}\n"
+            #     f"date_to: {date_to_str}\n"
+            #     f"date_from_start_str: {date_from_start_str}\n"
+            #     f"date_to_end_str: {date_to_end_str}\n"
+            #     "--------------------\n"
+            #     f"initial location_dest_id=266 sum(quantity), date < date_from_start: {initial_qty_sum}\n"
+            #     f"initial location_id=266 sum(quantity), date < date_from_start: {initial_source_qty_sum}\n"
+            #     f"initial computed (dest - source): {initial_computed_qty}\n"
+            #     "--------------------\n"
+            #     "between period (date_from_start <= date <= date_to_end)\n"
+            #     f"location_dest_id=266 -> count: {len(period_dest_lines)}, sum(quantity): {period_dest_qty_sum}\n"
+            #     f"location_id=266 -> count: {len(period_source_lines)}, sum(quantity): {period_source_qty_sum}"
+            # )
 
             # Force refresh stored stock.move.line.value so report generation
             # always uses values recalculated by _compute_line_value().
