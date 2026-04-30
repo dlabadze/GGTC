@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+    <record id="view_inventory_line_list_inherit_mark" model="ir.ui.view">
+        <field name="name">inventory.line.list.inherit.mark</field>
+        <field name="model">inventory.line</field>
+        <field name="inherit_id" ref="inventory_requests.view_inventory_line_list"/>
+        <field name="arch" type="xml">
+            <xpath expr="//list/header" position="inside">
+                <button name="action_clear_marked"
+                        type="object"
+                        string="Clear Marks"
+                        class="btn-primary"/>
+            </xpath>
+            <xpath expr="//list/field[1]" position="before">
+                <field name="is_marked" widget="boolean_toggle" nolabel="1"/>
+                <field name="marked_by" readonly="1"/>
+            </xpath>
+        </field>
+    </record>
+
+    <record id="view_inventory_line_search_inherit_marked" model="ir.ui.view">
+        <field name="name">inventory.line.search.inherit.marked</field>
+        <field name="model">inventory.line</field>
+        <field name="inherit_id" ref="inventory_requests.view_inventory_line_search"/>
+        <field name="arch" type="xml">
+            <xpath expr="//search" position="inside">
+                <separator/>
+                <filter name="filter_marked_by_me"
+                        string="Marked By Me"
+                        domain="[('is_marked', '=', True)]"
+                        context="{'filter_marked_by_me': True}"/>
+                <filter name="filter_marked"
+                        string="All Marked"
+                        domain="[('is_marked', '=', True)]"/>
+                <filter name="filter_not_marked"
+                        string="Not Marked"
+                        domain="[('is_marked', '=', False)]"/>
+            </xpath>
+        </field>
+    </record>
+
+</odoo>
