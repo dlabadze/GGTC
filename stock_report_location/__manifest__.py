@@ -2,6 +2,7 @@
     "name": "Stock Report by Location",
     "version": "1.0",
     "category": "Inventory",
+    "summary": "Stock Report by Location",
     "depends": ["stock", 'web_studio', 'extension_views'],
     "data": [
         "security/ir.model.access.csv",
