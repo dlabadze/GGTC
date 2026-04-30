@@ -22,9 +22,8 @@ def _get_utc_day_bounds(env, date_from, date_to):
     to_local = user_tz.localize(datetime.combine(date_to, datetime.max.time()))
     from_utc = from_local.astimezone(pytz.UTC).replace(tzinfo=None)
     to_utc = to_local.astimezone(pytz.UTC).replace(tzinfo=None)
-    # Business requirement: shift selected boundaries by +4 hours.
+    # Business requirement: shift date_from boundary by +4 hours.
     from_utc += timedelta(hours=4)
-    to_utc += timedelta(hours=4)
     return fields.Datetime.to_string(from_utc), fields.Datetime.to_string(to_utc)
 
 
