@@ -1,0 +1,57 @@
+<odoo>
+    <record id="paperformat_inventory_request_landscape" model="report.paperformat">
+        <field name="name">Inventory Request Portrait</field>
+        <field name="default" eval="False"/>
+        <field name="format">A4</field>
+        <field name="orientation">Portrait</field>
+        <field name="margin_top">10</field>
+        <field name="margin_bottom">10</field>
+        <field name="margin_left">10</field>
+        <field name="margin_right">10</field>
+        <field name="header_line" eval="False"/>
+    </record>
+
+    <record id="action_report_inventory_request" model="ir.actions.report">
+        <field name="name">საბეჭდი ფორმა</field>
+        <field name="model">inventory.request</field>
+        <field name="report_type">qweb-pdf</field>
+        <field name="report_name">inventory_req_print.report_inventory_request</field>
+        <field name="binding_model_id" ref="inventory_requests.model_inventory_request"/>
+        <field name="binding_type">action</field>
+        <field name="print_report_name">'Request - %s' % (object.name)</field>
+        <field name="paperformat_id" ref="inventory_req_print.paperformat_inventory_request_landscape"/>
+    </record>
+
+    <record id="action_report_inventory_request_transport" model="ir.actions.report">
+        <field name="name">ტრანსპორტის მოთხიოვნის ფორმა</field>
+        <field name="model">inventory.request</field>
+        <field name="report_type">qweb-pdf</field>
+        <field name="report_name">inventory_req_print.report_inventory_request_transport</field>
+        <field name="binding_model_id" ref="inventory_requests.model_inventory_request"/>
+        <field name="binding_type">action</field>
+        <field name="print_report_name">'Request - %s' % (object.name)</field>
+        <field name="paperformat_id" ref="inventory_req_print.paperformat_inventory_request_landscape"/>
+    </record>
+
+    <record id="action_report__sep_req_transport" model="ir.actions.report">
+        <field name="name">ინსპექტირების ფორმა</field>
+        <field name="model">september.request</field>
+        <field name="report_type">qweb-pdf</field>
+        <field name="report_name">inventory_req_print.sep_inspect_rep</field>
+        <field name="binding_model_id" ref="september_requests.model_september_request"/>
+        <field name="binding_type">report</field>
+        <field name="print_report_name">'Request - %s' % (object.name)</field>
+        <field name="paperformat_id" ref="inventory_req_print.paperformat_inventory_request_landscape"/>
+    </record>
+
+    <record id="action_report_sep_req_gr_transport" model="ir.actions.report">
+        <field name="name">ინსპექტირების ჯგუფის დასკვნა</field>
+        <field name="model">september.request</field>
+        <field name="report_type">qweb-pdf</field>
+        <field name="report_name">inventory_req_print.sep_inspec_gr_rep</field>
+        <field name="binding_model_id" ref="september_requests.model_september_request"/>
+        <field name="binding_type">report</field>
+        <field name="print_report_name">'Request - %s' % (object.name)</field>
+        <field name="paperformat_id" ref="inventory_req_print.paperformat_inventory_request_landscape"/>
+    </record>
+</odoo>

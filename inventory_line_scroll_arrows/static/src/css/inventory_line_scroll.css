@@ -1,0 +1,123 @@
+/* Inventory Line Scroll Arrows Styling */
+
+.inventory-scroll-container {
+    position: relative;
+    width: 100%;
+    overflow: visible;
+}
+
+.inventory-scroll-arrow {
+    position: absolute;
+    top: 50%;
+    transform: translateY(-50%);
+    width: 50px;
+    height: 50px;
+    background: rgba(255, 255, 255, 0.95);
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    z-index: 1000;
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.2);
+    transition: all 0.3s ease;
+    opacity: 0;
+    visibility: hidden;
+    pointer-events: none;
+    opacity: 1 !important;  /* Force visible for testing */
+    visibility: visible !important;
+    pointer-events: auto !important;
+}
+
+.inventory-scroll-arrow.visible {
+    opacity: 1;
+    visibility: visible;
+    pointer-events: auto;
+}
+
+.inventory-scroll-arrow:hover {
+    background: rgba(255, 255, 255, 1);
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.3);
+    transform: translateY(-50%) scale(1.1);
+}
+
+.inventory-scroll-arrow-left {
+    left: 10px;
+}
+
+.inventory-scroll-arrow-right {
+    right: 10px;
+}
+
+.inventory-scroll-arrow i {
+    font-size: 24px;
+    color: #714B67;
+}
+
+.inventory-scroll-arrow:hover i {
+    color: #5a3a52;
+}
+
+/* Hover effect - show arrows when hovering over the container */
+.inventory-scroll-container:hover .inventory-scroll-arrow {
+    opacity: 0.7;
+}
+
+.inventory-scroll-container:hover .inventory-scroll-arrow.visible {
+    opacity: 1;
+}
+
+/* Smooth scrolling for the table wrapper */
+.inventory-scroll-container .o_list_renderer {
+    overflow-x: auto;
+    scroll-behavior: smooth;
+    scrollbar-width: thin;
+    scrollbar-color: rgba(113, 75, 103, 0.5) rgba(0, 0, 0, 0.1);
+}
+
+/* Custom scrollbar styling */
+.inventory-scroll-container .o_list_renderer::-webkit-scrollbar {
+    height: 8px;
+}
+
+.inventory-scroll-container .o_list_renderer::-webkit-scrollbar-track {
+    background: rgba(0, 0, 0, 0.05);
+    border-radius: 4px;
+}
+
+.inventory-scroll-container .o_list_renderer::-webkit-scrollbar-thumb {
+    background: rgba(113, 75, 103, 0.5);
+    border-radius: 4px;
+}
+
+.inventory-scroll-container .o_list_renderer::-webkit-scrollbar-thumb:hover {
+    background: rgba(113, 75, 103, 0.8);
+}
+
+/* Animation for arrow appearance */
+@keyframes fadeInArrow {
+    from {
+        opacity: 0;
+        transform: translateY(-50%) scale(0.8);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(-50%) scale(1);
+    }
+}
+
+.inventory-scroll-arrow.visible {
+    animation: fadeInArrow 0.3s ease;
+}
+
+/* Responsive adjustments */
+@media (max-width: 768px) {
+    .inventory-scroll-arrow {
+        width: 40px;
+        height: 40px;
+    }
+    
+    .inventory-scroll-arrow i {
+        font-size: 18px;
+    }
+}

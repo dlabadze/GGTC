@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="view_stock_move_line_date_fix" model="ir.ui.view">
+        <field name="name">stock.move.line.date.fix.form</field>
+        <field name="model">stock.move.line.date.fix</field>
+        <field name="arch" type="xml">
+            <form string="Choose New Date">
+                <group>
+                    <div class="alert alert-warning" role="alert">
+                        <strong>Warning:</strong> This will update the Stock Date and the Accounting Journal Entry date
+                    </div>
+                    <field name="new_date"/>
+                </group>
+                <footer>
+                    <button name="action_update_date" string="Update Date" type="object" class="btn-primary"/>
+                    <button string="Cancel" class="btn-secondary" special="cancel"/>
+                </footer>
+            </form>
+        </field>
+    </record>
+
+    <record id="action_stock_move_line_date_fix" model="ir.actions.act_window">
+        <field name="name">Change Date</field>
+        <field name="res_model">stock.move.line.date.fix</field>
+        <field name="view_mode">form</field>
+        <field name="view_id" ref="view_stock_move_line_date_fix"/>
+        <field name="target">new</field>
+        <field name="binding_model_id" ref="stock.model_stock_move_line"/>
+        <field name="binding_view_types">list</field>
+    </record>
+</odoo>

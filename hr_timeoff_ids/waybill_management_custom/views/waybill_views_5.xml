@@ -1,0 +1,183 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <!-- Wizard Form View for fetch.waybills.wizard5 -->
+    <record id="view_fetch_waybills_wizard5_form" model="ir.ui.view">
+        <field name="name">fetch.waybills.wizard5.form</field>
+        <field name="model">fetch.waybills.wizard5</field>
+        <field name="arch" type="xml">
+            <form string="Fetch Waybills">
+                <group>
+                    <field name="date1"/>
+                    <field name="date2"/>
+                </group>
+                <footer>
+                    <button string="გადმოწერა" type="object" name="fetch_waybills" class="oe_highlight"/>
+                    <button string="გაუქმება" class="btn-secondary" special="cancel"/>
+                </footer>
+            </form>
+        </field>
+    </record>
+
+    <!-- Wizard Action for fetch.waybills.wizard5 -->
+    <record id="action_fetch_waybills_wizard5" model="ir.actions.act_window">
+        <field name="name">Fetch Waybills Wizard5</field>
+        <field name="res_model">fetch.waybills.wizard5</field>
+        <field name="view_mode">form</field>
+        <field name="view_id" ref="view_fetch_waybills_wizard5_form"/>
+        <field name="target">new</field>
+    </record>
+
+    <!-- list View for Waybill Model with filter on types 1 and 5 -->
+    <record id="view_waybill_list_filtered_5" model="ir.ui.view">
+        <field name="name">waybill.list.filtered.5</field>
+        <field name="model">waybill</field>
+        <field name="arch" type="xml">
+            <list js_class="button_4_list" create="false" string="შიდა გადაზიდვა" decoration-success="mdgomareoba == 'korektirebuli'" decoration-warning="mdgomareoba == 'gadatanili'">
+                <!-- <header>
+                    <button name="action_open_fetch_waybills_wizard5" type="object" string="ზედნადების ჩამოტვირთვა" class="oe_highlight"/>
+                </header> -->
+                <field name="waybill_id_number"/>
+                <field name="waybill_number"/>
+                <field name="waybill_type"/>
+                <field name="create_date"/>
+                <field name="buyer_tin"/>
+                <field name="buyer_name"/>
+                <field name="seller_name"/>
+                <field name="seller_tin"/>
+                <field name="start_address"/>
+                <field name="transport_cost"/>
+                <field name="activate_date"/>
+                <field name="full_amount"/>
+                <field name="waybill_type" filter_domain="[('waybill_type', 'in', ['1', '5'])]"/>
+                <field name="mdgomareoba"/>
+            </list>
+        </field>
+    </record>
+
+    <!-- Form View for Waybill Model -->
+    <record id="view_waybill_form_filtered_5" model="ir.ui.view">
+        <field name="name">waybill.form.filtered.5</field>
+        <field name="model">waybill</field>
+        <field name="arch" type="xml">
+            <form string="Waybill">
+                <sheet>
+                    <group>
+                        <group>
+                            <field name="waybill_id_number"/>
+                            <field name="waybill_number"/>
+                            <field name="waybill_type"/>
+                            <field name="create_date"/>
+                            <field name="buyer_tin"/>
+                            <field name="buyer_name"/>
+                            <field name="seller_name"/>
+                            <field name="seller_tin"/>
+                            <field name="start_address"/>
+                            <field name="transport_cost"/>
+                            <field name="activate_date"/>
+                            <field name="full_amount"/>
+                            <field name="invoice_id"/>
+                        </group>
+                        <group>
+                            <field name="s_user_id" invisible="1"/>
+                            <field name="begin_date" invisible="1"/>
+                            <field name="is_confirmed" invisible="1"/>
+                            <field name="is_corrected" invisible="1"/>
+                            <field name="seller_st" invisible="1"/>
+                            <field name="is_med" invisible="1"/>
+                            <field name="waybill_comment"/>
+                            <field name="end_address"/>
+                            <field name="driver_tin"/>
+                            <field name="driver_name"/>
+                            <field name="car_number"/>
+                            <field name="delivery_date"/>
+                            <field name="close_date"/>
+                            <field name="error_text" invisible="1"/>
+                            <field name="katId_O"/>
+                            <field name="katName_O"/>
+                            <field name="stockId1"/>
+                            <field name="stock_Name"/>
+                            <field name="stockId2"/>
+                            <field name="xarjgat"/>
+                            <field name="xarjang"/>
+                        </group>
+                    </group>
+                    <notebook>
+                        <page string="Lines">
+                            <field name="line_ids">
+                                <list editable="bottom">
+                                    <field name="w_name"/>
+                                    <field name="quantity"/>
+                                    <field name="price"/>
+                                    <field name="amount"/>
+                                    <field name="bar_code"/>
+                                    <field name="a_id"/>
+                                    <field name="vat_type"/>
+                                    <field name="koef"/>
+                                    <field name="product_id"/>
+                                    <field name="quantity_fact"/>
+                                    <field name="unit_id"/>
+                                    <field name="unit_txt"/>
+                                </list>
+                                <form string="Line Details">
+                                    <group>
+                                        <field name="w_name"/>
+                                        <field name="quantity"/>
+                                        <field name="price"/>
+                                        <field name="amount"/>
+                                        <field name="bar_code"/>
+                                        <field name="a_id"/>
+                                        <field name="vat_type"/>
+                                        <field name="product_id"/>
+                                        <field name="quantity_fact"/>
+                                    </group>
+                                </form>
+                            </field>
+                        </page>
+                    </notebook>
+                </sheet>
+            </form>
+        </field>
+    </record>
+
+    <!-- Search View for Waybill Model -->
+    <record id="view_waybill_search_filtered_5" model="ir.ui.view">
+        <field name="name">waybill.search.filtered.5</field>
+        <field name="model">waybill</field>
+        <field name="arch" type="xml">
+            <search string="Waybill Search">
+                <field name="waybill_number"/>
+                <field name="buyer_tin"/>
+                <field name="create_date"/>
+                <field name="waybill_type"/>
+            </search>
+        </field>
+    </record>
+
+    <!-- Action for Filtered Waybill Model -->
+    <record id="action_waybill_filtered_5" model="ir.actions.act_window">
+        <field name="name">შიდა გადაზიდვა</field>
+        <field name="res_model">waybill</field>
+        <field name="view_mode">list,form</field>
+        <field name="view_id" ref="view_waybill_list_filtered_5"/>
+        <field name="domain">['|', ('error_text', '=', 'შიდა გადაზიდვა'), ('error_text', '=', False)]</field>
+    </record>
+
+    <!-- Menu Item for Filtered Waybill Model under Waybill Management -->
+    <menuitem id="menu_waybill_filtered_5" 
+              name="შიდა გადაზიდვა" 
+              parent="menu_waybill_root" 
+              action="action_waybill_filtered_5" 
+              sequence="5"/>
+    
+    <record id="access_fetch_waybills_wizard5_all_users" model="ir.model.access">
+        <field name="name">access.fetch.waybills.wizard5.all.users</field>
+        <field name="model_id" ref="model_fetch_waybills_wizard5"/>
+        <field name="group_id" ref="base.group_user"/> <!-- All users group -->
+        <field name="perm_read" eval="1"/>
+        <field name="perm_write" eval="1"/>
+        <field name="perm_create" eval="1"/>
+        <field name="perm_unlink" eval="1"/>
+    </record>
+
+
+</odoo>

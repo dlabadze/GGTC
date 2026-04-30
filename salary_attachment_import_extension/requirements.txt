@@ -1,0 +1,4 @@
+# Python dependencies for FMG Salary Attachment Import
+xlrd>=1.2.0      # For .xls files (old Excel format)
+openpyxl>=3.0.0  # For .xlsx files (new Excel format)
+

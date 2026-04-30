@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <!-- Add Import Button to Salary Attachment List View -->
+    <record id="view_hr_salary_attachment_tree_import_button" model="ir.ui.view">
+        <field name="name">hr.salary.attachment.tree.import.button</field>
+        <field name="model">hr.salary.attachment</field>
+        <field name="inherit_id" ref="hr_payroll.hr_salary_attachment_view_tree"/>
+        <field name="arch" type="xml">
+            <!-- Add button in control panel -->
+            <xpath expr="//list" position="inside">
+                <header>
+                    <button name="%(salary_attachment_import_extension.action_salary_attachment_import_wizard)d" 
+                            string="პირადი ნომრით ატვირთვა" 
+                            type="action" 
+                            class="btn-primary"
+                            display="always"/>
+                    <button name="%(salary_attachment_import_extension.action_salary_attachment_import_phone)d" 
+                            string="მობილურის ნომრით ატვირთვა" 
+                            type="action" 
+                            class="btn-primary"
+                            display="always"/>
+                </header>
+            </xpath>
+        </field>
+    </record>
+
+</odoo>
+

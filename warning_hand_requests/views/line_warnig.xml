@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<odoo>
+    <record id="view_line_warning_form_warehouse" model="ir.ui.view">
+        <field name="name">view.line.warning.form.warehouse</field>
+        <field name="model">inventory.request</field>
+        <field name="inherit_id" ref="inventory_requests.view_inventory_request_form"/>
+        <field name="arch" type="xml">
+                <xpath expr="//form[1]/sheet[1]/notebook[1]/page[1]/field[@name='line_ids']/list" position="attributes">
+                    <attribute name="decoration-warning">x_is_warning_state == True</attribute>
+                    </xpath>
+
+                <xpath expr="//form[1]/sheet[1]/notebook[1]/page[1]/field[@name='line_ids']/list" position="inside">
+                    <field name="x_is_warning_state" column_invisible="True"/>
+                </xpath>
+
+<!--                <xpath expr="/form[1]/sheet[1]/notebook[1]/page[1]/field[1]/list[1]//field[@name='x_studio_on_hand']" position="after">-->
+<!--                    <field name="remainder_summed"/>-->
+<!--                </xpath>-->
+        </field>
+    </record>
+</odoo>

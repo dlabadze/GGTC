@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="view_moxsenebiti_prepare_order_form" model="ir.ui.view">
+        <field name="name">moxsenebiti.prepare.order.form</field>
+        <field name="model">moxsenebiti.prepare.order</field>
+        <field name="arch" type="xml">
+            <form string="ბრძანების მომზადება">
+                <group>
+                    <field name="moxsenebiti_id" invisible="1"/>
+                    <field name="approval_category_id" required="1" options="{'no_create': True}"/>
+                </group>
+                <footer>
+                    <button name="action_create_order" string="გენერაცია" type="object" class="btn-primary"/>
+                    <button string="გაუქმება" class="btn-secondary" special="cancel"/>
+                </footer>
+            </form>
+        </field>
+    </record>
+</odoo>

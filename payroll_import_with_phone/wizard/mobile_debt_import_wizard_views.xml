@@ -1,0 +1,66 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <!-- Wizard Form View -->
+    <record id="view_mobile_debt_import_wizard_form" model="ir.ui.view">
+        <field name="name">mobile.debt.import.wizard.form</field>
+        <field name="model">mobile.debt.import.wizard</field>
+        <field name="arch" type="xml">
+            <form string="Import Mobile Debt">
+                <sheet>
+                    <group>
+                        <group>
+                            <field name="excel_file" filename="filename" widget="binary"/>
+                            <field name="filename" invisible="1"/>
+                        </group>
+                        <group>
+                            <field name="starting_row"/>
+                            <field name="finish_row"/>
+                        </group>
+                    </group>
+                    
+                    <group>
+                        <group>
+                            <field name="start_date" string="დაწყების თარიღი"/>
+                            <field name="end_date" string="დასრულების თარიღი"/>
+                        </group>
+                        <group>
+                            <field name="comment" placeholder="კომენტარი..." string="კომენტარი"/>
+                        </group>
+                    </group>
+                    
+                    <group>
+                        <div class="alert alert-info" role="alert">
+                            <h4>Excel File Format:</h4>
+                            <p><strong>Column A:</strong> (not used)</p>
+                            <p><strong>Column B:</strong> (not used)</p>
+                            <p><strong>Column C:</strong> Phone Number - Required</p>
+                            <p><strong>Column D:</strong> Debt (fourth column)</p>
+                            <p><strong>Column E:</strong> Debt (fifth column) - will be added to column D</p>
+                            <p><em>Note: Starting row and finish row are 1-based (first row is 1)</em></p>
+                            <p><em>Note: If phone numbers are not found, an Excel file will be automatically downloaded.</em></p>
+                        </div>
+                    </group>
+                </sheet>
+                
+                <footer>
+                    <button string="Import" 
+                            name="action_import" 
+                            type="object" 
+                            class="btn-primary"/>
+                    <button string="Cancel" 
+                            class="btn-secondary" 
+                            special="cancel"/>
+                </footer>
+            </form>
+        </field>
+    </record>
+
+    <!-- Wizard Action -->
+    <record id="action_mobile_debt_import_wizard" model="ir.actions.act_window">
+        <field name="name">მობილურის ნომრით ატვირთვა</field>
+        <field name="res_model">mobile.debt.import.wizard</field>
+        <field name="view_mode">form</field>
+        <field name="target">new</field>
+    </record>
+</odoo>
+

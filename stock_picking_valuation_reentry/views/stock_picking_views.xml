@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="view_picking_form_inherit_valuation_reentry" model="ir.ui.view">
+        <field name="name">stock.picking.form.inherit.valuation.reentry</field>
+        <field name="model">stock.picking</field>
+        <field name="inherit_id" ref="stock.view_picking_form"/>
+        <field name="arch" type="xml">
+            <xpath expr="//header" position="inside">
+                <button name="action_reprocess_stock_valuation" 
+                        string="Reprocess Valuation" 
+                        type="object" 
+                        class="oe_highlight" 
+                        groups="stock.group_stock_manager"
+                        confirm="Are you sure you want to delete and re-generate valuation entries for this picking?"
+                        invisible="state != 'done'"/>
+            </xpath>
+        </field>
+    </record>
+
+    <!-- Server Action for bulk processing -->
+    <record id="action_server_reprocess_valuation" model="ir.actions.server">
+        <field name="name">Reprocess Valuation</field>
+        <field name="model_id" ref="stock.model_stock_picking"/>
+        <field name="binding_model_id" ref="stock.model_stock_picking"/>
+        <field name="binding_view_types">list</field>
+        <field name="state">code</field>
+        <field name="code">
+            action = records.action_reprocess_stock_valuation()
+        </field>
+    </record>
+</odoo>

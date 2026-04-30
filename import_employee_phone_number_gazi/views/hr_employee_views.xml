@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <!-- Child menu: კორპორატიული ნომრების ატვირთვა -->
+    <!-- Parent is salary_components_import_excel.menu_importing -->
+    <menuitem id="menu_employee_phone_import_gazi" 
+              name="კორპორატიული ნომრების ატვირთვა" 
+              parent="salary_components_import_excel.menu_importing" 
+              action="action_employee_phone_import_wizard_gazi" 
+              sequence="30"/>
+</odoo>
+

@@ -1,0 +1,21 @@
+/* Custom styling for validated list candidates */
+.preiskuranti_candidate_list tr.text-success {
+    background-color: #28a745 !important;
+    color: white !important;
+}
+
+.preiskuranti_candidate_list tr.text-success > td {
+    background-color: #28a745 !important;
+    color: white !important;
+}
+
+/* Hover effect */
+.preiskuranti_candidate_list tr.text-success:hover > td {
+    background-color: #218838 !important;
+}
+
+/* Selection effect - fix contrast */
+.preiskuranti_candidate_list .o_data_row.text-success.o_selected_row > td {
+    background-color: #1e7e34 !important;
+    color: white !important;
+}

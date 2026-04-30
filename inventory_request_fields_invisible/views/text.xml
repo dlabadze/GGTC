@@ -1,0 +1,2209 @@
+<data>
+  <xpath expr="//form[1]/sheet[1]/notebook[1]/page[1]/field[@name='line_ids']/list[1]/field[@name='notes']" position="replace"/>
+  <xpath expr="//form[1]/sheet[1]/notebook[1]/page[1]/field[@name='line_ids']/list[1]/field[@name='tag_ids']" position="replace"/>
+  <xpath expr="//form[1]/sheet[1]/notebook[1]/page[1]/field[@name='line_ids']/list[1]/field[@name='stage_id']" position="replace"/>
+  <xpath expr="//form[1]/sheet[1]/notebook[1]/page[1]/field[@name='line_ids']/list[1]/field[@name='expected_date']" position="replace"/>
+  <xpath expr="//form[1]/header[1]/field[@name='stage_id']" position="after">
+    <button string="გაგზავნა" name="984" type="action" class="btn-primary" invisible="stage_id != 4"/>
+    <button string="დადაატურება" name="969" type="action" class="btn-info" invisible="stage_id != 6"/>
+    <button string="უკან დაბრუნება" name="971" type="action" class="btn-warning" invisible="stage_id != 6"/>
+    <button string="დადასტურება" name="972" type="action" class="btn-info" invisible="stage_id != 7"/>
+    <button string="უკან დაბრუნება" name="973" type="action" class="btn-warning" invisible="stage_id != 7"/>
+    <button string="დადასტურება" name="974" type="action" class="btn-info" invisible="stage_id != 8"/>
+    <button string="უკან დაბრუნება" name="975" type="action" class="btn-warning" invisible="stage_id != 8"/>
+    <button string="დადასტურება" name="976" type="action" class="btn-info" invisible="stage_id != 9"/>
+    <button string="დადასტურება" name="977" type="action" class="btn-info" invisible="stage_id != 9 or x_studio_buy == True"/>
+    <button string="უკან დაბრუნება" name="978" type="action" class="btn-warning" invisible="stage_id != 9"/>
+    <button string="დადასტურება" name="979" type="action" class="btn-info" invisible="stage_id != 10"/>
+    <button string="უკან დაბრუნება" name="985" type="action" class="btn-warning" invisible="stage_id != 10"/>
+    <button string="დადასტურება" name="980" type="action" class="btn-info" invisible="stage_id != 11"/>
+    <button string="უკან დაბრუნება" name="981" type="action" class="btn-warning" invisible="stage_id != 11"/>
+    <button string="დადასტურება" name="986" type="action" class="btn-info" invisible="stage_id != 12"/>
+    <button string="უკან დაბრუნება" name="987" type="action" class="btn-warning" invisible="stage_id != 12"/>
+    <button string="დადასტურება" name="988" type="action" class="btn-info" invisible="stage_id != 13"/>
+    <button string="უკან დაბრუნება" name="989" type="action" class="btn-warning" invisible="stage_id != 13"/>
+    <button string="დადასტურება" name="990" type="action" class="btn-info" invisible="stage_id != 14"/>
+    <button string="დადასტურება" name="1007" type="action" class="btn-info" invisible="stage_id != 14"/>
+    <button string="უკან დაბრუნება" name="991" type="action" class="btn-warning" invisible="stage_id != 14"/>
+    <button string="დადასტურება" name="992" type="action" class="btn-info" invisible="stage_id != 15"/>
+    <button string="უკან დაბრუნება" name="993" type="action" class="btn-warning" invisible="stage_id != 15"/>
+    <button string="დადასტურება" name="982" type="action" class="btn-info" invisible="stage_id != 16"/>
+    <button string="უკან დაბრუნება" name="994" type="action" class="btn-warning" invisible="stage_id != 16"/>
+    <button string="დადასტურება" name="995" type="action" class="btn-info" invisible="stage_id != 17"/>
+    <button string="უკან დაბრუნება" name="996" type="action" class="btn-warning" invisible="stage_id != 17"/>
+    <button string="უარყოფა" name="983" type="action" class="btn-danger" invisible="stage_id == 4 or stage_id == 18 or stage_id == 19 or not stage_id"/>
+    <button string="transfer" name="1097" type="action" invisible="True"/>
+    <button string="scrap" name="1098" type="action" invisible="True"/>
+    <button string="transfer1" name="1099" type="action" invisible="True"/>
+    <button string="Fleet" name="1100" type="action" invisible="True"/>
+    <button string="Reserved" name="1238" type="action" invisible="True"/>
+  </xpath>
+  <xpath expr="//field[@name='request_date']" position="before">
+    <field name="x_studio_type" required="True"/>
+    <field name="x_studio_vehile"/>
+    <field name="x_studio_newodometer" string="ახალი ოდომეტრის ჩვენება"/>
+    <field name="x_studio_lastodoo" string="ბოლო ოდომეტრის ჩვენება"/>
+    <field name="x_studio_request_number" required="True"/>
+  </xpath>
+  <xpath expr="//field[@name='department_id']" position="after">
+    <field name="x_studio_buy" widget="boolean_toggle"/>
+    <field name="x_studio_transfer" widget="boolean_toggle"/>
+  </xpath>
+  <xpath expr="//field[@name='september_request_id']" position="attributes">
+    <attribute name="force_save">1</attribute>
+    <attribute name="readonly">True</attribute>
+  </xpath>
+  <xpath expr="//field[@name='september_request_id']" position="after">
+    <field name="x_studio_many2one_field_49t_1j431uvkl" options="{'create_name_field': 'complete_name'}" string="user Location"/>
+  </xpath>
+  <xpath expr="//field[@name='product_id']" position="attributes">
+    <attribute name="column_invisible">False</attribute>
+    <attribute name="invisible">False</attribute>
+  </xpath>
+  <xpath expr="//field[@name='product_id']" position="after">
+    <field name="x_studio_code" optional="show"/>
+    <xpath expr="//field[@name='uom_id']" position="move"/>
+    <xpath expr="//field[@name='quantity']" position="move"/>
+  </xpath>
+  <xpath expr="//field[@name='unit_price']" position="attributes">
+    <attribute name="sum">Sum of Unit Price</attribute>
+  </xpath>
+  <xpath expr="//field[@name='amount']" position="after">
+    <field name="x_studio_on_hand" optional="show"/>
+    <field name="x_studio_warehouse" optional="show"/>
+    <field name="x_studio_purchase" optional="show" widget="boolean_toggle"/>
+    <field name="x_studio_requset_number" optional="show"/>
+    <field optional="show" name="x_studio_rfq"/>
+    <field optional="show" name="x_studio_tender_status"/>
+    <xpath expr="//field[@name='budget_main']" position="move"/>
+  </xpath>
+  <xpath expr="//field[@name='budget_name_main']" position="attributes">
+    <attribute name="column_invisible">True</attribute>
+  </xpath>
+  <xpath expr="//field[@name='budget_main']" position="attributes">
+    <attribute name="column_invisible">True</attribute>
+  </xpath>
+  <xpath expr="/form[1]/sheet[1]/notebook[1]/page[1]/field[1]" position="inside">
+    <form string="Inventory Line">
+      <header>
+        <field name="stage_id" widget="statusbar" options="{'clickable': '1'}"/>
+      </header>
+      <sheet>
+        <div class="oe_title">
+          <h1>
+            <field name="name"/>
+          </h1>
+          <field name="tag_ids" widget="many2many_tags" options="{'color_field': 'color'}" placeholder="Tags..."/>
+        </div>
+        <group>
+          <group>
+            <field name="request_id"/>
+            <field name="x_studio_on_hand"/>
+            <field name="x_studio_warehouse" options="{'create_name_field': 'complete_name'}"/>
+            <field name="x_studio_purchase" widget="boolean_toggle"/>
+            <field name="x_studio_bugdet"/>
+            <field name="x_studio_bugdet_name"/>
+            <field name="x_studio_requset_number"/>
+            <field name="x_studio_show"/>
+          </group>
+        </group>
+        <group>
+          <group string="Pricing">
+            <field name="unit_price" widget="monetary"/>
+            <field name="amount" widget="monetary" readonly="1"/>
+          </group>
+          <group string="Budget">
+            <field name="budget_name_main" invisible="True"/>
+            <field name="budget_main" invisible="True"/>
+            <field name="budget_line" string="Budget Line" invisible="True"/>
+          </group>
+        </group>
+        <group>
+          <field name="notes"/>
+          <field name="product_id"/>
+          <field name="x_studio_code"/>
+          <field name="uom_id"/>
+          <field name="quantity"/>
+          <field name="x_studio_rfq_qty"/>
+          <field name="x_studio_descr"/>
+          <field name="purchase_agreements" options="{'no_create_edit': True, 'no_create': True}" force_save="0" readonly="False"/>
+        </group>
+      </sheet>
+    </form>
+  </xpath>
+  <xpath expr="/form[1]/sheet[1]/group[1]/group[1]/field[8]" position="after">
+    <field name="x_studio_"/>
+  </xpath>
+  <xpath expr="/form[1]/sheet[1]/notebook[1]/page[1]/field[1]/list[1]//field[@name='product_id']" position="attributes">
+    <attribute name="column_invisible">False</attribute>
+    <!--<attribute name="invisible">not x_studio_purchase</attribute>-->
+  </xpath>
+  <xpath expr="/form[1]/sheet[1]/notebook[1]/page[1]/field[1]/list[1]//field[@name='tag_ids']" position="replace"/>
+  <xpath expr="/form[1]/sheet[1]/notebook[1]/page[1]/field[1]/list[1]//field[@name='x_studio_tender_status']" position="replace"/>
+  <xpath expr="/form[1]/sheet[1]/notebook[1]/page[1]/field[1]/list[1]//field[@name='expected_date']" position="replace"/>
+  <xpath expr="/form[1]/sheet[1]/notebook[1]/page[1]/field[1]/list[1]//field[@name='notes']" position="replace"/>
+  <xpath expr="/form[1]/sheet[1]/notebook[1]/page[1]/field[1]/list[1]//field[@name='x_studio_rfq']" position="replace"/>
+  <xpath expr="/form[1]/sheet[1]/notebook[1]/page[1]/field[1]/list[1]//field[@name='product_id']" position="attributes">
+    <attribute name="column_invisible">False</attribute>
+    <!--<attribute name="invisible">not x_studio_purchase and stage_id in [1, 3, 4]</attribute>-->
+  </xpath>
+  <xpath expr="/form[1]/sheet[1]/notebook[1]/page[1]/field[1]/list[1]//field[@name='product_id']" position="attributes">
+    <attribute name="column_invisible">False</attribute>
+    <!--<attribute name="invisible">not x_studio_purchase or stage_id in [1, 3, 4]</attribute>-->
+  </xpath>
+  <xpath expr="/form[1]/sheet[1]/notebook[1]/page[1]/field[1]/list[1]//field[@name='product_id']" position="attributes">
+    <attribute name="column_invisible">False</attribute>
+    <!--<attribute name="invisible">not x_studio_purchase and ( stage_id == 1 or stage_id == 2 or stage_id == 3 or stage_id == 4 )</attribute>-->
+  </xpath>
+  <xpath expr="/form[1]/sheet[1]/notebook[1]/page[1]/field[1]/list[1]//field[@name='x_studio_code']" position="attributes">
+    <!--<attribute name="invisible">not x_studio_purchase and ( stage_id == 1 or stage_id == 2 or stage_id == 3 or stage_id == 4 )</attribute>-->
+  </xpath>
+  <xpath expr="/form[1]/sheet[1]/notebook[1]/page[1]/field[1]/list[1]//field[@name='uom_id']" position="attributes">
+    <!--<attribute name="invisible">not x_studio_purchase and ( stage_id == 1 or stage_id == 2 or stage_id == 3 or stage_id == 4 )</attribute>-->
+  </xpath>
+  <xpath expr="/form[1]/sheet[1]/notebook[1]/page[1]/field[1]/list[1]//field[@name='quantity']" position="attributes">
+    <!--<attribute name="invisible">not x_studio_purchase and ( stage_id == 1 or stage_id == 2 or stage_id == 3 or stage_id == 4 )</attribute>-->
+  </xpath>
+  <xpath expr="/form[1]/sheet[1]/notebook[1]/page[1]/field[1]/list[1]//field[@name='name']" position="attributes">
+    <!--<attribute name="invisible">not x_studio_purchase and ( stage_id == 1 or stage_id == 2 or stage_id == 3 or stage_id == 4 )</attribute>-->
+  </xpath>
+  <xpath expr="/form[1]/sheet[1]/notebook[1]/page[1]/field[1]/list[1]//field[@name='unit_price']" position="attributes">
+    <!--<attribute name="invisible">not x_studio_purchase and ( stage_id == 1 or stage_id == 2 or stage_id == 3 or stage_id == 4 )</attribute>-->
+  </xpath>
+  <xpath expr="/form[1]/sheet[1]/notebook[1]/page[1]/field[1]/list[1]//field[@name='amount']" position="attributes">
+    <!--<attribute name="invisible">not x_studio_purchase and ( stage_id == 1 or stage_id == 2 or stage_id == 3 or stage_id == 4 )</attribute>-->
+  </xpath>
+  <xpath expr="/form[1]/sheet[1]/notebook[1]/page[1]/field[1]/list[1]//field[@name='x_studio_on_hand']" position="attributes">
+    <!--<attribute name="invisible">not x_studio_purchase and ( stage_id == 1 or stage_id == 2 or stage_id == 3 or stage_id == 4 )</attribute>-->
+  </xpath>
+  <xpath expr="/form[1]/sheet[1]/notebook[1]/page[1]/field[1]/list[1]//field[@name='x_studio_warehouse']" position="attributes">
+    <!--<attribute name="invisible">not x_studio_purchase and ( stage_id == 1 or stage_id == 2 or stage_id == 3 or stage_id == 4 )</attribute>-->
+  </xpath>
+  <xpath expr="/form[1]/sheet[1]/notebook[1]/page[1]/field[1]/list[1]//field[@name='x_studio_purchase']" position="attributes">
+    <!--<attribute name="invisible">not x_studio_purchase and ( stage_id == 1 or stage_id == 2 or stage_id == 3 or stage_id == 4 )</attribute>-->
+  </xpath>
+  <xpath expr="/form[1]/sheet[1]/notebook[1]/page[1]/field[1]/list[1]//field[@name='x_studio_requset_number']" position="attributes">
+    <!--<attribute name="invisible">not x_studio_purchase and ( stage_id == 1 or stage_id == 2 or stage_id == 3 or stage_id == 4 )</attribute>-->
+  </xpath>
+  <xpath expr="/form[1]/sheet[1]/notebook[1]/page[1]/field[1]/list[1]//field[@name='stage_id']" position="attributes">
+    <!--<attribute name="invisible">not x_studio_purchase and ( stage_id == 1 or stage_id == 2 or stage_id == 3 or stage_id == 4 )</attribute>-->
+  </xpath>
+  <xpath expr="/form[1]/sheet[1]/notebook[1]/page[1]/field[1]/list[1]//field[@name='product_id']" position="attributes">
+    <attribute name="column_invisible">False</attribute>
+    <!--<attribute name="invisible">not x_studio_purchase and ( stage_id == 1 or stage_id == 2 or stage_id == 3 or stage_id == 4 or stage_id == 5 )</attribute>-->
+  </xpath>
+  <xpath expr="/form[1]/sheet[1]/notebook[1]/page[1]/field[1]/list[1]//field[@name='product_id']" position="attributes">
+    <attribute name="column_invisible">False</attribute>
+    <!--<attribute name="invisible">not x_studio_purchase and ( stage_id == 1 or stage_id == 2 or stage_id == 3 or stage_id == 4 )</attribute>-->
+  </xpath>
+  <xpath expr="/form[1]/sheet[1]/notebook[1]/page[1]/field[1]/list[1]//field[@name='product_id']" position="attributes">
+    <attribute name="column_invisible">False</attribute>
+    <!--<attribute name="invisible">not x_studio_purchase and stage_id in [5] and ( stage_id == 1 or stage_id == 2 or stage_id == 3 or stage_id == 4 )</attribute>-->
+  </xpath>
+  <xpath expr="/form[1]/sheet[1]/notebook[1]/page[1]/field[1]/list[1]//field[@name='product_id']" position="attributes">
+    <attribute name="column_invisible">False</attribute>
+    <!--<attribute name="invisible">not x_studio_purchase and ( stage_id == 1 or stage_id == 2 or stage_id == 3 or stage_id == 4 )</attribute>-->
+  </xpath>
+  <xpath expr="/form[1]/sheet[1]/notebook[1]/page[1]/field[1]/list[1]//field[@name='product_id']" position="attributes">
+    <attribute name="column_invisible">False</attribute>
+    <!--<attribute name="invisible">not x_studio_purchase</attribute>-->
+  </xpath>
+  <xpath expr="/form[1]/sheet[1]/notebook[1]/page[1]/field[1]/list[1]//field[@name='product_id']" position="attributes">
+    <attribute name="column_invisible">False</attribute>
+    <!--<attribute name="invisible">not x_studio_purchase and stage_id in [2]</attribute>-->
+  </xpath>
+  <xpath expr="/form[1]/sheet[1]/notebook[1]/page[1]/field[1]/list[1]//field[@name='product_id']" position="attributes">
+    <attribute name="column_invisible">False</attribute>
+    <!--<attribute name="invisible">not x_studio_purchase or stage_id in [2]</attribute>-->
+  </xpath>
+  <xpath expr="/form[1]/sheet[1]/notebook[1]/page[1]/field[1]/list[1]//field[@name='product_id']" position="attributes">
+    <attribute name="column_invisible">False</attribute>
+    <!--<attribute name="invisible">not x_studio_purchase and ( stage_id in [2] or stage_id in [3] )</attribute>-->
+  </xpath>
+  <xpath expr="/form[1]/sheet[1]/notebook[1]/page[1]/field[1]/list[1]//field[@name='product_id']" position="attributes">
+    <attribute name="column_invisible">False</attribute>
+    <!--<attribute name="invisible">not x_studio_purchase or stage_id in [4]</attribute>-->
+  </xpath>
+  <xpath expr="/form[1]/sheet[1]/notebook[1]/page[1]/field[1]/list[1]//field[@name='product_id']" position="attributes">
+    <attribute name="column_invisible">False</attribute>
+    <!--<attribute name="invisible">not x_studio_purchase and ( stage_id == 2 or stage_id == 3 )</attribute>-->
+  </xpath>
+  <xpath expr="/form[1]/sheet[1]/notebook[1]/page[1]/field[1]/list[1]//field[@name='product_id']" position="attributes">
+    <attribute name="column_invisible">False</attribute>
+    <!--<attribute name="invisible">not x_studio_purchase and ( stage_id == 2 or stage_id == 1 )</attribute>-->
+  </xpath>
+  <xpath expr="/form[1]/sheet[1]/notebook[1]/page[1]/field[1]/list[1]//field[@name='budget_analytic_line']" position="after">
+    <field name="x_studio_" optional="show"/>
+  </xpath>
+  <xpath expr="/form[1]/sheet[1]/notebook[1]/page[1]/field[1]/list[1]//field[@name='product_id']" position="attributes">
+    <attribute name="column_invisible">False</attribute>
+    <!--<attribute name="invisible">not x_studio_purchase and ( stage_id == 2 or stage_id in [1, 3, 4] )</attribute>-->
+  </xpath>
+  <xpath expr="/form[1]/sheet[1]/notebook[1]/page[1]/field[1]/list[1]//field[@name='product_id']" position="attributes">
+    <attribute name="column_invisible">False</attribute>
+    <!--<attribute name="invisible">not x_studio_purchase and ( stage_id == 2 or stage_id in [3, 4] )</attribute>-->
+  </xpath>
+  <xpath expr="/form[1]/sheet[1]/notebook[1]/page[1]/field[1]/list[1]//field[@name='product_id']" position="attributes">
+    <attribute name="column_invisible">False</attribute>
+    <!--<attribute name="invisible">not x_studio_purchase and ( stage_id == 2 or stage_id == 3 or stage_id == 4 )</attribute>-->
+  </xpath>
+  <xpath expr="/form[1]/sheet[1]/notebook[1]/page[1]/field[1]/list[1]//field[@name='x_studio_code']" position="attributes">
+    <!--<attribute name="invisible">not x_studio_purchase and ( stage_id == 2 or stage_id == 3 or stage_id == 4 )</attribute>-->
+  </xpath>
+  <xpath expr="/form[1]/sheet[1]/notebook[1]/page[1]/field[1]/list[1]//field[@name='uom_id']" position="attributes">
+    <!--<attribute name="invisible">not x_studio_purchase and ( stage_id == 2 or stage_id == 3 or stage_id == 4 )</attribute>-->
+  </xpath>
+  <xpath expr="/form[1]/sheet[1]/notebook[1]/page[1]/field[1]/list[1]//field[@name='quantity']" position="attributes">
+    <!--<attribute name="invisible">not x_studio_purchase and ( stage_id == 2 or stage_id == 3 or stage_id == 4 )</attribute>-->
+  </xpath>
+  <xpath expr="/form[1]/sheet[1]/notebook[1]/page[1]/field[1]/list[1]//field[@name='name']" position="attributes">
+    <!--<attribute name="invisible">not x_studio_purchase and ( stage_id == 2 or stage_id == 3 or stage_id == 4 )</attribute>-->
+  </xpath>
+  <xpath expr="/form[1]/sheet[1]/notebook[1]/page[1]/field[1]/list[1]//field[@name='unit_price']" position="attributes">
+    <!--<attribute name="invisible">not x_studio_purchase and ( stage_id == 2 or stage_id == 3 or stage_id == 4 )</attribute>-->
+  </xpath>
+  <xpath expr="/form[1]/sheet[1]/notebook[1]/page[1]/field[1]/list[1]//field[@name='amount']" position="attributes">
+    <!--<attribute name="invisible">not x_studio_purchase and ( stage_id == 2 or stage_id == 3 or stage_id == 4 )</attribute>-->
+  </xpath>
+  <xpath expr="/form[1]/sheet[1]/notebook[1]/page[1]/field[1]/list[1]//field[@name='x_studio_on_hand']" position="attributes">
+    <!--<attribute name="invisible">not x_studio_purchase and ( stage_id == 2 or stage_id == 3 or stage_id == 4 )</attribute>-->
+  </xpath>
+  <xpath expr="/form[1]/sheet[1]/notebook[1]/page[1]/field[1]/list[1]//field[@name='x_studio_warehouse']" position="attributes">
+    <!--<attribute name="invisible">not x_studio_purchase and ( stage_id == 2 or stage_id == 3 or stage_id == 4 )</attribute>-->
+  </xpath>
+  <xpath expr="/form[1]/sheet[1]/notebook[1]/page[1]/field[1]/list[1]//field[@name='x_studio_purchase']" position="attributes">
+    <!--<attribute name="invisible">not x_studio_purchase and ( stage_id == 2 or stage_id == 3 or stage_id == 4 )</attribute>-->
+  </xpath>
+  <xpath expr="/form[1]/sheet[1]/notebook[1]/page[1]/field[1]/list[1]//field[@name='x_studio_requset_number']" position="attributes">
+    <!--<attribute name="invisible">not x_studio_purchase and ( stage_id == 2 or stage_id == 3 or stage_id == 4 )</attribute>-->
+  </xpath>
+  <xpath expr="/form[1]/sheet[1]/notebook[1]/page[1]/field[1]/list[1]//field[@name='product_id']" position="attributes">
+    <attribute name="column_invisible">False</attribute>
+    <!--<attribute name="invisible">not x_studio_purchase and ( stage_id == 2 or stage_id == 3 or stage_id == 4 or not stage_id )</attribute>-->
+  </xpath>
+  <xpath expr="/form[1]/sheet[1]/notebook[1]/page[1]/field[1]/list[1]//field[@name='product_id']" position="attributes">
+    <attribute name="column_invisible">False</attribute>
+    <!--<attribute name="invisible">not x_studio_purchase and ( stage_id == 2 or stage_id == 3 or stage_id == 4 )</attribute>-->
+  </xpath>
+  <xpath expr="/form[1]/sheet[1]/notebook[1]/page[1]/field[1]/list[1]//field[@name='product_id']" position="attributes">
+    <attribute name="column_invisible">False</attribute>
+    <!--<attribute name="invisible">not x_studio_purchase and ( stage_id == 2 or stage_id == 3 or stage_id == 4 or stage_id == 1 )</attribute>-->
+  </xpath>
+  <xpath expr="/form[1]/sheet[1]/notebook[1]/page[1]/field[1]/list[1]//field[@name='x_studio_code']" position="attributes">
+    <!--<attribute name="invisible">not x_studio_purchase and ( stage_id == 2 or stage_id == 3 or stage_id == 4 or stage_id == 1 )</attribute>-->
+  </xpath>
+  <xpath expr="/form[1]/sheet[1]/notebook[1]/page[1]/field[1]/list[1]//field[@name='uom_id']" position="attributes">
+    <!--<attribute name="invisible">not x_studio_purchase and ( stage_id == 2 or stage_id == 3 or stage_id == 4 or stage_id == 1 )</attribute>-->
+  </xpath>
+  <xpath expr="/form[1]/sheet[1]/notebook[1]/page[1]/field[1]/list[1]//field[@name='quantity']" position="attributes">
+    <!--<attribute name="invisible">not x_studio_purchase and ( stage_id == 2 or stage_id == 3 or stage_id == 4 or stage_id == 1 )</attribute>-->
+  </xpath>
+  <xpath expr="/form[1]/sheet[1]/notebook[1]/page[1]/field[1]/list[1]//field[@name='name']" position="attributes">
+    <!--<attribute name="invisible">not x_studio_purchase and ( stage_id == 2 or stage_id == 3 or stage_id == 4 or stage_id == 1 )</attribute>-->
+  </xpath>
+  <xpath expr="/form[1]/sheet[1]/notebook[1]/page[1]/field[1]/list[1]//field[@name='unit_price']" position="attributes">
+    <!--<attribute name="invisible">not x_studio_purchase and ( stage_id == 2 or stage_id == 3 or stage_id == 4 or stage_id == 1 )</attribute>-->
+  </xpath>
+  <xpath expr="/form[1]/sheet[1]/notebook[1]/page[1]/field[1]/list[1]//field[@name='amount']" position="attributes">
+    <!--<attribute name="invisible">not x_studio_purchase and ( stage_id == 2 or stage_id == 3 or stage_id == 4 or stage_id == 1 )</attribute>-->
+  </xpath>
+  <xpath expr="/form[1]/sheet[1]/notebook[1]/page[1]/field[1]/list[1]//field[@name='x_studio_on_hand']" position="attributes">
+    <!--<attribute name="invisible">not x_studio_purchase and ( stage_id == 2 or stage_id == 3 or stage_id == 4 or stage_id == 1 )</attribute>-->
+  </xpath>
+  <xpath expr="/form[1]/sheet[1]/notebook[1]/page[1]/field[1]/list[1]//field[@name='x_studio_warehouse']" position="attributes">
+    <!--<attribute name="invisible">not x_studio_purchase and ( stage_id == 2 or stage_id == 3 or stage_id == 4 or stage_id == 1 )</attribute>-->
+  </xpath>
+  <xpath expr="/form[1]/sheet[1]/notebook[1]/page[1]/field[1]/list[1]//field[@name='x_studio_purchase']" position="attributes">
+    <!--<attribute name="invisible">not x_studio_purchase and ( stage_id == 2 or stage_id == 3 or stage_id == 4 or stage_id == 1 )</attribute>-->
+  </xpath>
+  <xpath expr="/form[1]/sheet[1]/notebook[1]/page[1]/field[1]/list[1]//field[@name='x_studio_requset_number']" position="attributes">
+    <!--<attribute name="invisible">not x_studio_purchase and ( stage_id == 2 or stage_id == 3 or stage_id == 4 or stage_id == 1 )</attribute>-->
+  </xpath>
+  <xpath expr="/form[1]/sheet[1]/notebook[1]/page[1]/field[1]/list[1]//field[@name='x_studio_']" position="attributes">
+    <!--<attribute name="invisible">not x_studio_purchase and ( stage_id == 2 or stage_id == 3 or stage_id == 4 or stage_id == 1 )</attribute>-->
+  </xpath>
+  <xpath expr="/form[1]/sheet[1]/notebook[1]/page[1]/field[1]/list[1]//field[@name='stage_id']" position="attributes">
+    <!--<attribute name="invisible">not x_studio_purchase and ( stage_id == 2 or stage_id == 3 or stage_id == 4 or stage_id == 1 )</attribute>-->
+  </xpath>
+  <xpath expr="/form[1]/sheet[1]/notebook[1]/page[1]/field[1]/list[1]//field[@name='product_id']" position="attributes">
+    <attribute name="column_invisible">False</attribute>
+    <!--<attribute name="invisible">not x_studio_purchase and stage_id and ( stage_id == 2 or stage_id == 3 or stage_id == 4 or stage_id == 1 )</attribute>-->
+  </xpath>
+  <xpath expr="/form[1]/sheet[1]/notebook[1]/page[1]/field[1]/list[1]//field[@name='product_id']" position="attributes">
+    <attribute name="column_invisible">False</attribute>
+    <!--<attribute name="invisible">not x_studio_purchase and stage_id and ( stage_id == 2 or stage_id == 3 or stage_id == 4 or stage_id == 1 )</attribute>-->
+  </xpath>
+  <xpath expr="/form[1]/sheet[1]/notebook[1]/page[1]/field[1]/list[1]//field[@name='product_id']" position="attributes">
+    <attribute name="column_invisible">False</attribute>
+    <!--<attribute name="invisible">not x_studio_purchase and ( stage_id == 2 or stage_id == 3 or stage_id == 4 or stage_id == 1 )</attribute>-->
+  </xpath>
+  <xpath expr="/form[1]/sheet[1]/notebook[1]/page[1]/field[1]/list[1]//field[@name='product_id']" position="attributes">
+    <attribute name="column_invisible">False</attribute>
+    <!--<attribute name="invisible">not x_studio_purchase and ( stage_id == 2 or stage_id == 3 or stage_id == 4 or stage_id == 1 )</attribute>-->
+  </xpath>
+  <xpath expr="/form[1]/sheet[1]/notebook[1]/page[1]/field[1]/list[1]//field[@name='product_id']" position="attributes">
+    <attribute name="column_invisible">False</attribute>
+    <!--<attribute name="invisible">not x_studio_purchase and stage_id and ( stage_id == 2 or stage_id == 3 or stage_id == 4 or stage_id == 1 )</attribute>-->
+  </xpath>
+  <xpath expr="/form[1]/sheet[1]/notebook[1]/page[1]/field[1]/list[1]//field[@name='product_id']" position="attributes">
+    <attribute name="column_invisible">False</attribute>
+    <!--<attribute name="invisible">not x_studio_purchase and stage_id not in [1, 3, 2, 4] and ( stage_id == 2 or stage_id == 3 or stage_id == 4 or stage_id == 1 )</attribute>-->
+  </xpath>
+  <xpath expr="/form[1]/sheet[1]/notebook[1]/page[1]/field[1]/list[1]//field[@name='product_id']" position="attributes">
+    <attribute name="column_invisible">False</attribute>
+    <!--<attribute name="invisible">not x_studio_purchase and ( stage_id == 2 or stage_id == 3 or stage_id == 4 or stage_id == 1 )</attribute>-->
+  </xpath>
+  <xpath expr="/form[1]/sheet[1]/notebook[1]/page[1]/field[1]/list[1]//field[@name='stage_id']" position="attributes">
+    <attribute name="invisible">False</attribute>
+    <attribute name="column_invisible">False</attribute>
+  </xpath>
+  <xpath expr="/form[1]/sheet[1]/notebook[1]/page[1]/field[1]/list[1]//field[@name='stage_id']" position="attributes">
+    <attribute name="column_invisible">False</attribute>
+    <!--<attribute name="invisible">not x_studio_purchase and ( stage_id == 2 or stage_id == 3 or stage_id == 4 or stage_id == 1 )</attribute>-->
+  </xpath>
+  <xpath expr="/form[1]/sheet[1]/notebook[1]/page[1]/field[1]/list[1]//field[@name='x_studio_requset_number']" position="replace"/>
+  <xpath expr="/form[1]/sheet[1]/notebook[1]/page[1]/field[1]/list[1]//field[@name='x_studio_']" position="replace"/>
+  <xpath expr="/form[1]/sheet[1]/notebook[1]/page[1]/field[1]/list[1]" position="attributes">
+    <attribute name="default_order">x_studio_purchase asc</attribute>
+  </xpath>
+  <xpath expr="/form[1]/sheet[1]/notebook[1]/page[1]/field[1]/list[1]" position="attributes">
+    <attribute name="default_order">x_studio_purchase desc</attribute>
+  </xpath>
+  <xpath expr="/form[1]/sheet[1]/notebook[1]/page[1]/field[1]/list[1]" position="attributes">
+    <attribute name="default_order">x_studio_purchase asc</attribute>
+  </xpath>
+  <xpath expr="/form[1]/sheet[1]/notebook[1]/page[1]/field[1]/list[1]" position="attributes">
+    <attribute name="default_order">x_studio_purchase desc</attribute>
+  </xpath>
+  <xpath expr="/form[1]/sheet[1]/group[1]/group[1]/field[2]" position="attributes">
+    <attribute name="invisible">x_studio_type != "მომსახურების მოთხოვნა - ტრანსპორტი"</attribute>
+  </xpath>
+  <xpath expr="/form[1]/sheet[1]/group[1]/group[1]/field[3]" position="attributes">
+    <attribute name="invisible">x_studio_type != "მომსახურების მოთხოვნა - ტრანსპორტი"</attribute>
+  </xpath>
+  <xpath expr="/form[1]/sheet[1]/group[1]/group[1]/field[4]" position="attributes">
+    <attribute name="invisible">x_studio_type != "მომსახურების მოთხოვნა - ტრანსპორტი"</attribute>
+  </xpath>
+  <xpath expr="/form[1]/sheet[1]/group[1]/group[1]/field[9]" position="attributes">
+    <attribute name="invisible">stage_id not in [10, 11, 12, 15]</attribute>
+  </xpath>
+  <xpath expr="/form[1]/sheet[1]/group[1]/group[1]/field[5]" position="attributes">
+    <attribute name="string">მოთხოვნის ნომერი</attribute>
+  </xpath>
+  <xpath expr="/form[1]/sheet[1]/group[1]/group[1]/field[6]" position="attributes">
+    <attribute name="string">მოთხოვნის თარიღი</attribute>
+  </xpath>
+  <xpath expr="/form[1]/sheet[1]/group[1]/group[1]/field[8]" position="attributes">
+    <attribute name="string">დეპარტამენტი</attribute>
+  </xpath>
+  <xpath expr="/form[1]/sheet[1]/group[1]/group[1]/field[8]" position="after">
+    <xpath expr="/form[1]/sheet[1]/group[1]/group[1]/field[12]" position="move"/>
+  </xpath>
+  <xpath expr="/form[1]/sheet[1]/group[1]/group[1]/field[9]" position="after">
+    <xpath expr="/form[1]/sheet[1]/group[1]/group[1]/field[7]" position="move"/>
+  </xpath>
+  <xpath expr="/form[1]/sheet[1]/group[1]/group[1]/field[9]" position="attributes">
+    <attribute name="string">მომთხოვნი</attribute>
+  </xpath>
+  <xpath expr="/form[1]/sheet[1]/group[1]/group[1]/field[1]" position="attributes">
+    <attribute name="string">მოთხოვნის ტიპი</attribute>
+  </xpath>
+  <xpath expr="/form[1]/sheet[1]/group[1]/group[1]/field[9]" position="after">
+    <field name="x_studio_selection_field_6ca_1j76p9boc"/>
+  </xpath>
+  <xpath expr="/form[1]/sheet[1]/group[1]/group[1]/field[10]" position="attributes">
+    <attribute name="string">მოთხოვნის კატეგორია</attribute>
+  </xpath>
+  <xpath expr="/form[1]/sheet[1]/group[1]/group[1]/field[10]" position="after">
+    <field name="x_studio_selection_field_291_1j76pqq6p"/>
+  </xpath>
+  <xpath expr="/form[1]/sheet[1]/group[1]/group[1]/field[11]" position="attributes">
+    <attribute name="string">საფუძველი / ღონისძიება</attribute>
+  </xpath>
+  <xpath expr="/form[1]/sheet[1]/group[1]/group[1]/field[11]" position="after">
+    <field name="x_studio_char_field_8rb_1j76q19m8"/>
+  </xpath>
+  <xpath expr="/form[1]/sheet[1]/group[1]/group[1]/field[12]" position="attributes">
+    <attribute name="string">საფუძველი (სხვა)</attribute>
+  </xpath>
+  <xpath expr="//header[1]" position="inside">
+    <button string="Fleet" name="1100" type="action"/>
+    <button string="დადასტურება" name="1769" type="action"/>
+    <button string="უკან დაბრუნება" name="1770" type="action"/>
+    <button string="უარყოფა" name="1771" type="action"/>
+    <button string="დადასტურება" name="1772" type="action"/>
+    <button string="უკან დაბრუნება" name="1773" type="action"/>
+    <button string="უარყოფა" name="1774" type="action"/>
+    <button string="დადასტურება" name="1775" type="action"/>
+    <button string="უკან დაბრუნება" name="1776" type="action"/>
+    <button string="უარყოფა" name="1777" type="action"/>
+    <button string="დადასტურება" name="1778" type="action"/>
+    <button string="უკან დაბრუნება" name="1779" type="action"/>
+    <button string="უარყოფა" name="1780" type="action"/>
+    <button string="დადასტურება" name="1781" type="action"/>
+    <button string="უკან დაბრუნება" name="1782" type="action"/>
+    <button string="უარყოფა" name="1783" type="action"/>
+    <button string="დადასტურება" name="1784" type="action"/>
+    <button string="უკან დაბრუნება" name="1785" type="action"/>
+    <button string="უარყოფა" name="1786" type="action"/>
+    <button string="დადასტურება" name="1787" type="action"/>
+    <button string="უკან დაბრუნება" name="1788" type="action"/>
+    <button string="უარყოფა" name="1789" type="action"/>
+    <button string="დადასტურება" name="1790" type="action"/>
+    <button string="უკან დაბრუნება" name="1791" type="action"/>
+    <button string="უარყოფა" name="1792" type="action"/>
+    <button string="დადასტურება" name="1793" type="action"/>
+    <button string="უკან დაბრუნება" name="1794" type="action"/>
+    <button string="უარყოფა" name="1795" type="action"/>
+    <button string="დადასტურება" name="1796" type="action"/>
+    <button string="უკან დაბრუნება" name="1797" type="action"/>
+    <button string="უარყოფა" name="1798" type="action"/>
+    <button string="დადასტურება" name="1799" type="action"/>
+    <button string="უკან დაბრუნება" name="1800" type="action"/>
+    <button string="უარყოფა" name="1801" type="action"/>
+    <button string="დადასტურება" name="1802" type="action"/>
+    <button string="უკან დაბრუნება" name="1803" type="action"/>
+    <button string="უარყოფა" name="1804" type="action"/>
+    <button string="დადასტურება" name="1805" type="action"/>
+    <button string="უკან დაბრუნება" name="1806" type="action"/>
+    <button string="უარყოფა" name="1807" type="action"/>
+    <button string="დადასტურება" name="1808" type="action"/>
+    <button string="უკან დაბრუნება" name="1809" type="action"/>
+    <button string="უარყოფა" name="1810" type="action"/>
+    <button string="დადასტურება" name="1811" type="action"/>
+    <button string="უკან დაბრუნება" name="1812" type="action"/>
+    <button string="უარყოფა" name="1813" type="action"/>
+    <button string="დადასტურება" name="1814" type="action"/>
+    <button string="უკან დაბრუნება" name="1815" type="action"/>
+    <button string="უარყოფა" name="1816" type="action"/>
+    <button string="დადასტურება" name="2147" type="action"/>
+    <button string="უკან დაბრუნება" name="2148" type="action"/>
+    <button string="უარყოფა" name="2149" type="action"/>
+    <button string="დადასტურება" name="2150" type="action"/>
+    <button string="უკან დაბრუნება" name="2164" type="action"/>
+    <button string="უარყოფა" name="2151" type="action"/>
+    <button string="დადასტურება" name="2152" type="action"/>
+    <button string="უკან დაბრუნება" name="2153" type="action"/>
+    <button string="უარყოფა" name="2154" type="action"/>
+    <button string="დადასტურება" name="2155" type="action"/>
+    <button string="უკან დაბრუნება" name="2156" type="action"/>
+    <button string="უარყოფა" name="2157" type="action"/>
+    <button string="დადასტურება" name="2158" type="action"/>
+    <button string="უკან დაბრუნება" name="2159" type="action"/>
+    <button string="უარყოფა" name="2160" type="action"/>
+    <button string="დადასტურება" name="2161" type="action"/>
+    <button string="უკან დაბრუნება" name="2163" type="action"/>
+    <button string="უარყოფა" name="2162" type="action"/>
+  </xpath>
+  <xpath expr="/form[1]/sheet[1]/notebook[1]/page[1]/field[1]/list[1]//field[@name='x_studio_code']" position="after">
+    <field name="x_studio_requset_number" optional="show"/>
+  </xpath>
+  <xpath expr="/form[1]/sheet[1]/group[1]/group[1]/field[9]" position="after">
+    <xpath expr="/form[1]/sheet[1]/group[1]/group[1]/field[17]" position="move"/>
+  </xpath>
+  <xpath expr="/form[1]/sheet[1]/group[1]/group[2]/field[2]" position="after">
+    <field name="state"/>
+  </xpath>
+  <xpath expr="/form[1]/sheet[1]/group[1]/group[2]/field[3]" position="replace"/>
+  <xpath expr="/form[1]/sheet[1]/group[1]/group[1]/field[17]" position="after">
+    <field name="x_studio_many2one_field_212_1j76qnto4"/>
+  </xpath>
+  <xpath expr="/form[1]/sheet[1]/group[1]/group[1]/field[17]" position="after">
+    <field name="x_studio_many2one_field_es_1j76qfa82"/>
+  </xpath>
+  <xpath expr="/form[1]/sheet[1]/group[1]/group[1]/field[18]" position="after">
+    <field name="location_object"/>
+  </xpath>
+  <xpath expr="/form[1]/sheet[1]/group[1]/group[1]/field[19]" position="replace"/>
+  <xpath expr="/form[1]/sheet[1]/group[1]/group[1]/field[4]" position="after">
+    <field name="x_studio_contract"/>
+  </xpath>
+  <xpath expr="/form[1]/sheet[1]/group[1]/group[1]/field[5]" position="attributes">
+    <attribute name="invisible">x_studio_type != "მომსახურების მოთხოვნა - ტრანსპორტი"</attribute>
+  </xpath>
+  <xpath expr="//div[contains(@class,'oe_button_box')][not(ancestor::field)]" position="inside">
+    <button class="oe_stat_button" icon="fa-diamond" type="action" name="studio_customization.transfers_fcc3cc0a-b3db-4012-b772-54b3cc6e36ea">
+      <field widget="statinfo" name="x_request_id_inventory_line_count" string="transfers"/>
+    </button>
+  </xpath>
+  <xpath expr="/form[1]/sheet[1]/div[1]/button[1]" position="replace"/>
+  <xpath expr="/form[1]/sheet[1]/div[1]/button[1]" position="replace"/>
+  <xpath expr="//div[contains(@class,'oe_button_box')][not(ancestor::field)]" position="inside">
+    <button class="oe_stat_button" icon="fa-truck" type="object" name="action_show_internal_transfers">
+      <field widget="statinfo" name="internal_transfer_count" string="შიდა გადაცემები"/>
+    </button>
+  </xpath>
+  <xpath expr="/form[1]/sheet[1]/notebook[1]/page[1]/field[1]/list[1]//field[@name='product_id']" position="after">
+    <field name="x_studio_price_list" optional="show"/>
+  </xpath>
+  <xpath expr="/form[1]/sheet[1]/notebook[1]/page[1]/field[1]/list[1]//field[@name='x_studio_price_list']" position="after">
+    <field name="x_studio_price_list_1" optional="show"/>
+  </xpath>
+  <xpath expr="/form[1]/sheet[1]/notebook[1]/page[1]/field[1]/list[1]//field[@name='x_studio_price_list']" position="replace"/>
+  <xpath expr="/form[1]/sheet[1]/notebook[1]/page[1]/field[1]/list[1]//field[@name='x_studio_price_list_1']" position="after">
+    <field name="x_studio_price_list" optional="show"/>
+  </xpath>
+  <xpath expr="/form[1]/sheet[1]/notebook[1]/page[1]/field[1]/list[1]//field[@name='x_studio_price_list_1']" position="replace"/>
+  <xpath expr="/form[1]/sheet[1]/notebook[1]/page[1]/field[1]/list[1]//field[@name='x_studio_price_list']" position="replace"/>
+  <xpath expr="/form[1]/sheet[1]/group[1]/group[1]/field[5]" position="after">
+    <field name="x_studio_preiskuranti" options="{'create_name_field': 'x_name'}"/>
+  </xpath>
+  <xpath expr="/form[1]/sheet[1]/group[1]/group[1]/field[6]" position="attributes">
+    <attribute name="string">პრეისკურანტი</attribute>
+  </xpath>
+  <xpath expr="/form[1]/sheet[1]/group[1]/group[1]/field[5]" position="replace"/>
+  <xpath expr="/form[1]/sheet[1]/group[1]/group[1]/field[5]" position="attributes">
+    <attribute name="invisible">x_studio_type != "მომსახურების მოთხოვნა - ტრანსპორტი"</attribute>
+  </xpath>
+  <xpath expr="/form[1]/sheet[1]/group[1]/group[1]/field[1]" position="before">
+    <xpath expr="/form[1]/sheet[1]/group[1]/group[1]/field[6]" position="move"/>
+  </xpath>
+  <xpath expr="/form[1]/sheet[1]/group[1]/group[1]/field[1]" position="after">
+    <xpath expr="/form[1]/sheet[1]/group[1]/group[1]/field[7]" position="move"/>
+  </xpath>
+  <xpath expr="/form[1]/sheet[1]/group[1]/group[1]/field[11]" position="attributes">
+    <attribute name="string">მომხმ. საწყობი</attribute>
+  </xpath>
+  <xpath expr="/form[1]/sheet[1]/group[1]/group[1]/field[16]" position="attributes">
+    <attribute name="invisible">True</attribute>
+  </xpath>
+  <xpath expr="/form[1]/sheet[1]/group[1]/group[1]/field[17]" position="attributes">
+    <attribute name="invisible">True</attribute>
+  </xpath>
+  <xpath expr="/form[1]/sheet[1]/group[1]/group[1]/field[10]" position="attributes">
+    <attribute name="invisible">True</attribute>
+  </xpath>
+  <xpath expr="/form[1]/sheet[1]/group[1]/group[1]/field[11]" position="attributes">
+    <attribute name="invisible">True</attribute>
+  </xpath>
+  <xpath expr="/form[1]/sheet[1]/group[1]/group[1]/field[9]" position="attributes">
+    <attribute name="invisible">True</attribute>
+  </xpath>
+  <xpath expr="/form[1]/sheet[1]/group[1]/group[1]/field[3]" position="attributes">
+    <attribute name="invisible">True</attribute>
+  </xpath>
+  <xpath expr="/form[1]/sheet[1]/group[1]/group[1]/field[3]" position="attributes">
+    <attribute name="invisible">False</attribute>
+  </xpath>
+  <xpath expr="/form[1]/sheet[1]/group[1]/group[1]/field[8]" position="attributes">
+    <attribute name="invisible">True</attribute>
+  </xpath>
+  <xpath expr="/form[1]/sheet[1]/group[1]/group[1]/field[14]" position="attributes">
+    <attribute name="invisible">x_studio_selection_field_291_1j76pqq6p != "სხვა"</attribute>
+  </xpath>
+  <xpath expr="/form[1]/sheet[1]/group[1]/group[1]/field[18]" position="attributes">
+    <attribute name="invisible">True</attribute>
+  </xpath>
+  <xpath expr="/form[1]/sheet[1]/group[1]/group[1]/field[20]" position="attributes">
+    <attribute name="invisible">True</attribute>
+  </xpath>
+  <xpath expr="/form[1]/sheet[1]/group[1]/group[1]/field[19]" position="after">
+    <field name="x_studio_related_field_mp_1j807vv5e"/>
+  </xpath>
+  <xpath expr="/form[1]/sheet[1]/group[1]/group[1]/field[20]" position="attributes">
+    <attribute name="string">ობიექტი - ლოკაცია</attribute>
+  </xpath>
+  <xpath expr="/form[1]/sheet[1]/group[2]/field[1]" position="attributes">
+    <attribute name="string">საფუძველი დეტალურად</attribute>
+  </xpath>
+  <xpath expr="/form[1]/sheet[1]/group[1]/group[2]/field[2]" position="attributes">
+    <attribute name="string">ჩანაწერი</attribute>
+  </xpath>
+  <xpath expr="/form[1]/sheet[1]/group[1]/group[2]/field[3]" position="attributes">
+    <attribute name="string">ეტაპი</attribute>
+  </xpath>
+  <xpath expr="/form[1]/sheet[1]/group[1]/group[2]/field[4]" position="attributes">
+    <attribute name="string">ზემდგომი 1</attribute>
+  </xpath>
+  <xpath expr="/form[1]/sheet[1]/group[1]/group[2]/field[5]" position="attributes">
+    <attribute name="string">ზემდგომი 2</attribute>
+  </xpath>
+  <!--<xpath expr="/form[1]/sheet[1]/group[1]/group[2]/field[8]" position="attributes">-->
+  <!--<attribute name="invisible">True</attribute>-->
+  <!--</xpath>-->
+  <xpath expr="/form[1]/sheet[1]/notebook[1]/page[1]" position="attributes">
+    <attribute name="string">მასალა</attribute>
+  </xpath>
+  <xpath expr="/form[1]/sheet[1]/notebook[1]/page[1]/field[1]/list[1]//field[@name='product_id']" position="attributes">
+    <attribute name="string">დასახელება</attribute>
+  </xpath>
+  <xpath expr="/form[1]/sheet[1]/notebook[1]/page[1]/field[1]/list[1]//field[@name='x_studio_code']" position="attributes">
+    <attribute name="string">კოდი</attribute>
+  </xpath>
+  <xpath expr="/form[1]/sheet[1]/notebook[1]/page[1]/field[1]/list[1]//field[@name='x_studio_requset_number']" position="attributes">
+    <attribute name="column_invisible">True</attribute>
+  </xpath>
+  <xpath expr="/form[1]/sheet[1]/notebook[1]/page[1]/field[1]/list[1]//field[@name='uom_id']" position="attributes">
+    <attribute name="string">ერთ.</attribute>
+  </xpath>
+  <xpath expr="/form[1]/sheet[1]/notebook[1]/page[1]/field[1]/list[1]//field[@name='quantity']" position="attributes">
+    <attribute name="string">რაოდ-ბა</attribute>
+  </xpath>
+  <xpath expr="/form[1]/sheet[1]/notebook[1]/page[1]/field[1]/list[1]//field[@name='request_date']" position="attributes">
+    <attribute name="column_invisible">True</attribute>
+  </xpath>
+  <xpath expr="/form[1]/sheet[1]/notebook[1]/page[1]/field[1]/list[1]//field[@name='x_studio_purchase_plan']" position="attributes">
+    <attribute name="string">შესყიდვის</attribute>
+  </xpath>
+  <xpath expr="/form[1]/sheet[1]/notebook[1]/page[1]/field[1]/list[1]//field[@name='x_studio_purchase_plan']" position="attributes">
+    <attribute name="string">შესყიდვის გეგმა</attribute>
+  </xpath>
+  <xpath expr="/form[1]/sheet[1]/notebook[1]/page[1]/field[1]/list[1]//field[@name='x_studio_purchase_plan']" position="attributes">
+    <attribute name="string">შესყის გეგმა</attribute>
+  </xpath>
+  <xpath expr="/form[1]/sheet[1]/notebook[1]/page[1]/field[1]/list[1]//field[@name='x_studio_purchase_plan']" position="attributes">
+    <attribute name="string">შესყ-ის გეგმა</attribute>
+  </xpath>
+  <xpath expr="/form[1]/sheet[1]/notebook[1]/page[1]/field[1]/list[1]//field[@name='x_studio_purchase_plan_line']" position="attributes">
+    <attribute name="string">CPV Code</attribute>
+  </xpath>
+  <xpath expr="/form[1]/sheet[1]/notebook[1]/page[1]/field[1]/list[1]//field[@name='name']" position="attributes">
+    <attribute name="invisible">False</attribute>
+    <attribute name="column_invisible">False</attribute>
+  </xpath>
+  <xpath expr="/form[1]/sheet[1]/notebook[1]/page[1]/field[1]/list[1]//field[@name='name']" position="attributes">
+    <attribute name="column_invisible">True</attribute>
+  </xpath>
+  <xpath expr="/form[1]/sheet[1]/notebook[1]/page[1]/field[1]/list[1]//field[@name='unit_price']" position="attributes">
+    <attribute name="string">ერთ. ფასი</attribute>
+  </xpath>
+  <xpath expr="/form[1]/sheet[1]/notebook[1]/page[1]/field[1]/list[1]//field[@name='amount']" position="attributes">
+    <attribute name="string">თანხა</attribute>
+  </xpath>
+  <xpath expr="/form[1]/sheet[1]/notebook[1]/page[1]/field[1]/list[1]//field[@name='x_studio_on_hand']" position="attributes">
+    <attribute name="string">საერთო ნაშთი</attribute>
+  </xpath>
+  <xpath expr="/form[1]/sheet[1]/notebook[1]/page[1]/field[1]/list[1]//field[@name='x_studio_warehouse']" position="attributes">
+    <attribute name="string">გასაცემი საწყობი</attribute>
+  </xpath>
+  <xpath expr="/form[1]/sheet[1]/notebook[1]/page[1]/field[1]/list[1]//field[@name='x_studio_purchase']" position="attributes">
+    <attribute name="string">შესასყიდი</attribute>
+  </xpath>
+  <xpath expr="/form[1]/sheet[1]/notebook[1]/page[1]/field[1]/list[1]//field[@name='stage_id']" position="attributes">
+    <attribute name="invisible">False</attribute>
+    <attribute name="column_invisible">False</attribute>
+  </xpath>
+  <xpath expr="/form[1]/sheet[1]/notebook[1]/page[1]/field[1]/list[1]//field[@name='stage_id']" position="attributes">
+    <attribute name="column_invisible">True</attribute>
+  </xpath>
+  <xpath expr="/form[1]/sheet[1]/notebook[1]/page[1]/field[1]/list[1]//field[@name='x_studio_purchase']" position="after">
+    <xpath expr="/form[1]/sheet[1]/notebook[1]/page[1]/field[1]/list[1]//field[@name='x_studio_purchase_plan']" position="move"/>
+  </xpath>
+  <xpath expr="/form[1]/sheet[1]/notebook[1]/page[1]/field[1]/list[1]//field[@name='x_studio_purchase_plan']" position="after">
+    <xpath expr="/form[1]/sheet[1]/notebook[1]/page[1]/field[1]/list[1]//field[@name='x_studio_purchase_plan_line']" position="move"/>
+  </xpath>
+  <xpath expr="/form[1]/sheet[1]/group[1]/group[1]/field[20]" position="after">
+    <!--<field widget="file" filename="x_studio_binary_field_1fj_1j809ovdh_filename" name="x_studio_binary_field_1fj_1j809ovdh"/>-->
+    <!--<field name="files" widget="many2many_binary"/>-->
+  </xpath>
+  <!--<xpath expr="//field[@name='x_studio_binary_field_1fj_1j809ovdh'][not(ancestor::field)]" position="after">-->
+  <!--  <field widget="file" invisible="True" name="x_studio_binary_field_1fj_1j809ovdh_filename"/>-->
+  <!--</xpath>-->
+  <xpath expr="/form[1]/sheet[1]/group[1]/group[1]/field[21]" position="attributes">
+    <attribute name="string">ფაილის ატვირთვა</attribute>
+  </xpath>
+  <xpath expr="/form[1]/sheet[1]/group[2]/field[1]" position="after">
+    <xpath expr="/form[1]/sheet[1]/group[1]/group[1]/field[21]" position="move"/>
+  </xpath>
+  <xpath expr="/form[1]/sheet[1]/group[1]/group[2]/field[4]" position="attributes">
+    <attribute name="string">დეპ. ხელმძღვანელი</attribute>
+  </xpath>
+  <xpath expr="/form[1]/sheet[1]/group[1]/group[2]/field[5]" position="attributes">
+    <attribute name="string">ხელმძღვანელი</attribute>
+  </xpath>
+  <xpath expr="/form[1]/sheet[1]/group[1]/group[1]/field[7]" position="attributes">
+    <attribute name="string">ხელშეკრულება</attribute>
+  </xpath>
+  <xpath expr="/form[1]/sheet[1]/group[1]/group[1]/field[7]" position="attributes">
+    <attribute name="string">ხელშეკრულება / პრეისკურანტი</attribute>
+  </xpath>
+  <xpath expr="/form[1]/sheet[1]/notebook[1]/page[1]/field[1]/list[1]//field[@name='quantity']" position="after">
+    <field name="request_date" optional="show"/>
+  </xpath>
+  <xpath expr="/form[1]/sheet[1]/group[1]/group[1]/field[1]" position="attributes">
+    <attribute name="class">border</attribute>
+  </xpath>
+  <xpath expr="/form[1]/sheet[1]/group[1]/group[1]/field[2]" position="attributes">
+    <attribute name="class">border</attribute>
+  </xpath>
+  <xpath expr="/form[1]/sheet[1]/group[1]/group[1]/field[3]" position="attributes">
+    <attribute name="class">border</attribute>
+  </xpath>
+  <xpath expr="/form[1]/sheet[1]/group[1]/group[1]/field[4]" position="attributes">
+    <attribute name="class">border</attribute>
+  </xpath>
+  <xpath expr="/form[1]/sheet[1]/group[1]/group[1]/field[5]" position="attributes">
+    <attribute name="class">border</attribute>
+  </xpath>
+  <xpath expr="/form[1]/sheet[1]/group[1]/group[1]/field[6]" position="attributes">
+    <attribute name="class">border</attribute>
+  </xpath>
+  <xpath expr="/form[1]/sheet[1]/group[1]/group[1]/field[7]" position="attributes">
+    <attribute name="class">border</attribute>
+  </xpath>
+  <xpath expr="/form[1]/sheet[1]/group[1]/group[1]/field[8]" position="attributes">
+    <attribute name="class">border</attribute>
+  </xpath>
+  <xpath expr="/form[1]/sheet[1]/group[1]/group[1]/field[9]" position="attributes">
+    <attribute name="class">border</attribute>
+  </xpath>
+  <xpath expr="/form[1]/sheet[1]/group[1]/group[1]/field[10]" position="attributes">
+    <attribute name="class">border</attribute>
+  </xpath>
+  <xpath expr="/form[1]/sheet[1]/group[1]/group[1]/field[11]" position="attributes">
+    <attribute name="class">border</attribute>
+  </xpath>
+  <xpath expr="/form[1]/sheet[1]/group[1]/group[1]/field[12]" position="attributes">
+    <attribute name="class">border</attribute>
+  </xpath>
+  <xpath expr="/form[1]/sheet[1]/group[1]/group[1]/field[13]" position="attributes">
+    <attribute name="class">border</attribute>
+  </xpath>
+  <xpath expr="/form[1]/sheet[1]/group[1]/group[1]/field[14]" position="attributes">
+    <attribute name="class">border</attribute>
+  </xpath>
+  <xpath expr="/form[1]/sheet[1]/group[1]/group[1]/field[15]" position="attributes">
+    <attribute name="class">border</attribute>
+  </xpath>
+  <xpath expr="/form[1]/sheet[1]/group[1]/group[1]/field[16]" position="attributes">
+    <attribute name="class">border</attribute>
+  </xpath>
+  <xpath expr="/form[1]/sheet[1]/group[1]/group[1]/field[17]" position="attributes">
+    <attribute name="class">border</attribute>
+  </xpath>
+  <xpath expr="/form[1]/sheet[1]/group[1]/group[1]/field[18]" position="attributes">
+    <attribute name="class">border</attribute>
+  </xpath>
+  <xpath expr="/form[1]/sheet[1]/group[1]/group[1]/field[19]" position="attributes">
+    <attribute name="class">border</attribute>
+  </xpath>
+  <xpath expr="/form[1]/sheet[1]/group[1]/group[1]/field[20]" position="attributes">
+    <attribute name="class">border</attribute>
+  </xpath>
+  <!--<xpath expr="/form[1]/sheet[1]/group[1]/group[1]/field[22]" position="attributes">-->
+  <!--<attribute name="class">border</attribute>-->
+  <!--</xpath>-->
+  <xpath expr="/form[1]/sheet[1]/group[1]/group[2]/field[2]" position="attributes">
+    <attribute name="class">border</attribute>
+  </xpath>
+  <xpath expr="/form[1]/sheet[1]/group[1]/group[2]/field[3]" position="attributes">
+    <attribute name="class">border</attribute>
+  </xpath>
+  <xpath expr="/form[1]/sheet[1]/group[1]/group[2]/field[4]" position="attributes">
+    <attribute name="class">border</attribute>
+  </xpath>
+  <xpath expr="/form[1]/sheet[1]/group[1]/group[2]/field[5]" position="attributes">
+    <attribute name="class">border</attribute>
+  </xpath>
+  <xpath expr="/form[1]/sheet[1]/notebook[1]/page[1]/field[1]/list[1]//field[@name='x_studio_purchase']" position="after">
+    <field optional="show" name="x_studio_boolean_field_3rt_1j82fv6ek"/>
+  </xpath>
+  <xpath expr="/form[1]/sheet[1]/notebook[1]/page[1]/field[1]/list[1]//field[@name='x_studio_boolean_field_3rt_1j82fv6ek']" position="attributes">
+    <attribute name="widget">boolean_toggle</attribute>
+  </xpath>
+  <xpath expr="/form[1]/sheet[1]/notebook[1]/page[1]/field[1]/list[1]//field[@name='x_studio_boolean_field_3rt_1j82fv6ek']" position="attributes">
+    <attribute name="string">დასამზ.</attribute>
+  </xpath>
+  <xpath expr="/form[1]/sheet[1]/notebook[1]/page[1]/field[1]/list[1]//field[@name='x_studio_boolean_field_3rt_1j82fv6ek']" position="after">
+    <field optional="show" name="x_studio_boolean_field_2bu_1j82g13ub"/>
+  </xpath>
+  <xpath expr="/form[1]/sheet[1]/notebook[1]/page[1]/field[1]/list[1]//field[@name='x_studio_boolean_field_2bu_1j82g13ub']" position="attributes">
+    <attribute name="string">გათვალისწინებული</attribute>
+  </xpath>
+  <xpath expr="/form[1]/sheet[1]/notebook[1]/page[1]/field[1]/list[1]//field[@name='x_studio_boolean_field_2bu_1j82g13ub']" position="attributes">
+    <attribute name="widget">boolean_toggle</attribute>
+  </xpath>
+  <xpath expr="/form[1]/sheet[1]/group[1]/group[1]/field[2]" position="attributes">
+    <attribute name="required">stage_id in [4]</attribute>
+  </xpath>
+  <xpath expr="/form[1]/sheet[1]/group[1]/group[1]/field[2]" position="attributes">
+    <attribute name="required">False</attribute>
+  </xpath>
+  <xpath expr="/form[1]/sheet[1]/group[1]/group[1]/field[2]" position="attributes">
+    <attribute name="force_save">1</attribute>
+    <attribute name="readonly">stage_id in [4]</attribute>
+  </xpath>
+  <xpath expr="/form[1]/sheet[1]/group[1]/group[1]/field[8]" position="attributes">
+    <attribute name="invisible">stage_id in [4]</attribute>
+  </xpath>
+  <xpath expr="/form[1]/sheet[1]/group[1]/group[1]/field[9]" position="attributes">
+    <attribute name="invisible">stage_id in [4]</attribute>
+  </xpath>
+  <xpath expr="/form[1]/sheet[1]/group[1]/group[1]/field[9]" position="attributes">
+    <attribute name="invisible">False</attribute>
+  </xpath>
+  <!--<xpath expr="/form[1]/sheet[1]/group[1]/group[1]/field[23]" position="after">-->
+  <!--<field name="bypass_preiskuranti_filter"/>-->
+  <!--</xpath>-->
+  <!--<xpath expr="/form[1]/sheet[1]/group[1]/group[1]/field[24]" position="after">-->
+  <!--<xpath expr="/form[1]/sheet[1]/group[1]/group[1]/field[9]" position="move"/>-->
+  <!--</xpath>-->
+  <xpath expr="/form[1]/sheet[1]/group[1]/group[1]/field[7]" position="replace"/>
+  <xpath expr="/form[1]/sheet[1]/notebook[1]/page[1]/field[1]/list[1]//field[@name='x_studio_code']" position="after">
+    <field name="x_studio_description" optional="show"/>
+  </xpath>
+  <xpath expr="/form[1]/sheet[1]/notebook[1]/page[1]/field[1]/list[1]//field[@name='x_studio_description']" position="attributes">
+    <attribute name="column_invisible">True</attribute>
+  </xpath>
+  <xpath expr="/form[1]/sheet[1]/notebook[1]/page[1]/field[1]/list[1]//field[@name='x_studio_code']" position="after">
+    <field name="x_studio_descr" optional="show"/>
+  </xpath>
+  <xpath expr="/form[1]/sheet[1]/notebook[1]/page[1]/field[1]/list[1]//field[@name='x_studio_descr']" position="after">
+    <field name="x_studio_description" optional="show"/>
+  </xpath>
+  <xpath expr="/form[1]/sheet[1]/notebook[1]/page[1]/field[1]/list[1]//field[@name='x_studio_description']" position="attributes">
+    <attribute name="column_invisible">True</attribute>
+  </xpath>
+  <xpath expr="/form[1]/sheet[1]/notebook[1]/page[1]/field[1]/list[1]" position="attributes">
+    <attribute name="open_form_view">true</attribute>
+  </xpath>
+  <xpath expr="/form[1]/sheet[1]/notebook[1]/page[1]/field[1]/list[1]" position="attributes">
+    <attribute name="open_form_view">false</attribute>
+  </xpath>
+  <xpath expr="/form[1]/sheet[1]/notebook[1]/page[1]/field[1]/list[1]//field[@name='budget_analytic']" position="attributes">
+    <attribute name="domain">["&amp;", ("state", "=", "confirmed"), ("budget_type", "=", "expense")]</attribute>
+  </xpath>
+  <xpath expr="/form[1]/sheet[1]/group[1]/group[2]/field[2]" position="after">
+    <field name="status"/>
+  </xpath>
+  <xpath expr="/form[1]/sheet[1]/group[1]/group[2]/field[5]" position="after">
+    <field name="status_request"/>
+  </xpath>
+  <xpath expr="/form[1]/sheet[1]/group[1]/group[2]/field[3]" position="replace"/>
+  <xpath expr="/form[1]/sheet[1]/group[1]/group[1]/field[8]" position="attributes">
+    <attribute name="invisible">x_studio_type != "მომსახურების მოთხოვნა - ტრანსპორტი"</attribute>
+  </xpath>
+  <xpath expr="/form[1]/sheet[1]/notebook[1]/page[1]/field[1]/list[1]//field[@name='product_id']" position="attributes">
+    <attribute name="column_invisible">False</attribute>
+    <attribute name="invisible">stage_id in [1, 2, 3, 4] and x_studio_purchase != True</attribute>
+  </xpath>
+  <xpath expr="/form[1]/sheet[1]/notebook[1]/page[1]/field[1]/list[1]//field[@name='x_studio_code']" position="attributes">
+    <attribute name="invisible">stage_id in [1, 2, 3, 4] and x_studio_purchase != True</attribute>
+  </xpath>
+  <xpath expr="/form[1]/sheet[1]/notebook[1]/page[1]/field[1]/list[1]//field[@name='x_studio_descr']" position="attributes">
+    <attribute name="invisible">stage_id in [1, 2, 3, 4] and x_studio_purchase != True</attribute>
+  </xpath>
+  <xpath expr="/form[1]/sheet[1]/notebook[1]/page[1]/field[1]/list[1]//field[@name='uom_id']" position="attributes">
+    <attribute name="invisible">stage_id in [1, 2, 3, 4] and x_studio_purchase != True</attribute>
+  </xpath>
+  <xpath expr="/form[1]/sheet[1]/notebook[1]/page[1]/field[1]/list[1]//field[@name='quantity']" position="attributes">
+    <attribute name="invisible">stage_id in [1, 2, 3, 4] and x_studio_purchase != True</attribute>
+  </xpath>
+  <xpath expr="/form[1]/sheet[1]/notebook[1]/page[1]/field[1]/list[1]//field[@name='request_date']" position="attributes">
+    <attribute name="invisible">stage_id in [1, 2, 3, 4] and x_studio_purchase != True</attribute>
+  </xpath>
+  <xpath expr="/form[1]/sheet[1]/notebook[1]/page[1]/field[1]/list[1]//field[@name='budget_analytic']" position="attributes">
+    <attribute name="invisible">stage_id in [1, 2, 3, 4] and x_studio_purchase != True</attribute>
+  </xpath>
+  <xpath expr="/form[1]/sheet[1]/notebook[1]/page[1]/field[1]/list[1]//field[@name='budget_analytic_line']" position="attributes">
+    <attribute name="invisible">stage_id in [1, 2, 3, 4] and x_studio_purchase != True</attribute>
+  </xpath>
+  <xpath expr="/form[1]/sheet[1]/notebook[1]/page[1]/field[1]/list[1]//field[@name='budget_analytic_line_account']" position="attributes">
+    <attribute name="invisible">stage_id in [1, 2, 3, 4] and x_studio_purchase != True</attribute>
+  </xpath>
+  <xpath expr="/form[1]/sheet[1]/notebook[1]/page[1]/field[1]/list[1]//field[@name='unit_price']" position="attributes">
+    <attribute name="invisible">stage_id in [1, 2, 3, 4] and x_studio_purchase != True</attribute>
+  </xpath>
+  <xpath expr="/form[1]/sheet[1]/notebook[1]/page[1]/field[1]/list[1]//field[@name='amount']" position="attributes">
+    <attribute name="invisible">stage_id in [1, 2, 3, 4] and x_studio_purchase != True</attribute>
+  </xpath>
+  <xpath expr="/form[1]/sheet[1]/notebook[1]/page[1]/field[1]/list[1]//field[@name='x_studio_on_hand']" position="attributes">
+    <attribute name="invisible">stage_id in [1, 2, 3, 4] and x_studio_purchase != True</attribute>
+  </xpath>
+  <xpath expr="/form[1]/sheet[1]/notebook[1]/page[1]/field[1]/list[1]//field[@name='x_studio_warehouse']" position="attributes">
+    <attribute name="invisible">stage_id in [1, 2, 3, 4] and x_studio_purchase != True</attribute>
+  </xpath>
+  <xpath expr="/form[1]/sheet[1]/notebook[1]/page[1]/field[1]/list[1]//field[@name='x_studio_purchase']" position="attributes">
+    <attribute name="invisible">stage_id in [1, 2, 3, 4] and x_studio_purchase != True</attribute>
+  </xpath>
+  <xpath expr="/form[1]/sheet[1]/notebook[1]/page[1]/field[1]/list[1]//field[@name='x_studio_boolean_field_3rt_1j82fv6ek']" position="attributes">
+    <attribute name="invisible">stage_id in [1, 2, 3, 4] and x_studio_purchase != True</attribute>
+  </xpath>
+  <xpath expr="/form[1]/sheet[1]/notebook[1]/page[1]/field[1]/list[1]//field[@name='x_studio_boolean_field_2bu_1j82g13ub']" position="attributes">
+    <attribute name="invisible">stage_id in [1, 2, 3, 4] and x_studio_purchase != True</attribute>
+  </xpath>
+  <xpath expr="/form[1]/sheet[1]/notebook[1]/page[1]/field[1]/list[1]//field[@name='x_studio_purchase_plan']" position="attributes">
+    <attribute name="invisible">stage_id in [1, 2, 3, 4] and x_studio_purchase != True</attribute>
+  </xpath>
+  <xpath expr="/form[1]/sheet[1]/notebook[1]/page[1]/field[1]/list[1]//field[@name='x_studio_purchase_plan_line']" position="attributes">
+    <attribute name="invisible">stage_id in [1, 2, 3, 4] and x_studio_purchase != True</attribute>
+  </xpath>
+  <xpath expr="/form[1]/sheet[1]/group[1]/group[1]/field[18]" position="after">
+    <field name="x_studio_related_field_84l_1j8l2kl2n" options="{'create_name_field': 'x_name'}"/>
+  </xpath>
+  <xpath expr="/form[1]/sheet[1]/group[1]/group[1]/field[19]" position="attributes">
+    <attribute name="string">ობიექტი - ლოკაცია</attribute>
+  </xpath>
+  <xpath expr="/form[1]/sheet[1]/group[1]/group[1]/field[20]" position="attributes">
+    <attribute name="string">ობიექტი - ლოკაცია-Old</attribute>
+  </xpath>
+  <xpath expr="/form[1]/sheet[1]/group[1]/group[1]/field[20]" position="replace"/>
+  <xpath expr="/form[1]/sheet[1]/div[1]/button[1]" position="attributes">
+    <attribute name="string">შესყიდვა</attribute>
+  </xpath>
+  <xpath expr="/form[1]/sheet[1]/div[1]/button[1]" position="attributes">
+    <attribute name="string"/>
+  </xpath>
+  <xpath expr="/form[1]/sheet[1]/div[1]/button[1]/field[1]" position="attributes">
+    <attribute name="string">შესყიდვები</attribute>
+  </xpath>
+  <xpath expr="/form[1]/sheet[1]/notebook[1]/page[1]/field[1]/list[1]//field[@name='budget_analytic_line_account']" position="after">
+    <xpath expr="/form[1]/sheet[1]/notebook[1]/page[1]/field[1]/list[1]//field[@name='preiskurantifasi']" position="move"/>
+  </xpath>
+  <xpath expr="/form[1]/sheet[1]/group[2]/field[4]" position="after">
+    <field name="x_studio_price_kut_momw"/>
+  </xpath>
+  <xpath expr="/form[1]/sheet[1]/group[2]/field[5]" position="attributes">
+    <attribute name="string">პრეისკურანტის სერვისი მომწოდებელი</attribute>
+  </xpath>
+  <xpath expr="/form[1]/sheet[1]/notebook[1]/page[1]/field[1]/list[1]//field[@name='preiskurantidan']" position="attributes">
+    <attribute name="string">შეთანხმებული</attribute>
+  </xpath>
+  <xpath expr="/form[1]/sheet[1]/notebook[1]/page[1]/field[1]/list[1]//field[@name='budget_analytic_line_account']" position="after">
+    <xpath expr="/form[1]/sheet[1]/notebook[1]/page[1]/field[1]/list[1]//field[@name='preiskurantidan']" position="move"/>
+  </xpath>
+  <xpath expr="/form[1]/sheet[1]/notebook[1]/page[1]/field[1]/list[1]//field[@name='preiskurantifasi']" position="attributes">
+    <attribute name="invisible">stage_id in [1, 2, 3, 4] and x_studio_purchase != True</attribute>
+  </xpath>
+  <xpath expr="/form[1]/sheet[1]/notebook[1]/page[1]/field[1]/list[1]//field[@name='x_studio_on_hand']" position="after">
+    <button name="action_view_stock_on_hand" string="On Hand" type="object" icon="fa-cubes" class="btn-primary"/>
+  </xpath>
+  <!--<xpath expr="/form[1]/sheet[1]/group[1]/group[2]/field[6]" position="after">-->
+  <!--<field name="enable_auto_logic"/>-->
+  <!--</xpath>-->
+  <xpath expr="/form[1]/sheet[1]/group[2]/field[5]" position="after">
+    <field name="september_request_id"/>
+  </xpath>
+  <xpath expr="/form[1]/sheet[1]/group[2]/field[6]" position="attributes">
+    <attribute name="invisible">x_studio_selection_field_6ca_1j76p9boc == "გეგმიური"</attribute>
+  </xpath>
+  <xpath expr="/form[1]/sheet[1]/group[1]/group[1]/field[11]" position="after">
+    <xpath expr="/form[1]/sheet[1]/group[2]/field[6]" position="move"/>
+  </xpath>
+  <xpath expr="/form[1]/sheet[1]/group[2]/field[3]" position="attributes">
+    <attribute name="invisible">x_studio_type != "მომსახურების მოთხოვნა - ტრანსპორტი"</attribute>
+  </xpath>
+  <xpath expr="/form[1]/sheet[1]/group[2]/field[4]" position="attributes">
+    <attribute name="invisible">x_studio_type != "მომსახურების მოთხოვნა - ტრანსპორტი"</attribute>
+  </xpath>
+  <xpath expr="/form[1]/sheet[1]/group[2]/field[5]" position="attributes">
+    <attribute name="invisible">x_studio_type != "მომსახურების მოთხოვნა - ტრანსპორტი"</attribute>
+  </xpath>
+  <xpath expr="/form[1]/sheet[1]/group[1]/group[1]/field[7]" position="attributes">
+    <attribute name="invisible">False</attribute>
+  </xpath>
+  <xpath expr="/form[1]/sheet[1]/group[1]/group[1]/field[8]" position="attributes">
+    <attribute name="invisible">False</attribute>
+  </xpath>
+  <xpath expr="/form[1]/sheet[1]/group[1]/group[1]/field[9]" position="attributes">
+    <attribute name="invisible">False</attribute>
+  </xpath>
+  <xpath expr="/form[1]/sheet[1]/group[1]/group[1]/field[10]" position="attributes">
+    <attribute name="invisible">False</attribute>
+  </xpath>
+  <xpath expr="/form[1]/sheet[1]/group[1]/group[1]/field[2]" position="attributes">
+    <attribute name="force_save">0</attribute>
+    <attribute name="readonly">False</attribute>
+  </xpath>
+  <xpath expr="/form[1]/sheet[1]/notebook[1]/page[1]/field[1]/list[1]//field[@name='request_date']" position="attributes">
+    <attribute name="string">მოთხ. თარიღი</attribute>
+  </xpath>
+  <xpath expr="/form[1]/sheet[1]/notebook[1]/page[1]/field[1]/list[1]//field[@name='budget_analytic']" position="attributes">
+    <attribute name="string">ბიუჯეტი</attribute>
+  </xpath>
+  <xpath expr="/form[1]/sheet[1]/notebook[1]/page[1]/field[1]/list[1]//field[@name='budget_analytic_line']" position="attributes">
+    <attribute name="string">ბიუჯეტის მუხლი</attribute>
+  </xpath>
+  <xpath expr="/form[1]/sheet[1]/notebook[1]/page[1]/field[1]/list[1]//field[@name='budget_analytic_line_account']" position="attributes">
+    <attribute name="string">ბიუჯეტის კოდი</attribute>
+  </xpath>
+  <xpath expr="/form[1]/sheet[1]/notebook[1]/page[1]/field[1]/list[1]//field[@name='budget_analytic']" position="after">
+    <xpath expr="/form[1]/sheet[1]/notebook[1]/page[1]/field[1]/list[1]//field[@name='budget_analytic_line_account']" position="move"/>
+  </xpath>
+  <xpath expr="/form[1]/sheet[1]/group[1]/group[1]/field[8]" position="attributes">
+    <attribute name="string">დეპ.კოდი</attribute>
+  </xpath>
+  <xpath expr="/form[1]/sheet[1]/group[1]/group[2]/field[1]" position="attributes">
+    <attribute name="string">პრიორიტეტი</attribute>
+  </xpath>
+  <xpath expr="/form[1]/sheet[1]/group[1]/group[2]/field[5]" position="attributes">
+    <attribute name="string">სტატუსი</attribute>
+  </xpath>
+  <xpath expr="/form[1]/sheet[1]/notebook[1]/page[1]/field[1]/list[1]//field[@name='is_checked']" position="attributes">
+    <attribute name="string">კოპირება</attribute>
+  </xpath>
+  <xpath expr="/form[1]/sheet[1]/notebook[1]/page[1]/field[1]/list[1]//field[@name='x_studio_descr']" position="attributes">
+    <attribute name="string">აღწერა</attribute>
+  </xpath>
+  <xpath expr="/form[1]/sheet[1]/group[1]/group[1]/field[12]" position="attributes">
+    <attribute name="string">სექ. მოთხოვნა</attribute>
+  </xpath>
+  <xpath expr="/form[1]/sheet[1]/notebook[1]/page[1]/field[1]/list[1]//field[@name='is_checked']" position="before">
+    <field name="garantiavada" optional="show"/>
+  </xpath>
+  <xpath expr="/form[1]/sheet[1]/notebook[1]/page[1]/field[1]/list[1]//field[@name='x_studio_descr']" position="after">
+    <field optional="show" name="x_studio_related_field_2jg_1jbg3ok0f" options="{'create_name_field': 'complete_name'}"/>
+  </xpath>
+  <xpath expr="/form[1]/sheet[1]/notebook[1]/page[1]/field[1]/list[1]//field[@name='x_studio_related_field_2jg_1jbg3ok0f']" position="attributes">
+    <attribute name="string">კატეგორია</attribute>
+  </xpath>
+  <xpath expr="/form[1]/header[1]/button[2]" position="replace"/>
+  <xpath expr="/form[1]/header[1]/button[2]" position="replace"/>
+  <xpath expr="/form[1]/header[1]/button[2]" position="replace"/>
+  <xpath expr="/form[1]/header[1]/button[2]" position="replace"/>
+  <xpath expr="/form[1]/header[1]/button[2]" position="replace"/>
+  <xpath expr="/form[1]/header[1]/button[2]" position="replace"/>
+  <xpath expr="/form[1]/header[1]/button[2]" position="replace"/>
+  <xpath expr="/form[1]/header[1]/button[2]" position="replace"/>
+  <xpath expr="/form[1]/header[1]/button[2]" position="replace"/>
+  <xpath expr="/form[1]/header[1]/button[3]" position="replace"/>
+  <xpath expr="/form[1]/header[1]/button[2]" position="replace"/>
+  <xpath expr="/form[1]/header[1]/button[2]" position="replace"/>
+  <xpath expr="/form[1]/header[1]/button[2]" position="replace"/>
+  <xpath expr="/form[1]/header[1]/button[2]" position="replace"/>
+  <xpath expr="/form[1]/header[1]/button[2]" position="replace"/>
+  <xpath expr="/form[1]/header[1]/button[2]" position="replace"/>
+  <xpath expr="/form[1]/header[1]/button[2]" position="replace"/>
+  <xpath expr="/form[1]/header[1]/button[2]" position="replace"/>
+  <xpath expr="/form[1]/header[1]/button[2]" position="replace"/>
+  <xpath expr="/form[1]/header[1]/button[2]" position="replace"/>
+  <xpath expr="/form[1]/header[1]/button[2]" position="replace"/>
+  <xpath expr="/form[1]/header[1]/button[2]" position="replace"/>
+  <xpath expr="/form[1]/header[1]/button[2]" position="replace"/>
+  <xpath expr="/form[1]/header[1]/button[2]" position="replace"/>
+  <xpath expr="/form[1]/header[1]/button[2]" position="replace"/>
+  <xpath expr="/form[1]/header[1]/button[2]" position="replace"/>
+  <xpath expr="/form[1]/header[1]/button[2]" position="replace"/>
+  <!--<xpath expr="/form[1]/sheet[1]/group[1]/group[2]/field[7]" position="after">-->
+  <!--  <field widget="many2many_tags" name="x_studio_many2many_field_9d8_1jcbd2e76"/>-->
+  <!--</xpath>-->
+  <!--<xpath expr="/form[1]/sheet[1]/group[1]/group[2]/field[8]" position="attributes">-->
+  <!--  <attribute name="string">adgil_sac</attribute>-->
+  <!--</xpath>-->
+  <xpath expr="/form[1]/header[1]/button[10]" position="attributes">
+    <attribute name="class">btn btn-success</attribute>
+  </xpath>
+  <xpath expr="/form[1]/header[1]/button[11]" position="attributes">
+    <attribute name="class">btn btn-warning</attribute>
+  </xpath>
+  <xpath expr="/form[1]/header[1]/button[12]" position="attributes">
+    <attribute name="class">btn btn-danger</attribute>
+  </xpath>
+  <xpath expr="/form[1]/header[1]/button[10]" position="attributes">
+    <attribute name="groups">__export__.res_groups_124_f08a5ec6</attribute>
+  </xpath>
+  <xpath expr="/form[1]/header[1]/button[10]" position="attributes">
+    <attribute name="groups"/>
+  </xpath>
+  <xpath expr="/form[1]/header[1]/button[10]" position="attributes">
+    <attribute name="groups">!__export__.res_groups_124_f08a5ec6</attribute>
+  </xpath>
+  <xpath expr="/form[1]/header[1]/button[10]" position="attributes">
+    <attribute name="groups"/>
+  </xpath>
+  <xpath expr="/form[1]/header[1]/button[10]" position="attributes">
+    <attribute name="groups">__export__.res_groups_124_f08a5ec6</attribute>
+  </xpath>
+  <xpath expr="/form[1]/header[1]/button[10]" position="attributes">
+    <attribute name="invisible">False</attribute>
+  </xpath>
+  <xpath expr="/form[1]/header[1]/button[10]" position="attributes">
+    <attribute name="groups"/>
+  </xpath>
+  <xpath expr="/form[1]/header[1]/button[10]" position="attributes">
+    <attribute name="groups">__export__.res_groups_124_f08a5ec6</attribute>
+  </xpath>
+  <xpath expr="/form[1]/header[1]/button[10]" position="attributes">
+    <attribute name="invisible">False</attribute>
+  </xpath>
+  <xpath expr="/form[1]/header[1]/button[10]" position="attributes">
+    <attribute name="invisible">stage_id not in [20]</attribute>
+  </xpath>
+  <xpath expr="/form[1]/header[1]/button[10]" position="attributes">
+    <attribute name="invisible">stage_id not in [20]</attribute>
+  </xpath>
+  <xpath expr="/form[1]/header[1]/button[11]" position="attributes">
+    <attribute name="groups">__export__.res_groups_124_f08a5ec6</attribute>
+  </xpath>
+  <xpath expr="/form[1]/header[1]/button[11]" position="attributes">
+    <attribute name="invisible">stage_id not in [20]</attribute>
+  </xpath>
+  <xpath expr="/form[1]/header[1]/button[12]" position="attributes">
+    <attribute name="groups">__export__.res_groups_124_f08a5ec6</attribute>
+  </xpath>
+  <xpath expr="/form[1]/header[1]/button[12]" position="attributes">
+    <attribute name="invisible">stage_id not in [20]</attribute>
+  </xpath>
+  <xpath expr="/form[1]/header[1]/button[10]" position="attributes">
+    <attribute name="groups"/>
+  </xpath>
+  <xpath expr="/form[1]/header[1]/button[11]" position="attributes">
+    <attribute name="groups"/>
+  </xpath>
+  <xpath expr="/form[1]/header[1]/button[12]" position="attributes">
+    <attribute name="groups"/>
+  </xpath>
+  <xpath expr="/form[1]/header[1]/button[10]" position="attributes">
+    <attribute name="invisible">stage_id not in [20] and set(x_studio_many2many_field_9d8_1jcbd2e76).intersection([uid])</attribute>
+  </xpath>
+  <xpath expr="/form[1]/header[1]/button[10]" position="attributes">
+    <attribute name="invisible">stage_id not in [20] or set(x_studio_many2many_field_9d8_1jcbd2e76).intersection([uid])</attribute>
+  </xpath>
+  <xpath expr="/form[1]/header[1]/button[10]" position="attributes">
+    <attribute name="invisible">set(x_studio_many2many_field_9d8_1jcbd2e76).intersection([uid])</attribute>
+  </xpath>
+  <xpath expr="/form[1]/header[1]/button[10]" position="attributes">
+    <attribute name="invisible">not set(x_studio_many2many_field_9d8_1jcbd2e76).intersection([uid])</attribute>
+  </xpath>
+  <xpath expr="/form[1]/header[1]/button[10]" position="attributes">
+    <attribute name="invisible">not set(x_studio_many2many_field_9d8_1jcbd2e76).intersection([uid]) and stage_id not in [20]</attribute>
+  </xpath>
+  <xpath expr="/form[1]/header[1]/button[10]" position="attributes">
+    <attribute name="invisible">not set(x_studio_many2many_field_9d8_1jcbd2e76).intersection([uid]) or stage_id not in [20]</attribute>
+  </xpath>
+  <xpath expr="/form[1]/header[1]/button[11]" position="attributes">
+    <attribute name="invisible">not set(x_studio_many2many_field_9d8_1jcbd2e76).intersection([uid]) or stage_id not in [20]</attribute>
+  </xpath>
+  <xpath expr="/form[1]/header[1]/button[12]" position="attributes">
+    <attribute name="invisible">not set(x_studio_many2many_field_9d8_1jcbd2e76).intersection([uid]) or stage_id not in [20]</attribute>
+  </xpath>
+  <!--<xpath expr="/form[1]/sheet[1]/group[1]/group[2]/field[8]" position="after">-->
+  <!--  <field widget="many2many_tags" name="x_studio_zemdgomi_1"/>-->
+  <!--</xpath>-->
+  <!--<xpath expr="/form[1]/sheet[1]/group[1]/group[2]/field[9]" position="after">-->
+  <!--  <field widget="many2many_tags" name="x_studio_filial_ufros_1"/>-->
+  <!--</xpath>-->
+  <!--<xpath expr="/form[1]/sheet[1]/group[1]/group[2]/field[10]" position="after">-->
+  <!--  <field widget="many2many_tags" name="x_studio_tech_dep_1"/>-->
+  <!--</xpath>-->
+  <!--<xpath expr="/form[1]/sheet[1]/group[1]/group[2]/field[11]" position="after">-->
+  <!--  <field widget="many2many_tags" name="x_studio_tech_director_1"/>-->
+  <!--</xpath>-->
+  <!--<xpath expr="/form[1]/sheet[1]/group[1]/group[2]/field[12]" position="after">-->
+  <!--  <field widget="many2many_tags" name="x_studio_whs_sam_1"/>-->
+  <!--</xpath>-->
+  <!--<xpath expr="/form[1]/sheet[1]/group[1]/group[2]/field[13]" position="after">-->
+  <!--  <field widget="many2many_tags" name="x_studio_logist_dep_1"/>-->
+  <!--</xpath>-->
+  <!--<xpath expr="/form[1]/sheet[1]/group[1]/group[2]/field[14]" position="after">-->
+  <!--  <field widget="many2many_tags" name="x_studio_logist_dir_1"/>-->
+  <!--</xpath>-->
+  <!--<xpath expr="/form[1]/sheet[1]/group[1]/group[2]/field[15]" position="after">-->
+  <!--  <field widget="many2many_tags" name="x_studio_shesy_dep_ufros"/>-->
+  <!--</xpath>-->
+  <!--<xpath expr="/form[1]/sheet[1]/group[1]/group[2]/field[16]" position="after">-->
+  <!--  <field widget="many2many_tags" name="x_studio_shesy_group_1"/>-->
+  <!--</xpath>-->
+  <!--<xpath expr="/form[1]/sheet[1]/group[1]/group[2]/field[17]" position="after">-->
+  <!--  <field widget="many2many_tags" name="x_studio_baz_kvleva_1"/>-->
+  <!--</xpath>-->
+  <!--<xpath expr="/form[1]/sheet[1]/group[1]/group[2]/field[18]" position="after">-->
+  <!--  <field widget="many2many_tags" name="x_studio_fin_samartv_1"/>-->
+  <!--</xpath>-->
+  <!--<xpath expr="/form[1]/sheet[1]/group[1]/group[2]/field[19]" position="after">-->
+  <!--  <field widget="many2many_tags" name="x_studio_fin_dep_1"/>-->
+  <!--</xpath>-->
+  <!--<xpath expr="/form[1]/sheet[1]/group[1]/group[2]/field[20]" position="after">-->
+  <!--  <field widget="many2many_tags" name="x_studio_cpv_user_1"/>-->
+  <!--</xpath>-->
+  <!--<xpath expr="/form[1]/sheet[1]/group[1]/group[2]/field[21]" position="after">-->
+  <!--  <field widget="many2many_tags" name="x_studio_dir_moadg_1"/>-->
+  <!--</xpath>-->
+  <!--<xpath expr="/form[1]/sheet[1]/group[1]/group[2]/field[22]" position="after">-->
+  <!--  <field widget="many2many_tags" name="x_studio_gen_director_1"/>-->
+  <!--</xpath>-->
+  <xpath expr="/form[1]/header[1]/button[10]" position="attributes">
+    <attribute name="string">დადასტურება_adg</attribute>
+  </xpath>
+  <xpath expr="/form[1]/header[1]/button[10]" position="attributes">
+    <attribute name="string">დადასტურება</attribute>
+  </xpath>
+  <xpath expr="/form[1]/header[1]/button[13]" position="attributes">
+    <attribute name="class">btn btn-success</attribute>
+  </xpath>
+  <xpath expr="/form[1]/header[1]/button[16]" position="attributes">
+    <attribute name="class">btn btn-success</attribute>
+  </xpath>
+  <xpath expr="/form[1]/header[1]/button[19]" position="attributes">
+    <attribute name="class">btn btn-success</attribute>
+  </xpath>
+  <xpath expr="/form[1]/header[1]/button[22]" position="attributes">
+    <attribute name="class">btn btn-success</attribute>
+  </xpath>
+  <xpath expr="/form[1]/header[1]/button[25]" position="attributes">
+    <attribute name="class">btn btn-success</attribute>
+  </xpath>
+  <xpath expr="/form[1]/header[1]/button[28]" position="attributes">
+    <attribute name="class">btn btn-success</attribute>
+  </xpath>
+  <xpath expr="/form[1]/header[1]/button[31]" position="attributes">
+    <attribute name="class">btn btn-success</attribute>
+  </xpath>
+  <xpath expr="/form[1]/header[1]/button[34]" position="attributes">
+    <attribute name="class">btn btn-success</attribute>
+  </xpath>
+  <xpath expr="/form[1]/header[1]/button[37]" position="attributes">
+    <attribute name="class">btn btn-success</attribute>
+  </xpath>
+  <xpath expr="/form[1]/header[1]/button[40]" position="attributes">
+    <attribute name="class">btn btn-success</attribute>
+  </xpath>
+  <xpath expr="/form[1]/header[1]/button[43]" position="attributes">
+    <attribute name="class">btn btn-success</attribute>
+  </xpath>
+  <xpath expr="/form[1]/header[1]/button[46]" position="attributes">
+    <attribute name="class">btn btn-success</attribute>
+  </xpath>
+  <xpath expr="/form[1]/header[1]/button[49]" position="attributes">
+    <attribute name="class">btn btn-success</attribute>
+  </xpath>
+  <xpath expr="/form[1]/header[1]/button[52]" position="attributes">
+    <attribute name="class">btn btn-success</attribute>
+  </xpath>
+  <xpath expr="/form[1]/header[1]/button[55]" position="attributes">
+    <attribute name="class">btn btn-success</attribute>
+  </xpath>
+  <xpath expr="/form[1]/header[1]/button[14]" position="attributes">
+    <attribute name="class">btn btn-warning</attribute>
+  </xpath>
+  <xpath expr="/form[1]/header[1]/button[17]" position="attributes">
+    <attribute name="class">btn btn-warning</attribute>
+  </xpath>
+  <xpath expr="/form[1]/header[1]/button[20]" position="attributes">
+    <attribute name="class">btn btn-warning</attribute>
+  </xpath>
+  <xpath expr="/form[1]/header[1]/button[23]" position="attributes">
+    <attribute name="class">btn btn-warning</attribute>
+  </xpath>
+  <xpath expr="/form[1]/header[1]/button[26]" position="attributes">
+    <attribute name="class">btn btn-warning</attribute>
+  </xpath>
+  <xpath expr="/form[1]/header[1]/button[29]" position="attributes">
+    <attribute name="class">btn btn-warning</attribute>
+  </xpath>
+  <xpath expr="/form[1]/header[1]/button[32]" position="attributes">
+    <attribute name="class">btn btn-warning</attribute>
+  </xpath>
+  <xpath expr="/form[1]/header[1]/button[35]" position="attributes">
+    <attribute name="class">btn btn-warning</attribute>
+  </xpath>
+  <xpath expr="/form[1]/header[1]/button[38]" position="attributes">
+    <attribute name="class">btn btn-warning</attribute>
+  </xpath>
+  <xpath expr="/form[1]/header[1]/button[41]" position="attributes">
+    <attribute name="class">btn btn-warning</attribute>
+  </xpath>
+  <xpath expr="/form[1]/header[1]/button[44]" position="attributes">
+    <attribute name="class">btn btn-warning</attribute>
+  </xpath>
+  <xpath expr="/form[1]/header[1]/button[47]" position="attributes">
+    <attribute name="class">btn btn-warning</attribute>
+  </xpath>
+  <xpath expr="/form[1]/header[1]/button[50]" position="attributes">
+    <attribute name="class">btn btn-warning</attribute>
+  </xpath>
+  <xpath expr="/form[1]/header[1]/button[53]" position="attributes">
+    <attribute name="class">btn btn-warning</attribute>
+  </xpath>
+  <xpath expr="/form[1]/header[1]/button[56]" position="attributes">
+    <attribute name="class">btn btn-warning</attribute>
+  </xpath>
+  <xpath expr="/form[1]/header[1]/button[15]" position="attributes">
+    <attribute name="class">btn btn-danger</attribute>
+  </xpath>
+  <xpath expr="/form[1]/header[1]/button[18]" position="attributes">
+    <attribute name="class">btn btn-danger</attribute>
+  </xpath>
+  <xpath expr="/form[1]/header[1]/button[21]" position="attributes">
+    <attribute name="class">btn btn-danger</attribute>
+  </xpath>
+  <xpath expr="/form[1]/header[1]/button[24]" position="attributes">
+    <attribute name="class">btn btn-danger</attribute>
+  </xpath>
+  <xpath expr="/form[1]/header[1]/button[27]" position="attributes">
+    <attribute name="class">btn btn-danger</attribute>
+  </xpath>
+  <xpath expr="/form[1]/header[1]/button[30]" position="attributes">
+    <attribute name="class">btn btn-danger</attribute>
+  </xpath>
+  <xpath expr="/form[1]/header[1]/button[33]" position="attributes">
+    <attribute name="class">btn btn-danger</attribute>
+  </xpath>
+  <xpath expr="/form[1]/header[1]/button[36]" position="attributes">
+    <attribute name="class">btn btn-danger</attribute>
+  </xpath>
+  <xpath expr="/form[1]/header[1]/button[39]" position="attributes">
+    <attribute name="class">btn btn-danger</attribute>
+  </xpath>
+  <xpath expr="/form[1]/header[1]/button[42]" position="attributes">
+    <attribute name="class">btn btn-danger</attribute>
+  </xpath>
+  <xpath expr="/form[1]/header[1]/button[45]" position="attributes">
+    <attribute name="class">btn btn-danger</attribute>
+  </xpath>
+  <xpath expr="/form[1]/header[1]/button[48]" position="attributes">
+    <attribute name="class">btn btn-danger</attribute>
+  </xpath>
+  <xpath expr="/form[1]/header[1]/button[51]" position="attributes">
+    <attribute name="class">btn btn-danger</attribute>
+  </xpath>
+  <xpath expr="/form[1]/header[1]/button[54]" position="attributes">
+    <attribute name="class">btn btn-danger</attribute>
+  </xpath>
+  <xpath expr="/form[1]/header[1]/button[57]" position="attributes">
+    <attribute name="class">btn btn-danger</attribute>
+  </xpath>
+  <xpath expr="/form[1]/header[1]/button[13]" position="attributes">
+    <attribute name="invisible">not set(x_studio_many2many_field_9d8_1jcbd2e76).intersection([uid]) or stage_id not in [6]</attribute>
+  </xpath>
+  <xpath expr="/form[1]/header[1]/button[13]" position="attributes">
+    <attribute name="invisible">not set(x_studio_zemdgomi_1).intersection([uid]) or stage_id not in [6]</attribute>
+  </xpath>
+  <xpath expr="/form[1]/header[1]/button[14]" position="attributes">
+    <attribute name="invisible">not set(x_studio_zemdgomi_1).intersection([uid]) or stage_id not in [6]</attribute>
+  </xpath>
+  <xpath expr="/form[1]/header[1]/button[15]" position="attributes">
+    <attribute name="invisible">not set(x_studio_zemdgomi_1).intersection([uid]) or stage_id not in [6]</attribute>
+  </xpath>
+  <xpath expr="/form[1]/header[1]/button[16]" position="attributes">
+    <attribute name="invisible">not set(x_studio_filial_ufros_1).intersection([uid]) or stage_id not in [27]</attribute>
+  </xpath>
+  <xpath expr="/form[1]/header[1]/button[17]" position="attributes">
+    <attribute name="invisible">not set(x_studio_filial_ufros_1).intersection([uid]) or stage_id not in [27]</attribute>
+  </xpath>
+  <xpath expr="/form[1]/header[1]/button[18]" position="attributes">
+    <attribute name="invisible">not set(x_studio_filial_ufros_1).intersection([uid]) or stage_id not in [27]</attribute>
+  </xpath>
+  <xpath expr="/form[1]/header[1]/button[19]" position="attributes">
+    <attribute name="invisible">not set(x_studio_tech_dep_1).intersection([uid]) or stage_id not in [28]</attribute>
+  </xpath>
+  <xpath expr="/form[1]/header[1]/button[20]" position="attributes">
+    <attribute name="invisible">not set(x_studio_tech_dep_1).intersection([uid]) or stage_id not in [28]</attribute>
+  </xpath>
+  <xpath expr="/form[1]/header[1]/button[21]" position="attributes">
+    <attribute name="invisible">not set(x_studio_tech_dep_1).intersection([uid]) or stage_id not in [28]</attribute>
+  </xpath>
+  <xpath expr="/form[1]/header[1]/button[22]" position="attributes">
+    <attribute name="invisible">not set(x_studio_tech_director_1).intersection([uid]) or stage_id not in [29]</attribute>
+  </xpath>
+  <xpath expr="/form[1]/header[1]/button[23]" position="attributes">
+    <attribute name="invisible">not set(x_studio_tech_director_1).intersection([uid]) or stage_id not in [29]</attribute>
+  </xpath>
+  <xpath expr="/form[1]/header[1]/button[24]" position="attributes">
+    <attribute name="invisible">not set(x_studio_tech_director_1).intersection([uid]) or stage_id not in [29]</attribute>
+  </xpath>
+  <xpath expr="/form[1]/header[1]/button[25]" position="attributes">
+    <attribute name="invisible">not set(x_studio_whs_sam_1).intersection([uid]) or stage_id not in [8]</attribute>
+  </xpath>
+  <xpath expr="/form[1]/header[1]/button[26]" position="attributes">
+    <attribute name="invisible">not set(x_studio_whs_sam_1).intersection([uid]) or stage_id not in [8]</attribute>
+  </xpath>
+  <xpath expr="/form[1]/header[1]/button[27]" position="attributes">
+    <attribute name="invisible">not set(x_studio_whs_sam_1).intersection([uid]) or stage_id not in [8]</attribute>
+  </xpath>
+  <xpath expr="/form[1]/header[1]/button[28]" position="attributes">
+    <attribute name="invisible">not set(x_studio_logist_dep_1).intersection([uid]) or stage_id not in [9]</attribute>
+  </xpath>
+  <xpath expr="/form[1]/header[1]/button[29]" position="attributes">
+    <attribute name="invisible">not set(x_studio_logist_dep_1).intersection([uid]) or stage_id not in [9]</attribute>
+  </xpath>
+  <xpath expr="/form[1]/header[1]/button[30]" position="attributes">
+    <attribute name="invisible">not set(x_studio_logist_dep_1).intersection([uid]) or stage_id not in [9]</attribute>
+  </xpath>
+  <xpath expr="/form[1]/header[1]/button[31]" position="attributes">
+    <attribute name="invisible">not set(x_studio_logist_dir_1).intersection([uid]) or stage_id not in [7]</attribute>
+  </xpath>
+  <xpath expr="/form[1]/header[1]/button[32]" position="attributes">
+    <attribute name="invisible">not set(x_studio_logist_dir_1).intersection([uid]) or stage_id not in [7]</attribute>
+  </xpath>
+  <xpath expr="/form[1]/header[1]/button[33]" position="attributes">
+    <attribute name="invisible">not set(x_studio_logist_dir_1).intersection([uid]) or stage_id not in [7]</attribute>
+  </xpath>
+  <xpath expr="/form[1]/header[1]/button[34]" position="attributes">
+    <attribute name="invisible">not set(x_studio_shesy_dep_ufros).intersection([uid]) or stage_id not in [12]</attribute>
+  </xpath>
+  <xpath expr="/form[1]/header[1]/button[35]" position="attributes">
+    <attribute name="invisible">not set(x_studio_shesy_dep_ufros).intersection([uid]) or stage_id not in [12]</attribute>
+  </xpath>
+  <xpath expr="/form[1]/header[1]/button[36]" position="attributes">
+    <attribute name="invisible">not set(x_studio_shesy_dep_ufros).intersection([uid]) or stage_id not in [12]</attribute>
+  </xpath>
+  <xpath expr="/form[1]/header[1]/button[37]" position="attributes">
+    <attribute name="invisible">not set(x_studio_shesy_group_1).intersection([uid]) or stage_id not in [10]</attribute>
+  </xpath>
+  <xpath expr="/form[1]/header[1]/button[38]" position="attributes">
+    <attribute name="invisible">not set(x_studio_shesy_group_1).intersection([uid]) or stage_id not in [10]</attribute>
+  </xpath>
+  <xpath expr="/form[1]/header[1]/button[39]" position="attributes">
+    <attribute name="invisible">not set(x_studio_shesy_group_1).intersection([uid]) or stage_id not in [10]</attribute>
+  </xpath>
+  <xpath expr="/form[1]/header[1]/button[40]" position="attributes">
+    <attribute name="invisible">not set(x_studio_baz_kvleva_1).intersection([uid]) or stage_id not in [11]</attribute>
+  </xpath>
+  <xpath expr="/form[1]/header[1]/button[41]" position="attributes">
+    <attribute name="invisible">not set(x_studio_baz_kvleva_1).intersection([uid]) or stage_id not in [11]</attribute>
+  </xpath>
+  <xpath expr="/form[1]/header[1]/button[42]" position="attributes">
+    <attribute name="invisible">not set(x_studio_baz_kvleva_1).intersection([uid]) or stage_id not in [11]</attribute>
+  </xpath>
+  <xpath expr="/form[1]/header[1]/button[43]" position="attributes">
+    <attribute name="invisible">not set(x_studio_fin_samartv_1).intersection([uid]) or stage_id not in [13]</attribute>
+  </xpath>
+  <xpath expr="/form[1]/header[1]/button[44]" position="attributes">
+    <attribute name="invisible">not set(x_studio_fin_samartv_1).intersection([uid]) or stage_id not in [13]</attribute>
+  </xpath>
+  <xpath expr="/form[1]/header[1]/button[45]" position="attributes">
+    <attribute name="invisible">not set(x_studio_fin_samartv_1).intersection([uid]) or stage_id not in [13]</attribute>
+  </xpath>
+  <xpath expr="/form[1]/header[1]/button[46]" position="attributes">
+    <attribute name="invisible">not set(x_studio_fin_dep_1).intersection([uid]) or stage_id not in [14]</attribute>
+  </xpath>
+  <xpath expr="/form[1]/header[1]/button[47]" position="attributes">
+    <attribute name="invisible">not set(x_studio_fin_dep_1).intersection([uid]) or stage_id not in [14]</attribute>
+  </xpath>
+  <xpath expr="/form[1]/header[1]/button[48]" position="attributes">
+    <attribute name="invisible">not set(x_studio_fin_dep_1).intersection([uid]) or stage_id not in [14]</attribute>
+  </xpath>
+  <xpath expr="/form[1]/header[1]/button[49]" position="attributes">
+    <attribute name="invisible">not set(x_studio_cpv_user_1).intersection([uid]) or stage_id not in [15]</attribute>
+  </xpath>
+  <xpath expr="/form[1]/header[1]/button[50]" position="attributes">
+    <attribute name="invisible">not set(x_studio_cpv_user_1).intersection([uid]) or stage_id not in [15]</attribute>
+  </xpath>
+  <xpath expr="/form[1]/header[1]/button[51]" position="attributes">
+    <attribute name="invisible">not set(x_studio_cpv_user_1).intersection([uid]) or stage_id not in [15]</attribute>
+  </xpath>
+  <xpath expr="/form[1]/header[1]/button[52]" position="attributes">
+    <attribute name="invisible">not set(x_studio_dir_moadg_1).intersection([uid]) or stage_id not in [16]</attribute>
+  </xpath>
+  <xpath expr="/form[1]/header[1]/button[53]" position="attributes">
+    <attribute name="invisible">not set(x_studio_dir_moadg_1).intersection([uid]) or stage_id not in [16]</attribute>
+  </xpath>
+  <xpath expr="/form[1]/header[1]/button[54]" position="attributes">
+    <attribute name="invisible">not set(x_studio_dir_moadg_1).intersection([uid]) or stage_id not in [16]</attribute>
+  </xpath>
+  <xpath expr="/form[1]/header[1]/button[55]" position="attributes">
+    <attribute name="invisible">not set(x_studio_gen_director_1).intersection([uid]) or stage_id not in [17]</attribute>
+  </xpath>
+  <xpath expr="/form[1]/header[1]/button[56]" position="attributes">
+    <attribute name="invisible">not set(x_studio_gen_director_1).intersection([uid]) or stage_id not in [17]</attribute>
+  </xpath>
+  <xpath expr="/form[1]/header[1]/button[57]" position="attributes">
+    <attribute name="invisible">not set(x_studio_gen_director_1).intersection([uid]) or stage_id not in [17]</attribute>
+  </xpath>
+  <xpath expr="/form[1]/header[1]/button[7]" position="attributes">
+    <attribute name="invisible">True</attribute>
+  </xpath>
+  <xpath expr="/form[1]/header[1]/button[9]" position="attributes">
+    <attribute name="invisible">True</attribute>
+  </xpath>
+  <xpath expr="/form[1]/sheet[1]/notebook[1]/page[1]/field[1]/list[1]//field[@name='is_checked']" position="attributes">
+    <attribute name="invisible">stage_id in [1, 2, 3, 4] and x_studio_purchase != True</attribute>
+  </xpath>
+  <xpath expr="/form[1]/sheet[1]/notebook[1]/page[1]/field[1]/list[1]//field[@name='x_studio_related_field_2jg_1jbg3ok0f']" position="attributes">
+    <attribute name="invisible">stage_id in [1, 2, 3, 4] and x_studio_purchase != True</attribute>
+  </xpath>
+  <xpath expr="/form[1]/sheet[1]/notebook[1]/page[1]/field[1]/list[1]//field[@name='x_studio_warehouse']" position="attributes">
+    <attribute name="invisible">stage_id in [1, 2, 3, 4] and x_studio_purchase != True</attribute>
+  </xpath>
+  <xpath expr="/form[1]/sheet[1]/notebook[1]/page[1]/field[1]/list[1]//field[@name='x_studio_warehouse']" position="attributes">
+    <attribute name="invisible">stage_id in [1, 2, 3, 4] and x_studio_purchase != True</attribute>
+  </xpath>
+  <xpath expr="/form[1]/sheet[1]/notebook[1]/page[1]/field[1]/list[1]//field[@name='x_studio_warehouse']" position="attributes">
+    <attribute name="invisible">stage_id in [1, 2, 3, 4] and x_studio_purchase != True</attribute>
+  </xpath>
+  <xpath expr="/form[1]/sheet[1]/div[1]/button[1]/field[1]" position="attributes">
+    <attribute name="string">შიდა გადაცემა</attribute>
+  </xpath>
+  <xpath expr="/form[1]/sheet[1]/group[1]/group[1]/field[15]" position="attributes">
+    <attribute name="invisible">False</attribute>
+  </xpath>
+  <xpath expr="/form[1]/sheet[1]/div[3]/button[1]" position="attributes">
+    <attribute name="class">btn btn-warning</attribute>
+  </xpath>
+  <xpath expr="/form[1]/sheet[1]/group[1]/group[1]/field[15]" position="attributes">
+    <attribute name="string">შესყიდვების ჯგუფი</attribute>
+  </xpath>
+  <xpath expr="/form[1]/sheet[1]/group[1]/group[1]/field[15]" position="attributes">
+    <attribute name="required">stage_id in [12]</attribute>
+  </xpath>
+  <xpath expr="/form[1]/header[1]/button[34]" position="attributes">
+    <attribute name="invisible">x_studio_ not in [uid] or stage_id not in [12]</attribute>
+  </xpath>
+  <xpath expr="/form[1]/header[1]/button[34]" position="attributes">
+    <attribute name="invisible">not set(x_studio_shesy_dep_ufros).intersection([uid]) or stage_id not in [12]</attribute>
+  </xpath>
+  <xpath expr="/form[1]/header[1]/button[37]" position="attributes">
+    <attribute name="invisible">x_studio_ not in [uid] or stage_id not in [10]</attribute>
+  </xpath>
+  <xpath expr="/form[1]/header[1]/button[38]" position="attributes">
+    <attribute name="invisible">x_studio_ not in [uid] or stage_id not in [10]</attribute>
+  </xpath>
+  <xpath expr="/form[1]/header[1]/button[39]" position="attributes">
+    <attribute name="invisible">x_studio_ not in [uid] or stage_id not in [10]</attribute>
+  </xpath>
+  <xpath expr="/form[1]/header[1]/button[40]" position="attributes">
+    <attribute name="invisible">not set(users_in_lines).intersection([uid]) or stage_id not in [11]</attribute>
+  </xpath>
+  <xpath expr="/form[1]/header[1]/button[41]" position="attributes">
+    <attribute name="invisible">not set(users_in_lines).intersection([uid]) or stage_id not in [11]</attribute>
+  </xpath>
+  <xpath expr="/form[1]/header[1]/button[42]" position="attributes">
+    <attribute name="invisible">not set(users_in_lines).intersection([uid]) or stage_id not in [11]</attribute>
+  </xpath>
+  <xpath expr="/form[1]/sheet[1]/group[1]/group[1]/field[8]" position="attributes">
+    <attribute name="invisible">True</attribute>
+  </xpath>
+  <xpath expr="/form[1]/sheet[1]/group[1]/group[1]/field[10]" position="attributes">
+    <attribute name="invisible">True</attribute>
+  </xpath>
+  <xpath expr="/form[1]/sheet[1]/group[1]/group[2]/field[3]" position="attributes">
+    <attribute name="invisible">stage_id in [4, 20]</attribute>
+  </xpath>
+  <xpath expr="/form[1]/sheet[1]/group[1]/group[2]/field[4]" position="attributes">
+    <attribute name="invisible">stage_id in [4, 20]</attribute>
+  </xpath>
+  <xpath expr="/form[1]/sheet[1]/group[1]/group[2]/field[5]" position="attributes">
+    <attribute name="invisible">stage_id in [4, 20]</attribute>
+  </xpath>
+  <xpath expr="/form[1]/sheet[1]/group[1]/group[2]/field[6]" position="attributes">
+    <attribute name="invisible">stage_id in [4, 20]</attribute>
+  </xpath>
+  <!--<xpath expr="/form[1]/sheet[1]/group[1]/group[2]/field[7]" position="attributes">-->
+  <!--  <attribute name="invisible">True</attribute>-->
+  <!--</xpath>-->
+  <!--<xpath expr="/form[1]/sheet[1]/group[1]/group[2]/field[8]" position="attributes">-->
+  <!--  <attribute name="invisible">True</attribute>-->
+  <!--</xpath>-->
+  <!--<xpath expr="/form[1]/sheet[1]/group[1]/group[2]/field[9]" position="attributes">-->
+  <!--  <attribute name="invisible">True</attribute>-->
+  <!--</xpath>-->
+  <!--<xpath expr="/form[1]/sheet[1]/group[1]/group[2]/field[10]" position="attributes">-->
+  <!--  <attribute name="invisible">True</attribute>-->
+  <!--</xpath>-->
+  <!--<xpath expr="/form[1]/sheet[1]/group[1]/group[2]/field[11]" position="attributes">-->
+  <!--  <attribute name="invisible">True</attribute>-->
+  <!--</xpath>-->
+  <!--<xpath expr="/form[1]/sheet[1]/group[1]/group[2]/field[12]" position="attributes">-->
+  <!--  <attribute name="invisible">True</attribute>-->
+  <!--</xpath>-->
+  <!--<xpath expr="/form[1]/sheet[1]/group[1]/group[2]/field[13]" position="attributes">-->
+  <!--  <attribute name="invisible">True</attribute>-->
+  <!--</xpath>-->
+  <!--<xpath expr="/form[1]/sheet[1]/group[1]/group[2]/field[14]" position="attributes">-->
+  <!--  <attribute name="invisible">True</attribute>-->
+  <!--</xpath>-->
+  <!--<xpath expr="/form[1]/sheet[1]/group[1]/group[2]/field[15]" position="attributes">-->
+  <!--  <attribute name="invisible">True</attribute>-->
+  <!--</xpath>-->
+  <!--<xpath expr="/form[1]/sheet[1]/group[1]/group[2]/field[16]" position="attributes">-->
+  <!--  <attribute name="invisible">True</attribute>-->
+  <!--</xpath>-->
+  <!--<xpath expr="/form[1]/sheet[1]/group[1]/group[2]/field[17]" position="attributes">-->
+  <!--  <attribute name="invisible">True</attribute>-->
+  <!--</xpath>-->
+  <!--<xpath expr="/form[1]/sheet[1]/group[1]/group[2]/field[18]" position="attributes">-->
+  <!--  <attribute name="invisible">True</attribute>-->
+  <!--</xpath>-->
+  <!--<xpath expr="/form[1]/sheet[1]/group[1]/group[2]/field[19]" position="attributes">-->
+  <!--  <attribute name="invisible">True</attribute>-->
+  <!--</xpath>-->
+  <!--<xpath expr="/form[1]/sheet[1]/group[1]/group[2]/field[20]" position="attributes">-->
+  <!--  <attribute name="invisible">True</attribute>-->
+  <!--</xpath>-->
+  <!--<xpath expr="/form[1]/sheet[1]/group[1]/group[2]/field[21]" position="attributes">-->
+  <!--  <attribute name="invisible">True</attribute>-->
+  <!--</xpath>-->
+  <!--<xpath expr="/form[1]/sheet[1]/group[1]/group[2]/field[22]" position="attributes">-->
+  <!--  <attribute name="invisible">True</attribute>-->
+  <!--</xpath>-->
+  <!--<xpath expr="/form[1]/sheet[1]/group[1]/group[2]/field[23]" position="attributes">-->
+  <!--  <attribute name="force_save">1</attribute>-->
+  <!--  <attribute name="readonly">True</attribute>-->
+  <!--</xpath>-->
+  <!--<xpath expr="/form[1]/sheet[1]/group[1]/group[2]/field[23]" position="attributes">-->
+  <!--  <attribute name="force_save">0</attribute>-->
+  <!--  <attribute name="readonly">False</attribute>-->
+  <!--</xpath>-->
+  <!--<xpath expr="/form[1]/sheet[1]/group[1]/group[2]/field[23]" position="attributes">-->
+  <!--  <attribute name="invisible">True</attribute>-->
+  <!--</xpath>-->
+  <!--<xpath expr="/form[1]/sheet[1]/group[1]/group[2]/field[3]" position="attributes">-->
+  <!--  <attribute name="force_save">1</attribute>-->
+  <!--  <attribute name="readonly">True</attribute>-->
+  <!--</xpath>-->
+  <xpath expr="/form[1]/sheet[1]/notebook[1]/page[1]/field[1]/list[1]//field[@name='x_studio_purchase_plan']" position="attributes">
+    <attribute name="required">True</attribute>
+  </xpath>
+  <xpath expr="/form[1]/sheet[1]/notebook[1]/page[1]/field[1]/list[1]//field[@name='x_studio_purchase_plan']" position="attributes">
+    <attribute name="required">stage_id in [1, 2, 3, 4] and x_studio_purchase != True</attribute>
+  </xpath>
+  <xpath expr="/form[1]/sheet[1]/notebook[1]/page[1]/field[1]/list[1]//field[@name='x_studio_purchase_plan_line']" position="attributes">
+    <attribute name="required">True</attribute>
+  </xpath>
+  <xpath expr="/form[1]/sheet[1]/notebook[1]/page[1]/field[1]/list[1]//field[@name='x_studio_purchase_plan_line']" position="attributes">
+    <attribute name="required">stage_id in [1, 2, 3, 4] and x_studio_purchase != True</attribute>
+  </xpath>
+  <xpath expr="/form[1]/sheet[1]/notebook[1]/page[1]/field[1]/list[1]//field[@name='x_studio_purchase_plan']" position="attributes">
+    <attribute name="required">False</attribute>
+  </xpath>
+  <xpath expr="/form[1]/sheet[1]/notebook[1]/page[1]/field[1]/list[1]//field[@name='x_studio_purchase_plan']" position="attributes">
+    <attribute name="required">True</attribute>
+  </xpath>
+  <xpath expr="/form[1]/sheet[1]/notebook[1]/page[1]/field[1]/list[1]//field[@name='x_studio_purchase_plan_line']" position="attributes">
+    <attribute name="required">False</attribute>
+  </xpath>
+  <xpath expr="/form[1]/sheet[1]/notebook[1]/page[1]/field[1]/list[1]//field[@name='x_studio_purchase_plan_line']" position="attributes">
+    <attribute name="required">True</attribute>
+  </xpath>
+  <xpath expr="/form[1]/sheet[1]/notebook[1]/page[1]/field[1]/list[1]//field[@name='sequence']" position="after">
+    <field optional="show" name="x_studio_related_field_4hg_1jd36tu35"/>
+  </xpath>
+  <xpath expr="/form[1]/sheet[1]/notebook[1]/page[1]/field[1]/list[1]//field[@name='x_studio_related_field_4hg_1jd36tu35']" position="replace"/>
+  <xpath expr="/form[1]/sheet[1]/notebook[1]/page[1]/field[1]/list[1]//field[@name='sequence']" position="after">
+    <field optional="show" name="x_studio_related_field_1k5_1jd36v2oo"/>
+  </xpath>
+  <xpath expr="/form[1]/sheet[1]/notebook[1]/page[1]/field[1]/list[1]//field[@name='x_studio_code']" position="after">
+    <xpath expr="/form[1]/sheet[1]/notebook[1]/page[1]/field[1]/list[1]//field[@name='x_studio_related_field_1k5_1jd36v2oo']" position="move"/>
+  </xpath>
+  <xpath expr="/form[1]/sheet[1]/notebook[1]/page[1]/field[1]/list[1]//field[@name='x_studio_related_field_1k5_1jd36v2oo']" position="attributes">
+    <attribute name="string">დასახელება</attribute>
+  </xpath>
+  <xpath expr="/form[1]/sheet[1]/notebook[1]/page[1]/field[1]/list[1]//field[@name='x_studio_related_field_1k5_1jd36v2oo']" position="attributes">
+    <attribute name="invisible">stage_id in [1, 2, 3, 4] and x_studio_purchase != True</attribute>
+  </xpath>
+  <xpath expr="/form[1]/sheet[1]/notebook[1]/page[1]/field[1]/list[1]//field[@name='product_id']" position="attributes">
+    <attribute name="string">არჩეული პროდუქტი</attribute>
+  </xpath>
+  <xpath expr="/form[1]/sheet[1]/notebook[1]/page[1]/field[1]/list[1]//field[@name='x_studio_purchase_plan']" position="attributes">
+    <attribute name="required">stage_id == 4</attribute>
+  </xpath>
+  <xpath expr="/form[1]/sheet[1]/notebook[1]/page[1]/field[1]/list[1]//field[@name='x_studio_purchase_plan_line']" position="attributes">
+    <attribute name="required">stage_id == 4</attribute>
+  </xpath>
+  <xpath expr="/form[1]/sheet[1]/notebook[1]/page[1]/field[1]/list[1]//field[@name='x_studio_purchase_plan']" position="attributes">
+    <attribute name="required">stage_id == 4</attribute>
+  </xpath>
+  <xpath expr="/form[1]/sheet[1]/notebook[1]/page[1]/field[1]/list[1]//field[@name='x_studio_purchase_plan_line']" position="attributes">
+    <attribute name="required">False</attribute>
+  </xpath>
+  <xpath expr="/form[1]/sheet[1]/notebook[1]/page[1]/field[1]/list[1]//field[@name='x_studio_purchase_plan']" position="attributes">
+    <attribute name="required">False</attribute>
+  </xpath>
+  <xpath expr="/form[1]/sheet[1]/notebook[1]/page[1]/field[1]/list[1]//field[@name='request_date']" position="attributes">
+    <attribute name="column_invisible">parent.is_request_date_invisible == True</attribute>
+  </xpath>
+  <!--<xpath expr="/form[1]/sheet[1]/notebook[1]/page[1]/field[1]/list[1]//field[@name='unit_price']" position="attributes">-->
+  <!--  <attribute name="invisible">False</attribute>-->
+  <!--  <attribute name="column_invisible">parent.is_unit_price_invisible == True</attribute>-->
+  <!--</xpath>-->
+  <!--<xpath expr="/form[1]/sheet[1]/notebook[1]/page[1]/field[1]/list[1]//field[@name='amount']" position="attributes">-->
+  <!--  <attribute name="invisible">False</attribute>-->
+  <!--  <attribute name="column_invisible">False</attribute>-->
+  <!--</xpath>-->
+  <xpath expr="/form[1]/sheet[1]/group[1]/group[1]/field[13]" position="after">
+    <xpath expr="/form[1]/sheet[1]/group[2]/field[1]" position="move"/>
+  </xpath>
+  <xpath expr="/form[1]/sheet[1]/group[1]/group[1]/field[21]" position="after">
+    <xpath expr="/form[1]/sheet[1]/group[1]/group[1]/field[16]" position="move"/>
+  </xpath>
+  <xpath expr="/form[1]/sheet[1]/group[1]/group[1]/field[20]" position="after">
+    <xpath expr="/form[1]/sheet[1]/group[1]/group[1]/field[14]" position="move"/>
+  </xpath>
+  <xpath expr="/form[1]/sheet[1]/group[1]/group[1]/field[14]" position="replace"/>
+  <xpath expr="/form[1]/sheet[1]/group[1]/group[1]/field[1]" position="attributes">
+    <attribute name="required">False</attribute>
+  </xpath>
+  <xpath expr="/form[1]/sheet[1]/group[1]/group[1]/field[1]" position="attributes">
+    <attribute name="force_save">1</attribute>
+    <attribute name="readonly">True</attribute>
+  </xpath>
+  <xpath expr="/form[1]/sheet[1]/notebook[1]/page[1]/field[1]/list[1]//field[@name='product_id']" position="attributes">
+    <attribute name="string">პროდუქტი</attribute>
+  </xpath>
+  <xpath expr="/form[1]/header[1]/button[7]" position="attributes">
+    <attribute name="invisible">False</attribute>
+  </xpath>
+  <xpath expr="/form[1]/header[1]/button[7]" position="attributes">
+    <attribute name="invisible">True</attribute>
+  </xpath>
+  <xpath expr="/form[1]/header[1]/button[7]" position="attributes">
+    <attribute name="invisible">False</attribute>
+  </xpath>
+  <xpath expr="/form[1]/header[1]/button[7]" position="attributes">
+    <attribute name="invisible">True</attribute>
+  </xpath>
+  <!--<xpath expr="/form[1]/sheet[1]/group[1]/group[2]/field[11]" position="attributes">-->
+  <!--  <attribute name="string">tech_dep(</attribute>-->
+  <!--</xpath>-->
+  <!--<xpath expr="/form[1]/sheet[1]/group[1]/group[2]/field[11]" position="attributes">-->
+  <!--  <attribute name="string">tech_dep(დეპ. ხელმძღვანელი)</attribute>-->
+  <!--</xpath>-->
+  <!--<xpath expr="/form[1]/sheet[1]/group[1]/group[2]/field[12]" position="attributes">-->
+  <!--  <attribute name="string">tech_director_ხელმძღვანელი</attribute>-->
+  <!--</xpath>-->
+  <!--<xpath expr="/form[1]/sheet[1]/group[1]/group[2]/field[11]" position="attributes">-->
+  <!--  <attribute name="string">tech_dep_დეპ. ხელმძღვანელი</attribute>-->
+  <!--</xpath>-->
+  <xpath expr="/form[1]/sheet[1]/group[1]/group[2]/field[2]" position="after">
+    <field name="x_studio_many2many_field_9d8_1jcbd2e76"/>
+  </xpath>
+  <xpath expr="/form[1]/sheet[1]/group[1]/group[2]/field[3]" position="after">
+    <field name="x_studio_zemdgomi_1"/>
+  </xpath>
+  <xpath expr="/form[1]/sheet[1]/group[1]/group[2]/field[3]" position="attributes">
+    <attribute name="widget">many2many_tags</attribute>
+  </xpath>
+  <xpath expr="/form[1]/sheet[1]/group[1]/group[2]/field[4]" position="attributes">
+    <attribute name="widget">many2many_tags</attribute>
+  </xpath>
+  <xpath expr="/form[1]/sheet[1]/group[1]/group[2]/field[4]" position="after">
+    <field name="x_studio_filial_ufros_1"/>
+  </xpath>
+  <xpath expr="/form[1]/sheet[1]/group[1]/group[2]/field[5]" position="after">
+    <field name="x_studio_whs_sam_1"/>
+  </xpath>
+  <xpath expr="/form[1]/sheet[1]/group[1]/group[2]/field[5]" position="after">
+    <field name="x_studio_tech_dep_1"/>
+  </xpath>
+  <xpath expr="/form[1]/sheet[1]/group[1]/group[2]/field[6]" position="after">
+    <field name="x_studio_tech_director_1"/>
+  </xpath>
+  <xpath expr="/form[1]/sheet[1]/group[1]/group[2]/field[5]" position="attributes">
+    <attribute name="widget">many2many_tags</attribute>
+  </xpath>
+  <xpath expr="/form[1]/sheet[1]/group[1]/group[2]/field[6]" position="attributes">
+    <attribute name="widget">many2many_tags</attribute>
+  </xpath>
+  <xpath expr="/form[1]/sheet[1]/group[1]/group[2]/field[7]" position="attributes">
+    <attribute name="widget">many2many_tags</attribute>
+  </xpath>
+  <xpath expr="/form[1]/sheet[1]/group[1]/group[2]/field[8]" position="attributes">
+    <attribute name="widget">many2many_tags</attribute>
+  </xpath>
+  <xpath expr="/form[1]/sheet[1]/group[1]/group[2]/field[8]" position="after">
+    <field name="x_studio_logist_dep_1"/>
+  </xpath>
+  <xpath expr="/form[1]/sheet[1]/group[1]/group[2]/field[9]" position="after">
+    <field name="x_studio_baz_kvleva_1"/>
+  </xpath>
+  <xpath expr="/form[1]/sheet[1]/group[1]/group[2]/field[9]" position="after">
+    <field name="x_studio_logist_dir_1"/>
+  </xpath>
+  <xpath expr="/form[1]/sheet[1]/group[1]/group[2]/field[10]" position="after">
+    <field name="x_studio_shesy_dep_ufros"/>
+  </xpath>
+  <xpath expr="/form[1]/sheet[1]/group[1]/group[2]/field[11]" position="after">
+    <field name="x_studio_shesy_group_1"/>
+  </xpath>
+  <xpath expr="/form[1]/sheet[1]/group[1]/group[2]/field[13]" position="after">
+    <field name="x_studio_fin_samartv_1"/>
+  </xpath>
+  <xpath expr="/form[1]/sheet[1]/group[1]/group[2]/field[14]" position="after">
+    <field name="x_studio_fin_dep_1"/>
+  </xpath>
+  <xpath expr="/form[1]/sheet[1]/group[1]/group[2]/field[15]" position="after">
+    <field name="x_studio_cpv_user_1"/>
+  </xpath>
+  <xpath expr="/form[1]/sheet[1]/group[1]/group[2]/field[16]" position="after">
+    <field name="x_studio_dir_moadg_1"/>
+  </xpath>
+  <xpath expr="/form[1]/sheet[1]/group[1]/group[2]/field[17]" position="after">
+    <field name="x_studio_gen_director_1"/>
+  </xpath>
+  <xpath expr="/form[1]/sheet[1]/group[1]/group[2]/field[9]" position="attributes">
+    <attribute name="widget">many2many_tags</attribute>
+  </xpath>
+  <xpath expr="/form[1]/sheet[1]/group[1]/group[2]/field[10]" position="attributes">
+    <attribute name="widget">many2many_tags</attribute>
+  </xpath>
+  <xpath expr="/form[1]/sheet[1]/group[1]/group[2]/field[11]" position="attributes">
+    <attribute name="widget">many2many_tags</attribute>
+  </xpath>
+  <xpath expr="/form[1]/sheet[1]/group[1]/group[2]/field[12]" position="attributes">
+    <attribute name="widget">many2many_tags</attribute>
+  </xpath>
+  <xpath expr="/form[1]/sheet[1]/group[1]/group[2]/field[13]" position="attributes">
+    <attribute name="widget">many2many_tags</attribute>
+  </xpath>
+  <xpath expr="/form[1]/sheet[1]/group[1]/group[2]/field[14]" position="attributes">
+    <attribute name="widget">many2many_tags</attribute>
+  </xpath>
+  <xpath expr="/form[1]/sheet[1]/group[1]/group[2]/field[15]" position="attributes">
+    <attribute name="widget">many2many_tags</attribute>
+  </xpath>
+  <xpath expr="/form[1]/sheet[1]/group[1]/group[2]/field[16]" position="attributes">
+    <attribute name="widget">many2many_tags</attribute>
+  </xpath>
+  <xpath expr="/form[1]/sheet[1]/group[1]/group[2]/field[17]" position="attributes">
+    <attribute name="widget">many2many_tags</attribute>
+  </xpath>
+  <xpath expr="/form[1]/sheet[1]/group[1]/group[2]/field[18]" position="attributes">
+    <attribute name="widget">many2many_tags</attribute>
+  </xpath>
+  <xpath expr="/form[1]/header[1]/button[19]" position="attributes">
+    <attribute name="invisible">not set(x_studio_tech_dep_1).intersection([uid]) or stage_id not in [6]</attribute>
+  </xpath>
+  <xpath expr="/form[1]/header[1]/button[20]" position="attributes">
+    <attribute name="invisible">not set(x_studio_tech_dep_1).intersection([uid]) or stage_id not in [6]</attribute>
+  </xpath>
+  <xpath expr="/form[1]/header[1]/button[21]" position="attributes">
+    <attribute name="invisible">not set(x_studio_tech_dep_1).intersection([uid]) or stage_id not in [6]</attribute>
+  </xpath>
+  <xpath expr="/form[1]/header[1]/button[13]" position="attributes">
+    <attribute name="invisible">not set(x_studio_zemdgomi_1).intersection([uid]) or stage_id not in [28]</attribute>
+  </xpath>
+  <xpath expr="/form[1]/header[1]/button[14]" position="attributes">
+    <attribute name="invisible">not set(x_studio_zemdgomi_1).intersection([uid]) or stage_id not in [28]</attribute>
+  </xpath>
+  <xpath expr="/form[1]/header[1]/button[15]" position="attributes">
+    <attribute name="invisible">not set(x_studio_zemdgomi_1).intersection([uid]) or stage_id not in [28]</attribute>
+  </xpath>
+  <xpath expr="/form[1]/sheet[1]/group[1]/group[2]/field[3]" position="attributes">
+    <attribute name="invisible">not set(x_studio_many2many_field_9d8_1jcbd2e76).intersection([uid])</attribute>
+  </xpath>
+  <xpath expr="/form[1]/sheet[1]/group[1]/group[2]/field[4]" position="attributes">
+    <attribute name="invisible">not set(x_studio_many2many_field_9d8_1jcbd2e76).intersection([uid])</attribute>
+  </xpath>
+  <xpath expr="/form[1]/sheet[1]/group[1]/group[2]/field[5]" position="attributes">
+    <attribute name="invisible">not set(x_studio_many2many_field_9d8_1jcbd2e76).intersection([uid])</attribute>
+  </xpath>
+  <xpath expr="/form[1]/sheet[1]/group[1]/group[2]/field[6]" position="attributes">
+    <attribute name="invisible">not set(x_studio_many2many_field_9d8_1jcbd2e76).intersection([uid])</attribute>
+  </xpath>
+  <xpath expr="/form[1]/sheet[1]/group[1]/group[2]/field[7]" position="attributes">
+    <attribute name="invisible">not set(x_studio_many2many_field_9d8_1jcbd2e76).intersection([uid])</attribute>
+  </xpath>
+  <xpath expr="/form[1]/sheet[1]/group[1]/group[2]/field[8]" position="attributes">
+    <attribute name="invisible">not set(x_studio_many2many_field_9d8_1jcbd2e76).intersection([uid])</attribute>
+  </xpath>
+  <xpath expr="/form[1]/sheet[1]/group[1]/group[2]/field[9]" position="attributes">
+    <attribute name="invisible">not set(x_studio_many2many_field_9d8_1jcbd2e76).intersection([uid])</attribute>
+  </xpath>
+  <xpath expr="/form[1]/sheet[1]/group[1]/group[2]/field[10]" position="attributes">
+    <attribute name="invisible">not set(x_studio_many2many_field_9d8_1jcbd2e76).intersection([uid])</attribute>
+  </xpath>
+  <xpath expr="/form[1]/sheet[1]/group[1]/group[2]/field[11]" position="attributes">
+    <attribute name="invisible">not set(x_studio_many2many_field_9d8_1jcbd2e76).intersection([uid])</attribute>
+  </xpath>
+  <xpath expr="/form[1]/sheet[1]/group[1]/group[2]/field[12]" position="attributes">
+    <attribute name="invisible">not set(x_studio_many2many_field_9d8_1jcbd2e76).intersection([uid])</attribute>
+  </xpath>
+  <xpath expr="/form[1]/sheet[1]/group[1]/group[2]/field[13]" position="attributes">
+    <attribute name="invisible">not set(x_studio_many2many_field_9d8_1jcbd2e76).intersection([uid])</attribute>
+  </xpath>
+  <xpath expr="/form[1]/sheet[1]/group[1]/group[2]/field[14]" position="attributes">
+    <attribute name="invisible">not set(x_studio_many2many_field_9d8_1jcbd2e76).intersection([uid])</attribute>
+  </xpath>
+  <xpath expr="/form[1]/sheet[1]/group[1]/group[2]/field[15]" position="attributes">
+    <attribute name="invisible">not set(x_studio_many2many_field_9d8_1jcbd2e76).intersection([uid])</attribute>
+  </xpath>
+  <xpath expr="/form[1]/sheet[1]/group[1]/group[2]/field[16]" position="attributes">
+    <attribute name="invisible">not set(x_studio_many2many_field_9d8_1jcbd2e76).intersection([uid])</attribute>
+  </xpath>
+  <xpath expr="/form[1]/sheet[1]/group[1]/group[2]/field[17]" position="attributes">
+    <attribute name="invisible">not set(x_studio_many2many_field_9d8_1jcbd2e76).intersection([uid])</attribute>
+  </xpath>
+  <xpath expr="/form[1]/sheet[1]/group[1]/group[2]/field[18]" position="attributes">
+    <attribute name="invisible">not set(x_studio_many2many_field_9d8_1jcbd2e76).intersection([uid])</attribute>
+  </xpath>
+  <xpath expr="/form[1]/sheet[1]/group[1]/group[2]/field[18]" position="after">
+    <field name="x_studio_many2one_field_5an_1jetn626f"/>
+  </xpath>
+  <xpath expr="/form[1]/sheet[1]/group[1]/group[2]/field[19]" position="replace"/>
+  <xpath expr="/form[1]/sheet[1]/group[1]/group[2]/field[22]" position="after">
+    <field name="x_studio_auto_fil_kord"/>
+  </xpath>
+  <xpath expr="/form[1]/sheet[1]/group[1]/group[2]/field[23]" position="attributes">
+    <attribute name="widget">many2many_tags</attribute>
+  </xpath>
+  <xpath expr="/form[1]/sheet[1]/group[1]/group[2]/field[23]" position="after">
+    <field name="x_studio_auto_samart_ufros"/>
+  </xpath>
+  <xpath expr="/form[1]/sheet[1]/group[1]/group[2]/field[24]" position="after">
+    <field name="x_studio_auto_xelsh_zedamx"/>
+  </xpath>
+  <xpath expr="/form[1]/sheet[1]/group[1]/group[2]/field[25]" position="after">
+    <field name="x_studio_auto_uzr_sammart_ufors"/>
+  </xpath>
+  <xpath expr="/form[1]/sheet[1]/group[1]/group[2]/field[26]" position="after">
+    <field name="x_studio_auto_dep_ufros"/>
+  </xpath>
+  <xpath expr="/form[1]/sheet[1]/group[1]/group[2]/field[27]" position="after">
+    <field name="x_studio_auto_shesy_dep"/>
+  </xpath>
+  <xpath expr="/form[1]/sheet[1]/group[1]/group[2]/field[24]" position="attributes">
+    <attribute name="widget">many2many_tags</attribute>
+  </xpath>
+  <xpath expr="/form[1]/sheet[1]/group[1]/group[2]/field[25]" position="attributes">
+    <attribute name="widget">many2many_tags</attribute>
+  </xpath>
+  <xpath expr="/form[1]/sheet[1]/group[1]/group[2]/field[26]" position="attributes">
+    <attribute name="widget">many2many_tags</attribute>
+  </xpath>
+  <xpath expr="/form[1]/sheet[1]/group[1]/group[2]/field[27]" position="attributes">
+    <attribute name="widget">many2many_tags</attribute>
+  </xpath>
+  <xpath expr="/form[1]/sheet[1]/group[1]/group[2]/field[28]" position="attributes">
+    <attribute name="widget">many2many_tags</attribute>
+  </xpath>
+  <xpath expr="/form[1]/sheet[1]/group[1]/group[2]/field[23]" position="attributes">
+    <attribute name="invisible">set(x_studio_auto_fil_kord).intersection([uid])</attribute>
+  </xpath>
+  <xpath expr="/form[1]/sheet[1]/group[1]/group[2]/field[24]" position="attributes">
+    <attribute name="invisible">set(x_studio_auto_fil_kord).intersection([uid])</attribute>
+  </xpath>
+  <xpath expr="/form[1]/sheet[1]/group[1]/group[2]/field[25]" position="attributes">
+    <attribute name="invisible">set(x_studio_auto_fil_kord).intersection([uid])</attribute>
+  </xpath>
+  <xpath expr="/form[1]/sheet[1]/group[1]/group[2]/field[26]" position="attributes">
+    <attribute name="invisible">set(x_studio_auto_fil_kord).intersection([uid])</attribute>
+  </xpath>
+  <xpath expr="/form[1]/sheet[1]/group[1]/group[2]/field[27]" position="attributes">
+    <attribute name="invisible">set(x_studio_auto_fil_kord).intersection([uid])</attribute>
+  </xpath>
+  <xpath expr="/form[1]/sheet[1]/group[1]/group[2]/field[28]" position="attributes">
+    <attribute name="invisible">set(x_studio_auto_fil_kord).intersection([uid])</attribute>
+  </xpath>
+  <xpath expr="/form[1]/sheet[1]/group[1]/group[2]/field[23]" position="attributes">
+    <attribute name="invisible">not set(x_studio_auto_fil_kord).intersection([uid])</attribute>
+  </xpath>
+  <xpath expr="/form[1]/sheet[1]/group[1]/group[2]/field[24]" position="attributes">
+    <attribute name="invisible">not set(x_studio_auto_fil_kord).intersection([uid])</attribute>
+  </xpath>
+  <xpath expr="/form[1]/sheet[1]/group[1]/group[2]/field[25]" position="attributes">
+    <attribute name="invisible">not set(x_studio_auto_fil_kord).intersection([uid])</attribute>
+  </xpath>
+  <xpath expr="/form[1]/sheet[1]/group[1]/group[2]/field[26]" position="attributes">
+    <attribute name="invisible">not set(x_studio_auto_fil_kord).intersection([uid])</attribute>
+  </xpath>
+  <xpath expr="/form[1]/sheet[1]/group[1]/group[2]/field[27]" position="attributes">
+    <attribute name="invisible">not set(x_studio_auto_fil_kord).intersection([uid])</attribute>
+  </xpath>
+  <xpath expr="/form[1]/sheet[1]/group[1]/group[2]/field[28]" position="attributes">
+    <attribute name="invisible">not set(x_studio_auto_fil_kord).intersection([uid])</attribute>
+  </xpath>
+  <xpath expr="/form[1]/header[1]/button[58]" position="attributes">
+    <attribute name="invisible">not set(x_studio_auto_fil_kord).intersection([uid]) or stage_id not in [25]</attribute>
+  </xpath>
+  <xpath expr="/form[1]/header[1]/button[58]" position="attributes">
+    <attribute name="class">btn btn-success</attribute>
+  </xpath>
+  <xpath expr="/form[1]/header[1]/button[59]" position="attributes">
+    <attribute name="class">btn btn-warning</attribute>
+  </xpath>
+  <xpath expr="/form[1]/header[1]/button[60]" position="attributes">
+    <attribute name="class">btn btn-danger</attribute>
+  </xpath>
+  <xpath expr="/form[1]/header[1]/button[59]" position="attributes">
+    <attribute name="invisible">not set(x_studio_auto_fil_kord).intersection([uid]) or stage_id not in [25]</attribute>
+  </xpath>
+  <xpath expr="/form[1]/header[1]/button[60]" position="attributes">
+    <attribute name="invisible">not set(x_studio_auto_fil_kord).intersection([uid]) or stage_id not in [25]</attribute>
+  </xpath>
+  <xpath expr="/form[1]/header[1]/button[61]" position="attributes">
+    <attribute name="invisible">not set(x_studio_auto_samart_ufros).intersection([uid]) or stage_id not in [26]</attribute>
+  </xpath>
+  <xpath expr="/form[1]/header[1]/button[62]" position="attributes">
+    <attribute name="invisible">not set(x_studio_auto_samart_ufros).intersection([uid]) or stage_id not in [26]</attribute>
+  </xpath>
+  <xpath expr="/form[1]/header[1]/button[63]" position="attributes">
+    <attribute name="invisible">not set(x_studio_auto_samart_ufros).intersection([uid]) or stage_id not in [26]</attribute>
+  </xpath>
+  <xpath expr="/form[1]/header[1]/button[61]" position="attributes">
+    <attribute name="class">btn btn-success</attribute>
+  </xpath>
+  <xpath expr="/form[1]/header[1]/button[62]" position="attributes">
+    <attribute name="class">btn btn-warning</attribute>
+  </xpath>
+  <xpath expr="/form[1]/header[1]/button[63]" position="attributes">
+    <attribute name="class">btn btn-danger</attribute>
+  </xpath>
+  <xpath expr="/form[1]/header[1]/button[64]" position="attributes">
+    <attribute name="invisible">not set(x_studio_auto_xelsh_zedamx).intersection([uid]) or stage_id not in [22]</attribute>
+  </xpath>
+  <xpath expr="/form[1]/header[1]/button[65]" position="attributes">
+    <attribute name="invisible">not set(x_studio_auto_xelsh_zedamx).intersection([uid]) or stage_id not in [22]</attribute>
+  </xpath>
+  <xpath expr="/form[1]/header[1]/button[66]" position="attributes">
+    <attribute name="invisible">not set(x_studio_auto_xelsh_zedamx).intersection([uid]) or stage_id not in [22]</attribute>
+  </xpath>
+  <xpath expr="/form[1]/header[1]/button[67]" position="attributes">
+    <attribute name="invisible">not set(x_studio_auto_uzr_sammart_ufors).intersection([uid]) or stage_id not in [23]</attribute>
+  </xpath>
+  <xpath expr="/form[1]/header[1]/button[68]" position="attributes">
+    <attribute name="invisible">not set(x_studio_auto_uzr_sammart_ufors).intersection([uid]) or stage_id not in [23]</attribute>
+  </xpath>
+  <xpath expr="/form[1]/header[1]/button[69]" position="attributes">
+    <attribute name="invisible">not set(x_studio_auto_uzr_sammart_ufors).intersection([uid]) or stage_id not in [23]</attribute>
+  </xpath>
+  <xpath expr="/form[1]/header[1]/button[70]" position="attributes">
+    <attribute name="invisible">not set(x_studio_auto_dep_ufros).intersection([uid]) or stage_id not in [24]</attribute>
+  </xpath>
+  <xpath expr="/form[1]/header[1]/button[71]" position="attributes">
+    <attribute name="invisible">not set(x_studio_auto_dep_ufros).intersection([uid]) or stage_id not in [24]</attribute>
+  </xpath>
+  <xpath expr="/form[1]/header[1]/button[72]" position="attributes">
+    <attribute name="invisible">not set(x_studio_auto_dep_ufros).intersection([uid]) or stage_id not in [24]</attribute>
+  </xpath>
+  <xpath expr="/form[1]/header[1]/button[73]" position="attributes">
+    <attribute name="invisible">not set(x_studio_auto_shesy_dep).intersection([uid]) or stage_id not in [21]</attribute>
+  </xpath>
+  <xpath expr="/form[1]/header[1]/button[74]" position="attributes">
+    <attribute name="invisible">not set(x_studio_auto_shesy_dep).intersection([uid]) or stage_id not in [21]</attribute>
+  </xpath>
+  <xpath expr="/form[1]/header[1]/button[75]" position="attributes">
+    <attribute name="invisible">not set(x_studio_auto_shesy_dep).intersection([uid]) or stage_id not in [21]</attribute>
+  </xpath>
+  <xpath expr="/form[1]/header[1]/button[64]" position="attributes">
+    <attribute name="class">btn btn-success</attribute>
+  </xpath>
+  <xpath expr="/form[1]/header[1]/button[67]" position="attributes">
+    <attribute name="class">btn btn-success</attribute>
+  </xpath>
+  <xpath expr="/form[1]/header[1]/button[70]" position="attributes">
+    <attribute name="class">btn btn-success</attribute>
+  </xpath>
+  <xpath expr="/form[1]/header[1]/button[73]" position="attributes">
+    <attribute name="class">btn btn-success</attribute>
+  </xpath>
+  <xpath expr="/form[1]/header[1]/button[65]" position="attributes">
+    <attribute name="class">btn btn-warning</attribute>
+  </xpath>
+  <xpath expr="/form[1]/header[1]/button[68]" position="attributes">
+    <attribute name="class">btn btn-warning</attribute>
+  </xpath>
+  <xpath expr="/form[1]/header[1]/button[71]" position="attributes">
+    <attribute name="class">btn btn-warning</attribute>
+  </xpath>
+  <xpath expr="/form[1]/header[1]/button[74]" position="attributes">
+    <attribute name="class">btn btn-warning</attribute>
+  </xpath>
+  <xpath expr="/form[1]/header[1]/button[66]" position="attributes">
+    <attribute name="class">btn btn-danger</attribute>
+  </xpath>
+  <xpath expr="/form[1]/header[1]/button[69]" position="attributes">
+    <attribute name="class">btn btn-danger</attribute>
+  </xpath>
+  <xpath expr="/form[1]/header[1]/button[72]" position="attributes">
+    <attribute name="class">btn btn-danger</attribute>
+  </xpath>
+  <xpath expr="/form[1]/header[1]/button[75]" position="attributes">
+    <attribute name="class">btn btn-danger</attribute>
+  </xpath>
+  <xpath expr="/form[1]/header[1]/button[7]" position="attributes">
+    <attribute name="invisible">False</attribute>
+  </xpath>
+  <xpath expr="/form[1]/header[1]/button[7]" position="attributes">
+    <attribute name="invisible">True</attribute>
+  </xpath>
+  <xpath expr="/form[1]/sheet[1]/group[1]/group[1]/field[19]" position="after">
+    <field name="x_studio_binary_field_1fj_1j809ovdh"/>
+  </xpath>
+  <xpath expr="/form[1]/sheet[1]/group[1]/group[1]/field[18]" position="attributes">
+    <attribute name="force_save">1</attribute>
+    <attribute name="readonly">True</attribute>
+  </xpath>
+  <xpath expr="/form[1]/header[1]/field[1]" position="attributes">
+    <attribute name="force_save">1</attribute>
+    <attribute name="readonly">not set(x_studio_many2many_field_9d8_1jcbd2e76).intersection([uid])</attribute>
+  </xpath>
+  <xpath expr="/form[1]/sheet[1]/group[1]/group[2]/field[3]" position="attributes">
+    <attribute name="invisible">not set(x_studio_many2many_field_9d8_1jcbd2e76).intersection([2])</attribute>
+  </xpath>
+  <xpath expr="/form[1]/sheet[1]/group[1]/group[2]/field[28]" position="after">
+    <field name="x_studio_admin_access"/>
+  </xpath>
+  <xpath expr="/form[1]/sheet[1]/group[1]/group[2]/field[29]" position="attributes">
+    <attribute name="widget">many2many_tags</attribute>
+  </xpath>
+  <xpath expr="/form[1]/sheet[1]/group[1]/group[2]/field[3]" position="attributes">
+    <attribute name="invisible">not set(x_studio_admin_access).intersection([uid])</attribute>
+  </xpath>
+  <xpath expr="/form[1]/sheet[1]/group[1]/group[2]/field[4]" position="attributes">
+    <attribute name="invisible">not set(x_studio_admin_access).intersection([uid])</attribute>
+  </xpath>
+  <xpath expr="/form[1]/sheet[1]/group[1]/group[2]/field[5]" position="attributes">
+    <attribute name="invisible">not set(x_studio_admin_access).intersection([uid])</attribute>
+  </xpath>
+  <xpath expr="/form[1]/sheet[1]/group[1]/group[2]/field[6]" position="attributes">
+    <attribute name="invisible">not set(x_studio_admin_access).intersection([uid])</attribute>
+  </xpath>
+  <xpath expr="/form[1]/sheet[1]/group[1]/group[2]/field[7]" position="attributes">
+    <attribute name="invisible">not set(x_studio_admin_access).intersection([uid])</attribute>
+  </xpath>
+  <xpath expr="/form[1]/sheet[1]/group[1]/group[2]/field[8]" position="attributes">
+    <attribute name="invisible">not set(x_studio_admin_access).intersection([uid])</attribute>
+  </xpath>
+  <xpath expr="/form[1]/sheet[1]/group[1]/group[2]/field[9]" position="attributes">
+    <attribute name="invisible">not set(x_studio_admin_access).intersection([uid])</attribute>
+  </xpath>
+  <xpath expr="/form[1]/sheet[1]/group[1]/group[2]/field[10]" position="attributes">
+    <attribute name="invisible">not set(x_studio_admin_access).intersection([uid])</attribute>
+  </xpath>
+  <xpath expr="/form[1]/sheet[1]/group[1]/group[2]/field[11]" position="attributes">
+    <attribute name="invisible">not set(x_studio_admin_access).intersection([uid])</attribute>
+  </xpath>
+  <xpath expr="/form[1]/sheet[1]/group[1]/group[2]/field[12]" position="attributes">
+    <attribute name="invisible">not set(x_studio_admin_access).intersection([uid])</attribute>
+  </xpath>
+  <xpath expr="/form[1]/sheet[1]/group[1]/group[2]/field[13]" position="attributes">
+    <attribute name="invisible">not set(x_studio_admin_access).intersection([uid])</attribute>
+  </xpath>
+  <xpath expr="/form[1]/sheet[1]/group[1]/group[2]/field[14]" position="attributes">
+    <attribute name="invisible">not set(x_studio_admin_access).intersection([uid])</attribute>
+  </xpath>
+  <xpath expr="/form[1]/sheet[1]/group[1]/group[2]/field[15]" position="attributes">
+    <attribute name="invisible">not set(x_studio_admin_access).intersection([uid])</attribute>
+  </xpath>
+  <xpath expr="/form[1]/sheet[1]/group[1]/group[2]/field[16]" position="attributes">
+    <attribute name="invisible">not set(x_studio_admin_access).intersection([uid])</attribute>
+  </xpath>
+  <xpath expr="/form[1]/sheet[1]/group[1]/group[2]/field[17]" position="attributes">
+    <attribute name="invisible">not set(x_studio_admin_access).intersection([uid])</attribute>
+  </xpath>
+  <xpath expr="/form[1]/sheet[1]/group[1]/group[2]/field[18]" position="attributes">
+    <attribute name="invisible">not set(x_studio_admin_access).intersection([uid])</attribute>
+  </xpath>
+  <xpath expr="/form[1]/sheet[1]/group[1]/group[2]/field[29]" position="attributes">
+    <attribute name="invisible">not set(x_studio_admin_access).intersection([uid])</attribute>
+  </xpath>
+  <xpath expr="/form[1]/header[1]/button[7]" position="attributes">
+    <attribute name="invisible">False</attribute>
+  </xpath>
+  <xpath expr="/form[1]/header[1]/button[7]" position="attributes">
+    <attribute name="invisible">stage_id not in [8]</attribute>
+  </xpath>
+  <xpath expr="/form[1]/header[1]/button[8]" position="attributes">
+    <attribute name="invisible">not set(x_studio_admin_access).intersection([uid])</attribute>
+  </xpath>
+  <xpath expr="/form[1]/sheet[1]/group[1]/group[2]/field[2]" position="after">
+    <field name="x_studio_many2one_field_5nu_1jf0nbc4j"/>
+  </xpath>
+  <xpath expr="/form[1]/sheet[1]/group[1]/group[2]/field[3]" position="attributes">
+    <attribute name="string">Manufacturing</attribute>
+  </xpath>
+  <xpath expr="/form[1]/sheet[1]/group[1]/group[2]/field[3]" position="attributes">
+    <attribute name="invisible">True</attribute>
+  </xpath>
+  <xpath expr="/form[1]/sheet[1]/group[1]/group[2]/field[2]" position="after">
+    <field name="x_studio_mrp"/>
+  </xpath>
+  <xpath expr="/form[1]/sheet[1]/group[1]/group[2]/field[3]" position="replace"/>
+  <xpath expr="/form[1]/sheet[1]/group[1]/group[2]/field[3]" position="replace"/>
+  <xpath expr="/form[1]/header[1]/button[7]" position="attributes">
+    <attribute name="invisible">False</attribute>
+  </xpath>
+  <xpath expr="/form[1]/header[1]/button[7]" position="attributes">
+    <attribute name="invisible">True</attribute>
+  </xpath>
+  <xpath expr="/form[1]/sheet[1]/group[1]/group[1]/field[1]" position="attributes">
+    <attribute name="force_save">0</attribute>
+    <attribute name="readonly">False</attribute>
+  </xpath>
+  <xpath expr="//div[contains(@class,'oe_button_box')][not(ancestor::field)]" position="inside">
+    <button class="oe_stat_button" icon="fa-mail-forward" type="action" name="studio_customization.manufacturing_c9c9acfc-3dae-4aaf-b48c-f49d3c0fc21d">
+      <field widget="statinfo" name="x_inventory_request_id_mrp_production_count" string="Manufacturing"/>
+    </button>
+  </xpath>
+</data>

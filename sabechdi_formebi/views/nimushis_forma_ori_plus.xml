@@ -1,0 +1,246 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data>
+
+        <!-- Paper Format -->
+        <record id="sabechdi_formebi_paperformat_ori_plus" model="report.paperformat">
+            <field name="name">საბეჭდი ფორმები ორი Plus Format</field>
+            <field name="format">A4</field>
+            <field name="orientation">Landscape</field>
+            <field name="margin_top">15</field>
+            <field name="margin_bottom">10</field>
+            <field name="margin_left">7</field>
+            <field name="margin_right">7</field>
+            <field name="header_spacing">0</field>
+            <field name="header_line" eval="False"/>
+        </record>
+
+        <!-- Report Action -->
+        <record id="action_report_nimushis_forma_ori_plus" model="ir.actions.report">
+            <field name="name">ფორმა 2+</field>
+            <field name="model">stock.picking</field>
+            <field name="report_type">qweb-pdf</field>
+            <field name="report_name">sabechdi_formebi.nimushis_forma_ori_plus_document</field>
+            <field name="report_file">sabechdi_formebi.nimushis_forma_ori_plus_document</field>
+            <field name="binding_model_id" ref="stock.model_stock_picking"/>
+            <field name="binding_type">report</field>
+            <field name="paperformat_id" ref="sabechdi_formebi.sabechdi_formebi_paperformat_ori_plus"/>
+        </record>
+
+        <!-- TEMPLATE -->
+        <template id="nimushis_forma_ori_plus_document">
+            <t t-call="web.basic_layout">
+                <t t-foreach="docs" t-as="doc">
+
+                    <div style="font-family: 'DejaVu Sans', sans-serif; font-size: 20px; padding: 10px;">
+
+                        <!-- HEADER -->
+                        <div style="display: flex; justify-content: space-between; margin-bottom: 15px;">
+                            <div style="font-weight: bold;">ფორმა 2+</div>
+
+                            <div style="text-align: center; font-size: 18px; font-weight: bold;">
+                                შეძენილი ფასეულობის საწყობისთვის ჩაბარება <br/>
+                                აქტი N <t t-if="doc.x_studio_aqtis_nomeri">
+                                    <t t-esc="doc.x_studio_aqtis_nomeri"/>
+                                </t>
+                            </div>
+
+                            <div style="text-align: right; font-weight: bold; font-size:16px;">
+                                საწყობი:
+                                <t t-if="doc.location_dest_id">
+                                    <t t-esc="doc.location_dest_id.display_name"/>
+                                </t>
+                                <br/>
+                                თარიღი:
+                                <t t-if="doc.date_of_transfer">
+                                    <t t-esc="doc.date_of_transfer.strftime('%d/%m/%Y')"/>
+                                </t>
+                            </div>
+                        </div>
+
+                        <!-- MAIN TABLE -->
+                        <table style="width: 100%; border-collapse: collapse; margin-top: 10px; font-size: 10pt;">
+
+                            <!-- FIRST ROW BIG HEADER -->
+                            <tr>
+                                <td colspan="5" style="border:2px solid black; text-align:center; font-weight:bold; padding:8px;">
+                                    მომწოდებლის დასახელება
+                                </td>
+                                <td colspan="7" style="border:2px solid black; text-align:center; font-weight:bold; padding:8px;">
+                                    <t t-if="doc.partner_id">
+                                        <t t-esc="doc.partner_id.name"/>
+                                    </t>
+                                </td>
+                            </tr>
+
+                            <!-- SECOND ROW -->
+                            <tr>
+                                <td colspan="4" style="border:2px solid black; text-align:center; font-weight:bold; padding:8px; border-bottom:1px solid black;">
+                                    თანმხლები დოკუმენტი
+                                </td>
+
+                                <td rowspan="2" style="border:2px solid black; text-align:center; font-weight:bold; vertical-align:middle; padding:8px;">
+                                    სასაქონლო კოდი
+                                </td>
+
+                                <td rowspan="2" style="border:2px solid black; text-align:center; font-weight:bold; vertical-align:middle; padding:8px;">
+                                    საქონლის დასახელება, ტიპი, მარკა, სხვა მახასიათებლები
+                                </td>
+                                <td rowspan="2" style="border:2px solid black; text-align:center; font-weight:bold; vertical-align:middle; padding:8px;">
+                                    ზომის ერთეული
+                                </td>
+                                <td rowspan="2" style="border:2px solid black; text-align:center; font-weight:bold; vertical-align:middle; padding:8px;">
+                                    რაოდენობა
+                                </td>
+                                <td rowspan="2" style="border:2px solid black; text-align:center; font-weight:bold; vertical-align:middle; padding:8px;">
+                                    ერთეულის ფასი (დღგ)
+                                </td>
+                                <td rowspan="2" style="border:2px solid black; text-align:center; font-weight:bold; vertical-align:middle; padding:8px;">
+                                    თანხა
+                                </td>
+                                <td rowspan="2" style="border:2px solid black; text-align:center; font-weight:bold; vertical-align:middle; padding:8px;">
+                                    მოთხ. წინასწ. N
+                                </td>
+                                <td rowspan="2" style="border:2px solid black; text-align:center; font-weight:bold; vertical-align:middle; padding:8px;">
+                                    მოთხ. რეგ. თარიღი
+                                </td>
+                            </tr>
+
+                            <!-- THIRD ROW -->
+                            <tr>
+                                <td style="border:2px solid black; text-align:center; font-weight:bold; padding:8px; border-top:none;">
+                                    ანბ. ფაქტურა
+                                </td>
+                                <td style="border:2px solid black; text-align:center; font-weight:bold; padding:8px; border-top:none;">
+                                    სასაქ. ზედნადები
+                                </td>
+                                <td style="border:2px solid black; text-align:center; font-weight:bold; padding:8px; border-top:none;">
+                                    ხელშ. ნომერი
+                                </td>
+                                <td style="border:2px solid black; text-align:center; font-weight:bold; padding:8px; border-top:none;">
+                                    თარიღი
+                                </td>
+                            </tr>
+
+                            <!-- DATA ROWS -->
+                            <t t-foreach="doc.move_ids_without_package" t-as="line">
+
+                                <tr>
+
+                                    <!-- 1 -->
+                                    <td style="border:2px solid black; padding:8px;"></td>
+
+                                    <!-- 2 -->
+                                    <td style="border:2px solid black; padding:8px;">
+                                        <t t-if="doc.invoice_number">
+                                            <t t-esc="doc.invoice_number"/>
+                                        </t>
+                                    </td>
+
+                                    <!-- 3 -->
+                                    <td style="border:2px solid black; padding:8px;">
+                                        <t t-if="doc.x_contract_number_manual">
+                                            <t t-esc="doc.x_contract_number_manual"/>
+                                        </t>
+                                    </td>
+
+                                    <!-- 4 -->
+                                    <td style="border:2px solid black; padding:8px;">
+                                        <t t-if="doc.date_of_transfer">
+                                            <t t-esc="doc.date_of_transfer.strftime('%d/%m/%Y')"/>
+                                        </t>
+                                    </td>
+
+                                    <!-- 5 -->
+                                    <td style="border:2px solid black; padding:8px;">
+                                        <t t-if="line.product_id.default_code">
+                                            <t t-esc="line.product_id.default_code"/>
+                                        </t>
+                                    </td>
+
+                                    <!-- 6 (product name ONLY) -->
+                                    <td style="border:2px solid black; padding:8px;">
+                                        <t t-esc="line.product_id.name"/>
+                                    </td>
+
+                                    <!-- 7 -->
+                                    <td style="border:2px solid black; padding:8px;">
+                                        <t t-esc="line.product_uom.name"/>
+                                    </td>
+
+                                    <!-- 8 quantity -->
+                                    <td style="border:2px solid black; padding:8px;">
+                                        <t t-esc="line.quantity"
+                                           t-options='{"widget": "float", "precision": 4}'/>
+                                    </td>
+
+                                    <!-- 9 Unit Price (VAT) -->
+                                    <td style="border:2px solid black; padding:8px;">
+                                        <t t-if="line.unit_price">
+                                            <t t-esc="line.unit_price" t-options='{"widget": "float", "precision": 2}'/>
+                                        </t>
+                                    </td>
+
+                                    <!-- 10 Amount (Cost including Tax) -->
+                                    <td style="border:2px solid black; padding:8px;">
+                                        <t t-if="line.cost_including_tax">
+                                            <t t-esc="line.cost_including_tax" t-options='{"widget": "float", "precision": 2}'/>
+                                        </t>
+                                    </td>
+
+                                    <!-- 11 request_number -->
+                                    <td style="border:2px solid black; padding:8px;">
+                                        <t t-if="line.request_number">
+                                            <t t-esc="line.request_number"/>
+                                        </t>
+                                    </td>
+
+                                    <!-- 12 request registration date (FROM LINE) -->
+                                    <td style="border:2px solid black; padding:8px;">
+                                        <t t-if="line.x_reg_date">
+                                            <t t-esc="line.x_reg_date.strftime('%d/%m/%Y')"/>
+                                        </t>
+                                    </td>
+
+                                </tr>
+
+                            </t>
+
+                            <!-- SUM ROW -->
+                            <tr>
+                                <td colspan="9" style="border:2px solid black; padding:8px; text-align:right; font-weight:bold;">
+                                    სულ:
+                                </td>
+                                <td style="border:2px solid black; padding:8px; font-weight:bold;">
+                                    <t t-esc="sum(l.cost_including_tax for l in doc.move_ids_without_package)" 
+                                       t-options='{"widget": "float", "precision": 2}'/>
+                                </td>
+                                <td colspan="2" style="border:2px solid black; padding:8px;"></td>
+                            </tr>
+                        </table>
+
+                        <!-- FOOTER -->
+                        <div style="margin-top: 40px;">
+                            <table style="width: 100%; border-collapse: collapse; font-size:15px;">
+                                <tr>
+                                    <td style="width: 50%; vertical-align: top;">
+                                        <div style="font-weight: bold;">ჩააბარა</div>
+                                        <div style="margin-top: 10px; font-weight: bold;">გვარი, სახელი</div>
+                                        <div style="margin-top: 10px; font-weight: bold;">ხელმოწერა</div>
+                                    </td>
+                                    <td style="width: 50%; vertical-align: top;">
+                                        <div style="font-weight: bold;">მიიღო</div>
+                                        <div style="margin-top: 10px; font-weight: bold;">გვარი, სახელი</div>
+                                        <div style="margin-top: 10px; font-weight: bold;">ხელმოწერა</div>
+                                    </td>
+                                </tr>
+                            </table>
+                        </div>
+
+                    </div>
+                </t>
+            </t>
+        </template>
+
+    </data>
+</odoo>

@@ -1,0 +1,53 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <!-- Wizard Form View -->
+    <record id="view_salary_attachment_import_phone_form" model="ir.ui.view">
+        <field name="name">salary.attachment.import.phone.form</field>
+        <field name="model">salary.attachment.import.phone</field>
+        <field name="arch" type="xml">
+            <form string="Import Salary Attachments by Phone">
+                <group>
+                    <group>
+                        <field name="excel_file" filename="filename" widget="binary"/>
+                        <field name="filename" invisible="1"/>
+                    </group>
+                </group>
+                
+                <group>
+                    <div class="alert alert-info" role="alert">
+                        <h4>Excel File Format:</h4>
+                        <p><strong>Column A:</strong> Employee_ids (Private Phone) - Required</p>
+                        <p><strong>Column B:</strong> description</p>
+                        <p><strong>Column C:</strong> Other_input_type_id</p>
+                        <p><strong>Column D:</strong> date_start (YYYY-MM-DD)</p>
+                        <p><strong>Column E:</strong> date_end (YYYY-MM-DD)</p>
+                        <p><strong>Column F:</strong> monthly_amount</p>
+                        <p><strong>Column G:</strong> total_amount</p>
+                        <p><strong>Column H:</strong> status (draft/open/close)</p>
+                        <p><em>Note: First row should be headers</em></p>
+                    </div>
+                </group>
+                
+                <footer>
+                    <button string="Import" 
+                            name="action_import" 
+                            type="object" 
+                            class="btn-primary"/>
+                    <button string="Cancel" 
+                            class="btn-secondary" 
+                            special="cancel"/>
+                </footer>
+            </form>
+        </field>
+    </record>
+
+    <!-- Wizard Action -->
+    <record id="action_salary_attachment_import_phone" model="ir.actions.act_window">
+        <field name="name">Import Salary Attachments by Phone</field>
+        <field name="res_model">salary.attachment.import.phone</field>
+        <field name="view_mode">form</field>
+        <field name="target">new</field>
+    </record>
+
+</odoo>
+

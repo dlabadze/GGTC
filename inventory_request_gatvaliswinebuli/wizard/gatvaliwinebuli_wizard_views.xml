@@ -1,0 +1,111 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="view_gatvaliwinebuli_wizard_form" model="ir.ui.view">
+        <field name="name">gatvaliwinebuli.wizard.form</field>
+        <field name="model">gatvaliwinebuli.wizard</field>
+        <field name="arch" type="xml">
+            <form string="მოთხოვნის ლაინები">
+                <field name="source_request_id" invisible="1"/>
+                <field name="source_line_id" invisible="1"/>
+                <field name="purchase_inventory_line_ids" invisible="1"/>
+                <field name="planned_inventory_line_ids" invisible="1"/>
+                <group>
+                    <div class="text-center mb-3" colspan="2">
+                        <h4>სულ ნაპოვნია <field name="total_line_count" nolabel="1" class="oe_inline"/> ლაინი</h4>
+                    </div>
+                </group>
+                <group string="შესასყიდი">
+                    <field name="purchase_line_ids" readonly="1" nolabel="1" colspan="2">
+                        <list>
+                            <field name="request_number" string="მოთხოვნის ნომერი"/>
+                            <field name="product_id" string="პროდუქტი"/>
+                            <field name="quantity" string="რაოდენობა"/>
+                            <field name="line_type" column_invisible="1"/>
+                            <field name="source_inventory_line_id" column_invisible="1"/>
+                        </list>
+                    </field>
+                </group>
+                <group string="გათვალისწინებული">
+                    <field name="planned_line_ids" readonly="1" nolabel="1" colspan="2">
+                        <list>
+                            <field name="request_number" string="მოთხოვნის ნომერი"/>
+                            <field name="product_id" string="პროდუქტი"/>
+                            <field name="quantity" string="რაოდენობა"/>
+                            <field name="line_type" column_invisible="1"/>
+                            <field name="source_inventory_line_id" column_invisible="1"/>
+                        </list>
+                    </field>
+                </group>
+                <group string="ჯამური რაოდენობა">
+                    <field name="purchase_total" string="შესასყიდი"/>
+                    <field name="planned_total" string="გათვალისწინებული"/>
+                    <field name="difference" string="სხვაობა"/>
+                </group>
+                <footer>
+                    <button name="action_ok" string="OK" type="object" class="btn-primary"/>
+                    <button string="Cancel" class="btn-secondary" special="cancel"/>
+                </footer>
+            </form>
+        </field>
+    </record>
+
+    <record id="action_gatvaliwinebuli_wizard" model="ir.actions.act_window">
+        <field name="name">მოთხოვნის ლაინები</field>
+        <field name="res_model">gatvaliwinebuli.wizard</field>
+        <field name="view_mode">form</field>
+        <field name="target">new</field>
+    </record>
+
+    <record id="view_gatvaliwinebuli_request_wizard_form" model="ir.ui.view">
+        <field name="name">gatvaliwinebuli.request.wizard.form</field>
+        <field name="model">gatvaliwinebuli.request.wizard</field>
+        <field name="arch" type="xml">
+            <form string="მოთხოვნის ლაინები">
+                <field name="source_request_id" invisible="1"/>
+                <field name="purchase_inventory_line_ids" invisible="1"/>
+                <field name="planned_inventory_line_ids" invisible="1"/>
+                <group>
+                    <div class="text-center mb-3" colspan="2">
+                        <h4>სულ ნაპოვნია <field name="total_line_count" nolabel="1" class="oe_inline"/> ლაინი</h4>
+                    </div>
+                </group>
+                <group string="შესასყიდი">
+                    <field name="purchase_line_ids" readonly="1" nolabel="1" colspan="2">
+                        <list>
+                            <field name="request_number" string="მოთხოვნის ნომერი"/>
+                            <field name="product_id" string="პროდუქტი"/>
+                            <field name="quantity" string="რაოდენობა"/>
+                            <field name="line_type" column_invisible="1"/>
+                        </list>
+                    </field>
+                </group>
+                <group string="გათვალისწინებული">
+                    <field name="planned_line_ids" readonly="1" nolabel="1" colspan="2">
+                        <list>
+                            <field name="request_number" string="მოთხოვნის ნომერი"/>
+                            <field name="product_id" string="პროდუქტი"/>
+                            <field name="quantity" string="რაოდენობა"/>
+                            <field name="line_type" column_invisible="1"/>
+                        </list>
+                    </field>
+                </group>
+                <group string="ჯამური რაოდენობა">
+                    <field name="purchase_total" string="შესასყიდი"/>
+                    <field name="planned_total" string="გათვალისწინებული"/>
+                    <field name="difference" string="სხვაობა"/>
+                </group>
+                <footer>
+                    <button name="action_ok" string="OK" type="object" class="btn-primary"/>
+                    <button string="Cancel" class="btn-secondary" special="cancel"/>
+                </footer>
+            </form>
+        </field>
+    </record>
+
+    <record id="action_gatvaliwinebuli_request_wizard" model="ir.actions.act_window">
+        <field name="name">მოთხოვნის ლაინები</field>
+        <field name="res_model">gatvaliwinebuli.request.wizard</field>
+        <field name="view_mode">form</field>
+        <field name="target">new</field>
+    </record>
+</odoo>

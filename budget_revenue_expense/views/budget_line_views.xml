@@ -1,0 +1,69 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <!-- Add new tab in budget.analytic form view for revenue details -->
+    <record id="view_budget_analytic_form_revenue" model="ir.ui.view">
+        <field name="name">budget.analytic.form.revenue</field>
+        <field name="model">budget.analytic</field>
+        <field name="inherit_id" ref="account_budget.view_budget_analytic_form"/>
+        <field name="arch" type="xml">
+            <!-- Add new page after Budget Lines page -->
+            <page name="budget_lines" position="after">
+                <page string="შემოსავლის ინფორმაცია" name="revenue_info" invisible="budget_type != 'revenue'">
+                    <field name="budget_line_ids" colspan="4" nolabel="1" readonly="state != 'draft'">
+                        <list string="Revenue Budget Lines" editable="bottom">
+                            <field name="sequence" widget="handle"/>
+                            <field name="account_id" optional="show"/>
+                            <field name="currency_id" column_invisible="True"/>
+
+                            <!-- Revenue specific fields -->
+                            <field name="approved_plan" sum="დამტკიცებული გეგმა"/>
+                            <field name="contract_amount_revenue" sum="ხელშეკრულების თანხა"/>
+                            <field name="diff_plan_contract" sum="სხვაობა (გეგმა-ხელშეკრულება)" optional="show"/>
+                            <field name="paid_amount_revenue" sum="გადახდილი თანხა"/>
+                            <field name="diff_plan_paid" sum="სხვაობა (გეგმა-გადახდილი)" optional="show"/>
+                            <field name="accrued_amount_revenue" sum="დარიცხული თანხა"/>
+                            <field name="diff_plan_accrued" sum="სხვაობა (გეგმა-დარიცხული)" optional="show"/>
+                            <field name="revenue_note" optional="hide"/>
+
+                            <field name="company_id" column_invisible="1"/>
+                            <field name="budget_type" column_invisible="1"/>
+                        </list>
+                    </field>
+                </page>
+            </page>
+        </field>
+    </record>
+
+    <!-- Inherit budget.line form view to add revenue fields -->
+    <record id="view_budget_line_form_revenue_expense" model="ir.ui.view">
+        <field name="name">budget.line.form.revenue.expense</field>
+        <field name="model">budget.line</field>
+        <field name="inherit_id" ref="account_budget.view_budget_line_form"/>
+        <field name="arch" type="xml">
+            <!-- Add budget_type field as invisible to use in conditions -->
+            <field name="budget_analytic_id" position="after">
+                <field name="budget_type" invisible="1"/>
+            </field>
+
+            <!-- Add revenue fields to the form after budget_amount -->
+            <field name="budget_amount" position="after">
+                <field name="approved_plan" invisible="budget_type != 'revenue'" readonly="budget_analytic_state != 'draft'"/>
+                <field name="contract_amount_revenue" invisible="budget_type != 'revenue'" readonly="budget_analytic_state != 'draft'"/>
+                <field name="paid_amount_revenue" invisible="budget_type != 'revenue'" readonly="budget_analytic_state != 'draft'"/>
+                <field name="accrued_amount_revenue" invisible="budget_type != 'revenue'" readonly="budget_analytic_state != 'draft'"/>
+            </field>
+
+            <!-- Add computed differences after theoritical_amount -->
+            <field name="theoritical_amount" position="after">
+                <field name="diff_plan_contract" invisible="budget_type != 'revenue'" readonly="1"/>
+                <field name="diff_plan_paid" invisible="budget_type != 'revenue'" readonly="1"/>
+                <field name="diff_plan_accrued" invisible="budget_type != 'revenue'" readonly="1"/>
+            </field>
+
+            <!-- Add revenue note at the end -->
+            <field name="company_id" position="after">
+                <field name="revenue_note" invisible="budget_type != 'revenue'" readonly="budget_analytic_state != 'draft'" colspan="4"/>
+            </field>
+        </field>
+    </record>
+</odoo>

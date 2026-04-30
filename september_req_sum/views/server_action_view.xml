@@ -1,0 +1,143 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data>
+        <record id="server_action_call_method" model="ir.actions.server">
+            <field name="name">September Requests To Request Budget</field>
+            <field name="model_id" ref="september_requests.model_september_request"/>
+            <field name="binding_model_id" ref="september_requests.model_september_request"/>
+            <field name="binding_type">action</field>
+            <field name="state">code</field>
+<field name="code"><![CDATA[
+record = records[0] if records else None
+if not record:
+    raise UserError("No record selected.")
+if not record.budget_request_id:
+    raise UserError("Please select a budget request.")
+september_lines = record.line_ids
+if not september_lines:
+    raise UserError("No September lines found.")
+type_to_field = {
+    'ცფ': 'x_studio_float_field_3vo_1j2fk5vqk',
+    'ცფს': 'x_studio_float_field_6n2_1j2fk773p',
+    'კს': 'x_studio_003',
+    'ჩფ': 'x_studio_004',
+    'ყუ': 'x_studio_005',
+    'დფ': 'x_studio_006',
+    'ოდო': 'x_studio_007',
+    'კდ': 'x_studio_008',
+    'უკ': 'x_studio_009',
+    'მეტ': 'x_studio_010',
+    'ლაბ': 'x_studio_011',
+    'IT': 'x_studio_012',
+    'ლდ': 'x_studio_013',
+    'ტრ': 'x_studio_014',
+    'შმდ': 'x_studio_015',
+    'სსს': 'x_studio_016',
+}
+
+BudgetingLine = env['budgeting.line']
+created_lines = 0
+updated_lines = 0
+
+# Filter out lines that already contributed
+new_lines = september_lines.filtered(
+    lambda l: not BudgetingLine.search([
+        ('request_id', '=', record.budget_request_id.id),
+        ('x_studio_september_requests', 'in', l.id)
+    ])
+)
+
+if not new_lines:
+    action = {
+        'type': 'ir.actions.client',
+        'tag': 'display_notification',
+        'params': {
+            'title': "No New Lines",
+            'message': "All September lines have already been included in this budget request.",
+            'type': 'warning',
+            'sticky': False,
+        }
+    }
+else:
+    grouped_data = {}
+    for line in new_lines:
+        key = (
+            line.x_studio_related_field_1pq_1j2ffqufh,
+            line.budget_name_main.id if line.budget_name_main else False,
+            line.product_id.id if line.product_id else False
+        )
+        if key not in grouped_data:
+            grouped_data[key] = {'quantity': 0.0}
+            for field in type_to_field.values():
+                grouped_data[key][field] = 0.0
+
+        grouped_data[key]['quantity'] += line.quantity
+
+        # Get department type using try/except since getattr is not available
+        dep_type = None
+        try:
+            dep_type = line.x_studio_related_field_5ot_1j2hik7te
+        except:
+            pass
+        if dep_type and dep_type in type_to_field:
+            grouped_data[key][type_to_field[dep_type]] += line.quantity
+
+    for (code, budget_id, product_id), totals in grouped_data.items():
+        lines_for_key = [l.id for l in new_lines if (
+            l.x_studio_related_field_1pq_1j2ffqufh == code and
+            (l.budget_name_main.id if l.budget_name_main else False) == budget_id and
+            (l.product_id.id if l.product_id else False) == product_id
+        )]
+
+        vals = {
+            'x_studio_code': code,
+            'budget_name_main': budget_id,
+            'product_id': product_id,
+            'quantity': totals['quantity'],
+            'request_id': record.budget_request_id.id,
+            'name': env['product.product'].browse(product_id).name if product_id else (code or 'N/A'),
+            'x_studio_september_requests': [(4, lid) for lid in lines_for_key],
+        }
+
+        for field_name in type_to_field.values():
+            vals[field_name] = totals[field_name]
+
+        existing = BudgetingLine.search([
+            ('x_studio_code', '=', code),
+            ('budget_name_main', '=', budget_id),
+            ('product_id', '=', product_id),
+            ('request_id', '=', record.budget_request_id.id)
+        ], limit=1)
+
+        if existing:
+            vals['quantity'] += existing.quantity
+            for dep_field in type_to_field.values():
+                try:
+                    existing_value = existing[dep_field]
+                    vals[dep_field] += existing_value
+                except:
+                    vals[dep_field] += 0.0
+            existing.write(vals)
+            updated_lines += 1
+        else:
+            BudgetingLine.create(vals)
+            created_lines += 1
+
+    message = "Created {} new lines and updated {} existing lines in budget request '{}'.".format(
+        created_lines, updated_lines, record.budget_request_id.name
+    )
+
+    action = {
+        'type': 'ir.actions.client',
+        'tag': 'display_notification',
+        'params': {
+            'title': "Budgeting Lines Updated Successfully",
+            'message': message,
+            'type': 'success',
+            'sticky': False,
+        }
+    }
+]]></field>
+        </record>
+    </data>
+</odoo>

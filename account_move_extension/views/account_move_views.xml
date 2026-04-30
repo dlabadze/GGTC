@@ -1,0 +1,14 @@
+<odoo>
+    <data>
+        <record id="view_move_form_inherit_location_desk" model="ir.ui.view">
+            <field name="name">account.move.form.inherit.location.desk</field>
+            <field name="model">account.move</field>
+            <field name="inherit_id" ref="extension_views.view_move_form_inherit"/>
+            <field name="arch" type="xml">
+                <xpath expr="//field[@name='comment']" position="after">
+                    <field name="location_desk_id"/>
+                </xpath>
+            </field>
+        </record>
+    </data>
+</odoo>

@@ -1,0 +1,21 @@
+<odoo>
+  <data>
+    <record id="view_asset_movement_log_form_domain_fix" model="ir.ui.view">
+      <field name="name">x.asset.movement.log.form.domain.fix</field>
+      <field name="model">x_asset_movement_log</field>
+      <field name="inherit_id" ref="studio_customization.odoo_studio_default__de5f6ab1-9ac9-41b8-8431-c70973a192f5"/>
+      <field name="priority">1000</field>
+      <field name="arch" type="xml">
+
+        <field name="x_studio_location_specific_1" position="replace">
+          <field name="x_studio_location_specific_1"
+                 string="ლოკაცია კონკ"
+                 domain="[('x_studio_object_location_rel', '=', x_studio_object_location_1)]"
+                 options="{'create_name_field': 'x_name'}"/>
+
+<!--          <field name="x_studio_location_specific_1" domain="[('id', 'in', available_specific_location_ids)]"/>-->
+        </field>
+      </field>
+    </record>
+  </data>
+</odoo>

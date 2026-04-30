@@ -1,0 +1,15 @@
+<odoo>
+    <record id="view_hr_job_form_inherit_salary" model="ir.ui.view">
+        <field name="name">hr.job.form.inherit.salary</field>
+        <field name="model">hr.job</field>
+        <field name="inherit_id" ref="hr.view_hr_job_form"/>
+        <field name="arch" type="xml">
+            <!-- Insert in the first group in the form -->
+            <xpath expr="//page[@name='recruitment_page']//group[@name='recruitment']/field[@name='department_id']" position="after">
+                <field name="expected_salary"/>
+                <field name="currency_id"/>
+                <field name="date_contract"/>
+            </xpath>
+        </field>
+    </record>
+</odoo>

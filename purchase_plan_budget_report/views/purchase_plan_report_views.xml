@@ -1,0 +1,304 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+    <!-- ===== WEBSITE TEMPLATE ===== -->
+    <template id="purchase_plan_report_template" name="Purchase Plan Negative Budget Report">
+        <t t-call="website.layout">
+            <div class="container-fluid mt-4 mb-5">
+
+                <!-- Header -->
+                <div class="text-center mb-4">
+                    <h1 class="display-5 text-danger">
+                        შესყიდვების გეგმის რეპორტი
+                    </h1>
+                    <p class="lead text-muted">უარყოფითი ბიუჯეტის ხაზები</p>
+                </div>
+
+                <!-- Filter card -->
+                <div class="card shadow mb-4">
+                    <div class="card-header bg-dark text-white">
+                        <h5 class="mb-0"><i class="fa fa-filter mr-2"></i>შესყიდვების გეგმის არჩევა</h5>
+                    </div>
+                    <div class="card-body">
+                        <div class="row align-items-end">
+                            <div class="col-md-6">
+                                <label class="font-weight-bold">შესყიდვების გეგმა:</label>
+                                <select id="plan_select" class="form-control form-control-lg">
+                                    <option value="">-- აირჩიეთ გეგმა --</option>
+                                    <t t-foreach="purchase_plans" t-as="plan">
+                                        <option t-att-value="plan.id">
+                                            <t t-esc="plan.name"/>
+                                            (<t t-esc="plan.start_date"/> — <t t-esc="plan.end_date"/>)
+                                        </option>
+                                    </t>
+                                </select>
+                            </div>
+                            <div class="col-md-3 mt-3 mt-md-0">
+                                <button id="btn_generate" class="btn btn-danger btn-lg btn-block" disabled="disabled">
+                                    <i class="fa fa-search mr-2"></i>ანგარიშის ჩვენება
+                                </button>
+                            </div>
+                            <div class="col-md-3 mt-3 mt-md-0">
+                                <button id="btn_export" class="btn btn-success btn-lg btn-block" disabled="disabled" style="display:none;">
+                                    <i class="fa fa-download mr-2"></i>Excel-ში გადმოწერა
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Loading spinner -->
+                <div id="loading" class="text-center py-5" style="display:none;">
+                    <div class="spinner-border text-danger" style="width:3rem;height:3rem;" role="status"></div>
+                    <p class="mt-3 h5 text-muted">მონაცემები იტვირთება...</p>
+                </div>
+
+                <!-- Error -->
+                <div id="error_box" class="alert alert-danger" style="display:none;">
+                    <i class="fa fa-times-circle mr-2"></i><span id="error_text"></span>
+                </div>
+
+                <!-- Results -->
+                <div id="results" style="display:none;">
+
+                    <!-- Summary bar -->
+                    <div class="card bg-danger text-white shadow mb-4">
+                        <div class="card-body py-3">
+                            <div class="row text-center">
+                                <div class="col-md-4">
+                                    <div class="h6 text-white-50 mb-0">გეგმა</div>
+                                    <div class="h5 mb-0" id="sum_plan_name">—</div>
+                                </div>
+                                <div class="col-md-4">
+                                    <div class="h6 text-white-50 mb-0">პერიოდი</div>
+                                    <div class="h5 mb-0" id="sum_period">—</div>
+                                </div>
+                                <div class="col-md-4">
+                                    <div class="h6 text-white-50 mb-0">ნაპოვნი ხაზები</div>
+                                    <div class="h5 mb-0" id="sum_count">0</div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- No results message -->
+                    <div id="no_results" class="alert alert-success text-center" style="display:none;">
+                        <i class="fa fa-check-circle fa-2x mb-2"></i>
+                        <p class="mb-0 h5">უარყოფითი ბიუჯეტი ამ გეგმაში არ მოიძებნა!</p>
+                    </div>
+
+                    <!-- Main table -->
+                    <div id="table_wrapper" style="display:none;">
+                        <div class="card shadow">
+                            <div class="card-header bg-secondary text-white">
+                                <h5 class="mb-0"><i class="fa fa-table mr-2"></i>შედეგები</h5>
+                            </div>
+                            <div class="card-body p-0">
+                                <div class="table-responsive">
+                                    <table id="report_table" class="table table-bordered table-hover mb-0" style="font-size:0.85rem;">
+                                        <thead class="thead-dark">
+                                            <tr>
+                                                <th rowspan="2" class="align-middle">#</th>
+                                                <th rowspan="2" class="align-middle">CPV კოდი</th>
+                                                <th rowspan="2" class="align-middle">CPV დასახელება</th>
+                                                <th rowspan="2" class="align-middle">დაფინანსება</th>
+                                                <th rowspan="2" class="align-middle">შესყიდვის მეთოდი</th>
+                                                <th rowspan="2" class="align-middle text-right">მიმდინ. ღირ.</th>
+                                                <th colspan="5" class="text-center bg-danger">უარყოფითი ბიუჯეტის ხაზები</th>
+                                            </tr>
+                                            <tr>
+                                                <th class="bg-danger text-white">ბიუჯეტის ხაზი</th>
+                                                <th class="bg-danger text-white">შერჩეული გეგმა</th>
+                                                <th class="bg-danger text-white text-right">ბიუჯეტი</th>
+                                                <th class="bg-danger text-white text-right">გამოყოფილი</th>
+                                                <th class="bg-danger text-white text-right">ხელმისაწვდ.</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody id="report_tbody">
+                                        </tbody>
+                                    </table>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                </div><!-- /results -->
+
+            </div><!-- /container -->
+
+            <script>
+            //<![CDATA[
+            (function() {
+                var planSelect  = document.getElementById('plan_select');
+                var btnGenerate = document.getElementById('btn_generate');
+                var btnExport   = document.getElementById('btn_export');
+                var loading     = document.getElementById('loading');
+                var errorBox    = document.getElementById('error_box');
+                var errorText   = document.getElementById('error_text');
+                var results     = document.getElementById('results');
+                var noResults   = document.getElementById('no_results');
+                var tableWrapper= document.getElementById('table_wrapper');
+                var tbody       = document.getElementById('report_tbody');
+                var currentData = null;
+
+                planSelect.addEventListener('change', function() {
+                    btnGenerate.disabled = !planSelect.value;
+                    hideResults();
+                });
+
+                btnGenerate.addEventListener('click', function() {
+                    if (!planSelect.value) return;
+                    loadData(planSelect.value);
+                });
+
+                btnExport.addEventListener('click', exportCSV);
+
+                function loadData(planId) {
+                    showLoading();
+                    fetch('/purchase_plan_report/get_data', {
+                        method: 'POST',
+                        headers: {'Content-Type': 'application/json'},
+                        body: JSON.stringify({jsonrpc:'2.0', method:'call', params:{plan_id: planId}})
+                    })
+                    .then(function(r){ return r.json(); })
+                    .then(function(resp) {
+                        hideLoading();
+                        var data = resp.result;
+                        if (!data || data.error) {
+                            showError(data ? data.error : 'უცნობი შეცდომა');
+                            return;
+                        }
+                        currentData = data;
+                        renderResults(data);
+                    })
+                    .catch(function(e) {
+                        hideLoading();
+                        showError('კავშირის შეცდომა: ' + e.message);
+                    });
+                }
+
+                function renderResults(data) {
+                    document.getElementById('sum_plan_name').textContent = data.plan_name;
+                    document.getElementById('sum_period').textContent    = data.start_date + ' — ' + data.end_date;
+                    document.getElementById('sum_count').textContent     = data.total_lines;
+
+                    results.style.display = 'block';
+
+                    if (data.total_lines === 0) {
+                        noResults.style.display    = 'block';
+                        tableWrapper.style.display = 'none';
+                        btnExport.style.display    = 'none';
+                        return;
+                    }
+
+                    noResults.style.display    = 'none';
+                    tableWrapper.style.display = 'block';
+                    btnExport.style.display    = 'inline-block';
+                    btnExport.disabled         = false;
+
+                    tbody.innerHTML = '';
+                    var rowNum = 1;
+
+                    data.lines.forEach(function(line) {
+                        var negLines = line.negative_cpv_lines;
+                        var curr     = line.currency_symbol;
+
+                        negLines.forEach(function(cl, idx) {
+                            var tr = document.createElement('tr');
+
+                            // Plan line cells (only on first cpv-line row)
+                            if (idx === 0) {
+                                tr.innerHTML =
+                                    '<td rowspan="' + negLines.length + '" class="align-middle font-weight-bold">' + rowNum + '</td>' +
+                                    '<td rowspan="' + negLines.length + '" class="align-middle text-info font-weight-bold">' + escHtml(line.cpv_code) + '</td>' +
+                                    '<td rowspan="' + negLines.length + '" class="align-middle">' + escHtml(line.cpv_name) + '</td>' +
+                                    '<td rowspan="' + negLines.length + '" class="align-middle">' + escHtml(line.funding_source) + '</td>' +
+                                    '<td rowspan="' + negLines.length + '" class="align-middle">' + escHtml(line.purchase_method) + '</td>' +
+                                    '<td rowspan="' + negLines.length + '" class="align-middle text-right font-weight-bold">' + fmt(line.pu_ac_am) + ' ' + curr + '</td>' +
+                                    cpvCells(cl);
+                            } else {
+                                tr.innerHTML = cpvCells(cl);
+                            }
+                            tbody.appendChild(tr);
+                        });
+                        rowNum++;
+                    });
+                }
+
+                function cpvCells(cl) {
+                    var curr = cl.currency_symbol;
+                    var puReAmClass = cl.pu_re_am < 0 ? 'text-danger font-weight-bold' : 'text-success';
+                    return '<td>' + escHtml(cl.budget_line_name) + '</td>' +
+                           '<td>' + escHtml(cl.selected_plan_name) + '</td>' +
+                           '<td class="text-right">' + fmt(cl.budget_amount) + ' ' + curr + '</td>' +
+                           '<td class="text-right">' + fmt(cl.amount) + ' ' + curr + '</td>' +
+                           '<td class="text-right ' + puReAmClass + '">' + fmt(cl.pu_re_am) + ' ' + curr + '</td>';
+                }
+
+                function exportCSV() {
+                    if (!currentData) return;
+                    var rows = [['#','CPV კოდი','CPV დასახელება','დაფინანსება','მეთოდი','მიმდინ. ღირ.','ბიუჯეტის ხაზი','შერჩეული გეგმა','ბიუჯეტი','გამოყოფილი','pu_re_am']];
+                    var num = 1;
+                    currentData.lines.forEach(function(line) {
+                        line.negative_cpv_lines.forEach(function(cl, idx) {
+                            rows.push([
+                                idx === 0 ? num : '',
+                                idx === 0 ? line.cpv_code : '',
+                                idx === 0 ? line.cpv_name : '',
+                                idx === 0 ? line.funding_source : '',
+                                idx === 0 ? line.purchase_method : '',
+                                idx === 0 ? line.pu_ac_am : '',
+                                cl.budget_line_name,
+                                cl.selected_plan_name,
+                                cl.budget_amount,
+                                cl.amount,
+                                cl.pu_re_am
+                            ]);
+                        });
+                        num++;
+                    });
+                    var csv = rows.map(function(r){ return r.map(function(c){ return '"'+String(c).replace(/"/g,'""')+'"'; }).join(','); }).join('\n');
+                    var blob = new Blob(['\uFEFF'+csv], {type:'text/csv;charset=utf-8;'});
+                    var url  = URL.createObjectURL(blob);
+                    var a    = document.createElement('a');
+                    a.href   = url;
+                    a.download = 'purchase_plan_negative_budget_' + currentData.plan_name.replace(/\s+/g,'_') + '.csv';
+                    document.body.appendChild(a);
+                    a.click();
+                    document.body.removeChild(a);
+                    URL.revokeObjectURL(url);
+                }
+
+                function fmt(v) { return Number(v).toLocaleString('ka-GE', {minimumFractionDigits:2, maximumFractionDigits:2}); }
+                function escHtml(s) { var d=document.createElement('div'); d.appendChild(document.createTextNode(s||'')); return d.innerHTML; }
+                function showLoading()  { loading.style.display='block'; hideResults(); errorBox.style.display='none'; }
+                function hideLoading()  { loading.style.display='none'; }
+                function hideResults()  { results.style.display='none'; btnExport.style.display='none'; currentData=null; }
+                function showError(msg) { errorText.textContent=msg; errorBox.style.display='block'; }
+            })();
+            //]]>
+            </script>
+        </t>
+    </template>
+
+    <!-- ===== MENU ACTION ===== -->
+    <record id="action_purchase_plan_report_url" model="ir.actions.act_url">
+        <field name="name">შესყიდვების გეგმის ანგარიში</field>
+        <field name="url">/purchase_plan_report</field>
+        <field name="target">self</field>
+    </record>
+
+    <!-- ===== TOP-LEVEL MENU ===== -->
+    <menuitem
+        id="menu_purchase_plan_report_root"
+        name="შესყიდვების ანგარიში"
+        sequence="100"/>
+
+    <menuitem
+        id="menu_purchase_plan_report_sub"
+        name="უარყოფითი ბიუჯეტის ანგარიში"
+        parent="menu_purchase_plan_report_root"
+        action="action_purchase_plan_report_url"
+        sequence="1"/>
+
+</odoo>

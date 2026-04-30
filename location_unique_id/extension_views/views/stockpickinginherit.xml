@@ -1,0 +1,127 @@
+<odoo>
+    <data>
+        <record id="view_stock_return_picking_form_inherit" model="ir.ui.view">
+            <field name="name">stock.return.picking.form.inherit</field>
+            <field name="model">stock.return.picking</field>
+            <field name="inherit_id" ref="stock.view_stock_return_picking_form"/>
+            <field name="arch" type="xml">
+                <xpath expr="//field[@name='product_return_moves']/list/field[@name='product_id']" position="after">
+                    <field name="product_barcode" string="Barcode"/>
+                </xpath>
+            </field>
+        </record>
+        <!-- First inherited view definition -->
+        <record id="view_stock_picking_form_inherit_1" model="ir.ui.view">
+            <field name="name">stock.picking.form.inherit.1</field>
+            <field name="model">stock.picking</field>
+            <field name="inherit_id" ref="stock.view_picking_form"/>
+            <field name="priority">16</field>
+            <field name="mode">primary</field>
+            <field name="arch" type="xml">
+                <xpath expr="//field[@name='partner_id']" position="after">
+                    <!-- Add additional fields here -->
+                    <field name="invoice_number" invisible="1"/>
+                </xpath>
+            </field>
+        </record>
+
+        <!-- Custom inherited view with all fields -->
+        <record id="view_stock_picking_form_custom" model="ir.ui.view">
+            <field name="name">stock.picking.form.custom</field>
+            <field name="model">stock.picking</field>
+            <field name="inherit_id" ref="stock.view_picking_form"/>
+            <field name="arch" type="xml">
+                <xpath expr="//header" position="inside">
+                    <button name="button_send_soap_request" string="RS ზედნადები" type="object" class="oe_highlight"
+                            confirm="გსურთ ზედნადების ატვირთვა?" invisible="not show_all_fields or state != 'done'"/>
+                </xpath>
+                <!-- Add fields after the location_id field -->
+                <xpath expr="//field[@name='location_id']" position="after">
+                   <field name="show_all_fields" invisible="0"/>
+                    <field name="is_start_location_required" invisible="1"/>
+                    <field name="is_editable_end_location_required" invisible="1"/>
+                    <field name="combined_invoice_id" invisible="1"/>
+                    <field name="invoice_number" readonly="1"/>
+                    <field name="begin_date"  invisible="not show_all_fields"  required="show_all_fields"/>
+                    <field name="delivery" invisible="not show_all_fields"   required="show_all_fields"/>
+                    <field name="trans_id" invisible="not show_all_fields"  required="show_all_fields"/>
+                    <field name="trans_txt" invisible="not is_trans_id_4 or not show_all_fields" placeholder="აუცილებელი ველი"/>
+                    <field name="is_trans_id_4" invisible="1"/>
+                    <field name="start_location" invisible="not show_all_fields" required="is_start_location_required"/>
+                    <field name="editable_end_location" invisible="not show_all_fields"  required="is_editable_end_location_required"/>
+                    <field name="buyer_type" invisible="not show_all_fields"  required="show_all_fields"/>
+                </xpath>
+
+                <!-- Add fields after the origin field -->
+                <xpath expr="//field[@name='origin']" position="after">
+                    <field name="car_number" invisible="not show_all_fields" />
+                    <field name="driver_type" invisible="not show_all_fields" />
+                    <field name="driver_id" invisible="not show_all_fields" />
+                    <field name="driver_name" invisible="not show_all_fields"/>
+                    <field name="transport_cost_payer" invisible="not show_all_fields"/>
+                    <field name="transport_cost" invisible="not show_all_fields"/>
+                    <field name="comment" invisible="not show_all_fields"/>
+                    <field name="error_field" invisible="1"/>
+                    <field name="partner_vat" invisible="0"/>
+                    <field name="completed_soap" invisible="1"/>
+                    <field name="is_soap_completed" invisible="1"/>
+                    <field name="rs_acc" invisible="1"/>
+                    <field name="rs_pass" invisible="1"/>
+                    <field name="rs_fasi" invisible="1"/>
+                    <field name="partner_vat" invisible="0"/>
+                    <field name="completed_soap" invisible="1"/>
+                    <field name="picking_type_code" invisible="1"/>
+                    <field name="return_id" invisible="1"/>
+                </xpath>
+                <xpath expr="//field[@name='move_ids_without_package']/list" position="inside">
+                    <field name="barcode" invisible="0"/>
+                    <field name="unit_id" invisible="0"/>
+                    <field name="unit_txt" invisible="0"/>
+                    <field name="unit_price"/>
+                    <field name="tax_id"/>
+                    <field name="cost_including_tax"/>
+                </xpath>
+            </field>
+        </record>
+        <record id="view_stock_warehouse_form_inherit" model="ir.ui.view">
+            <field name="name">stock.warehouse.form.inherit</field>
+            <field name="model">stock.warehouse</field>
+            <field name="inherit_id" ref="stock.view_warehouse"/>
+            <field name="arch" type="xml">
+                <xpath expr="//field[@name='code']" position="after">
+                    <field name="additional_address"/>
+                </xpath>
+            </field>
+        </record>
+
+        <!-- View to hide partner_id for internal transfers -->
+        <record id="view_stock_picking_form_internal_transfer" model="ir.ui.view">
+            <field name="name">stock.picking.form.internal.transfer</field>
+            <field name="model">stock.picking</field>
+            <field name="inherit_id" ref="stock.view_picking_form"/>
+            <field name="arch" type="xml">
+                <xpath expr="//field[@name='partner_id']" position="attributes">
+                    <attribute name="invisible">show_internal_fields</attribute>
+                </xpath>
+            </field>
+        </record>
+
+        <!-- List view with batch action buttons for Stock Picking -->
+        <record id="view_picking_list_batch_actions" model="ir.ui.view">
+            <field name="name">stock.picking.list.batch.actions</field>
+            <field name="model">stock.picking</field>
+            <field name="inherit_id" ref="stock.vpicktree"/>
+            <field name="arch" type="xml">
+                <xpath expr="//list" position="inside">
+                    <header>
+                        <button name="button_send_soap_request" 
+                                string="📦 RS ზედნადები (ბათჩი)" 
+                                type="object" 
+                                class="btn-primary"
+                                confirm="გსურთ შერჩეული ზედნადებების ატვირთვა?"/>
+                    </header>
+                </xpath>
+            </field>
+        </record>
+    </data>
+</odoo>

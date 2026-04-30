@@ -1,0 +1,107 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="view_budget_line_form_inherit_valuations" model="ir.ui.view">
+        <field name="name">budget.line.form.inherit.valuations</field>
+        <field name="model">budget.line</field>
+        <field name="inherit_id" ref="budget.view_budget_line_form_inherit"/>
+        <field name="arch" type="xml">
+            <xpath expr="//button[@name='action_view_inventory_lines']" position="after">
+                <button name="action_view_valuations"
+                        type="object"
+                        class="btn-link"
+                        string="Valuations"
+                        icon="fa-bar-chart"/>
+                <button name="action_view_payments"
+                        type="object"
+                        class="btn-link"
+                        string="გადახდები"
+                        icon="fa-money"/>
+                <button name="action_view_bills"
+                        type="object"
+                        class="btn-link"
+                        string="Bills"
+                        icon="fa-file-text-o"/>
+                <button name="action_view_muxli_moves"
+                        type="object"
+                        class="btn-link"
+                        string="Journal Entries"
+                        icon="fa-list-alt"/>
+            </xpath>
+            <xpath expr="//notebook" position="inside">
+                <page string="Valuations" invisible="1">
+                    <group col="6">
+                        <field name="valuation_product_filter_id"/>
+                        <field name="valuation_date_start"/>
+                        <field name="valuation_date_end"/>
+                    </group>
+                    <field name="valuations_ids" readonly="1">
+                        <list>
+                            <field name="create_date"/>
+                            <field name="picking_id"/>
+                            <field name="stock_move_id"/>
+                            <field name="product_id"/>
+                            <field name="currency_id" invisible="1"/>
+                            <field name="quantity" sum="Total Qty"/>
+                            <field name="unit_cost" sum="Total Unit Cost"/>
+                            <field name="value" widget="monetary" options="{'currency_field': 'currency_id'}" sum="Total Value"/>
+                            <field name="remaining_qty" sum="Remaining Qty"/>
+                            <field name="remaining_value" widget="monetary" options="{'currency_field': 'currency_id'}" sum="Remaining Value"/>
+                        </list>
+                    </field>
+                </page>
+                <page string="გადახდები" invisible="1">
+                    <group col="6">
+                        <field name="payment_product_filter_id"/>
+                        <field name="payment_date_start"/>
+                        <field name="payment_date_end"/>
+                    </group>
+                    <field name="payment_move_line_ids" readonly="1">
+                        <list>
+                            <field name="date"/>
+                            <field name="move_id"/>
+                            <field name="name"/>
+                            <field name="partner_id"/>
+                            <field name="company_currency_id" column_invisible="1"/>
+                            <field name="currency_id" column_invisible="1" />
+                            <field name="debit" widget="monetary" options="{'currency_field': 'company_currency_id'}" sum="Total Debit"/>
+                            <field name="credit" widget="monetary" options="{'currency_field': 'company_currency_id'}" sum="Total Credit"/>
+                            <field name="balance" widget="monetary" options="{'currency_field': 'company_currency_id'}" sum="Total Balance"/>
+                            <field name="amount_currency" widget="monetary" options="{'currency_field': 'currency_id'}" sum="Total Amount Currency"/>
+                        </list>
+                    </field>
+                </page>
+                <page string="Bills" invisible="1">
+                    <field name="bill_ids" readonly="1">
+                        <list>
+                            <field name="date"/>
+                            <field name="move_id"/>
+                            <field name="name"/>
+                            <field name="product_id"/>
+                            <field name="partner_id"/>
+                            <field name="company_currency_id" column_invisible="1"/>
+                            <field name="currency_id" column_invisible="1"/>
+                            <field name="debit" widget="monetary" options="{'currency_field': 'company_currency_id'}" sum="Total Debit"/>
+                            <field name="credit" widget="monetary" options="{'currency_field': 'company_currency_id'}" sum="Total Credit"/>
+                            <field name="balance" widget="monetary" options="{'currency_field': 'company_currency_id'}" sum="Total Balance"/>
+                            <field name="amount_currency" widget="monetary" options="{'currency_field': 'currency_id'}" sum="Total Amount Currency"/>
+                        </list>
+                    </field>
+                </page>
+                <page string="Journal Entries" invisible="1">
+                    <field name="muxli_move_ids" readonly="1">
+                        <list>
+                            <field name="date"/>
+                            <field name="name"/>
+                            <field name="ref"/>
+                            <field name="partner_id"/>
+                            <field name="x_studio_muxli_hr"/>
+                            <field name="state"/>
+                            <field name="move_type"/>
+                            <field name="company_id"/>
+                        </list>
+                    </field>
+                </page>
+            </xpath>
+        </field>
+    </record>
+</odoo>

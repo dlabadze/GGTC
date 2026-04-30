@@ -1,0 +1,218 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data>
+        <template id="report_inventory_request">
+                <t t-call="web.html_container">
+        <t t-foreach="docs" t-as="doc">
+            <t t-call="web.basic_layout">
+                <div class="page" style="font-family: 'DejaVu Sans', Arial, sans-serif;">
+                    <meta charset="UTF-8"/>
+                    <meta name="content-language" content="ka"/>
+
+                <style>
+                    .outer {
+                        width: 100%;
+                    }
+                    .hdr-table {
+                        width: 100%;
+                        border-collapse: collapse;
+                        table-layout: fixed;
+                        border: 1px solid black;
+                        margin: 0; padding: 0;
+                    }
+                    .hdr-table td, .hdr-table th {
+                        border: 1px solid black;
+                        padding: 4px 5px;
+                        text-align: center;
+                        vertical-align: middle;
+                        word-wrap: break-word;
+                    }
+                    .fake-row {
+                        display: table;
+                        width: 100%;
+                        table-layout: fixed;
+                        border-collapse: collapse;
+                        page-break-inside: avoid !important;
+                        break-inside: avoid !important;
+                        margin: 0; padding: 0;
+                    }
+                    .fake-row + .fake-row .fake-cell {
+                        border-top: none !important;
+                    }
+                    .fake-row:first-of-type .fake-cell {
+                        border-top: none !important;
+                    }
+                    .fake-cell {
+                        display: table-cell;
+                        border: 1px solid black;
+                        border-top: none;
+                        padding: 4px 5px;
+                        vertical-align: middle;
+                        text-align: center;
+                        word-wrap: break-word;
+                        overflow-wrap: break-word;
+                        line-height: 1.4;
+                    }
+                    .bg { background-color: #f0f0f0; font-weight: bold; }
+
+                    /*
+                     * 8 columns, each is 12.5% = 100% total.
+                     * Header uses colspan so cells naturally get multiples of 12.5%.
+                     * Single cells (colspan=1) = 12.5%, triple (colspan=3) = 37.5% etc.
+                     * Line item divs override these with their own widths below.
+                     */
+
+                    /* Line item columns — sum = 100% */
+                    .ci1 { width: 5%; }
+                    .ci2 { width: 26%; text-align: left !important; }
+                    .ci3 { width: 12%; }
+                    .ci4 { width: 8%; }
+                    .ci5 { width: 8%; }
+                    .ci6 { width: 12%; }
+                    .ci7 { width: 13%; }
+                    .ci8 { width: 16%; }
+
+                    /* Approver columns — sum = 100% */
+                    .ca1 { width: 24%; }
+                    .ca2 { width: 36%; }
+                    .ca3 { width: 13%; }
+                    .ca4 { width: 27%; }
+                </style>
+
+                    <table style="width:100%; border:none; border-collapse:collapse;">
+                        <tr>
+                            <td style="width:50%; vertical-align:top; text-align:left; border:none;">
+                                <h3><span t-esc="doc.request_date"/></h3>
+                                <p>
+                                    ფორმა №1<br/>
+                                    მიწოდების მოთხოვნა: ID:<span t-esc="doc.x_studio_request_number"/>;<br/>
+                                </p>
+                            </td>
+                            <td style="width:50%; vertical-align:top; text-align:right; border:none;">
+                                <h3>მოთხოვნა</h3>
+                            </td>
+                        </tr>
+                    </table>
+
+                    <!-- Header table -->
+                    <table style="width:100%; border-collapse:collapse; table-layout:auto; border:1px solid black; margin:0; padding:0;">
+                        <tbody>
+                            <tr style="background-color: #f0f0f0;">
+                                <th colspan="4" style="border:1px solid black; padding:4px 5px; text-align:center; font-weight:bold;">მომთხოვნის რეკვიზიტები</th>
+                            </tr>
+                            <tr style="height:60px; background-color: #f0f0f0;">
+                                <th style="border:1px solid black; padding:4px 5px; text-align:center; width:25%;">მოთხოვნის ტიპი</th>
+                                <th style="border:1px solid black; padding:4px 5px; text-align:center; width:25%;">დეპარტამენტი</th>
+                                <th style="border:1px solid black; padding:4px 5px; text-align:center; width:25%;">მომთხოვნი</th>
+                                <th style="border:1px solid black; padding:4px 5px; text-align:center; width:25%;">მოთხოვნის კატეგორია</th>
+                            </tr>
+                            <tr style="height:60px;">
+                                <td style="border:1px solid black; padding:4px 5px; text-align:center; vertical-align:middle;"><span t-field="doc.x_studio_type"/></td>
+                                <td style="border:1px solid black; padding:4px 5px; text-align:center; vertical-align:middle;"><span t-field="doc.department_id.display_name"/></td>
+                                <td style="border:1px solid black; padding:4px 5px; text-align:center; vertical-align:middle;"><span t-field="doc.requested_by.name"/></td>
+                                <td style="border:1px solid black; padding:4px 5px; text-align:center; vertical-align:middle;"><span t-field="doc.x_studio_selection_field_6ca_1j76p9boc"/></td>
+                            </tr>
+                            <tr style="height:60px; background-color: #f0f0f0;">
+                                <th style="border:1px solid black; padding:4px 5px; text-align:center; width:15%;">საფუძველი/ღონისძიება</th>
+                                <th style="border:1px solid black; padding:4px 5px; text-align:center; width:15%;">ლოკაცია</th>
+                                <th style="border:1px solid black; padding:4px 5px; text-align:center; width:25%;">ობიექტი-ლოკაცია</th>
+                                <th style="border:1px solid black; padding:4px 5px; text-align:center; width:45%;">საფუძველი დეტალურად</th>
+                            </tr>
+                            <tr style="height:60px;">
+                                <td style="border:1px solid black; padding:4px 5px; text-align:center; vertical-align:middle;"><span t-field="doc.x_studio_selection_field_291_1j76pqq6p"/></td>
+                                <td style="border:1px solid black; padding:4px 5px; text-align:center; vertical-align:middle;"><span t-field="doc.x_studio_many2one_field_es_1j76qfa82.display_name"/></td>
+                                <td style="border:1px solid black; padding:4px 5px; text-align:center; vertical-align:middle;"><span t-field="doc.x_studio_related_field_84l_1j8l2kl2n.display_name"/></td>
+                                <td style="border:1px solid black; padding:4px 5px; text-align:center; vertical-align:middle;"><span t-field="doc.description"/></td>
+                            </tr>
+                        </tbody>
+                    </table>
+
+                    <table id="lineHdr" style="width:100%; border-collapse:collapse; table-layout:fixed; border:1px solid black; border-top:none; margin:0; padding:0;">
+                        <colgroup>
+                            <col style="width:5%;"/>
+                            <col style="width:26%;"/>
+                            <col style="width:12%;"/>
+                            <col style="width:8%;"/>
+                            <col style="width:8%;"/>
+                            <col style="width:12%;"/>
+                            <col style="width:13%;"/>
+                            <col style="width:16%;"/>
+                        </colgroup>
+                        <tbody>
+                            <tr style="height:40px; background-color:#f0f0f0;">
+                                <th colspan="8" style="border:1px solid black; padding:4px 5px; text-align:center; font-weight:bold;">მოთხოვნილი მასალის, მომსახურების, სამუშაოს ჩამონათვალი</th>
+                            </tr>
+                            <tr style="height:40px; background-color:#f0f0f0;">
+                                <th style="border:1px solid black; padding:4px 5px; text-align:center;">№</th>
+                                <th style="border:1px solid black; padding:4px 5px; text-align:left;">დასახელება (დეტალური აღწერა)</th>
+                                <th style="border:1px solid black; padding:4px 5px; text-align:center;">კოდი</th>
+                                <th style="border:1px solid black; padding:4px 5px; text-align:center;">ერთ.</th>
+                                <th style="border:1px solid black; padding:4px 5px; text-align:center;">რაოდ.</th>
+                                <th style="border:1px solid black; padding:4px 5px; text-align:center;">ფასი</th>
+                                <th style="border:1px solid black; padding:4px 5px; text-align:center;">ჯამი</th>
+                                <th style="border:1px solid black; padding:4px 5px; text-align:center;">შენიშვნა</th>
+                            </tr>
+                        </tbody>
+                    </table>
+
+                    <!-- LINE ITEMS -->
+                    <div class="outer">
+                        <t t-set="num" t-value="1"/>
+                        <t t-foreach="doc.line_ids" t-as="line">
+                            <div class="fake-row">
+                                <div class="fake-cell ci1"><t t-esc="num"/></div>
+                                <div class="fake-cell ci2"><t t-esc="line.product_id.name or ''"/></div>
+                                <div class="fake-cell ci3"><t t-esc="line.x_studio_code or ''"/></div>
+                                <div class="fake-cell ci4"><t t-esc="line.uom_id.name or ''"/></div>
+                                <div class="fake-cell ci5"><t t-esc="line.quantity"/></div>
+                                <div class="fake-cell ci6"><t t-esc="line.unit_price"/></div>
+                                <div class="fake-cell ci7"><t t-esc="line.quantity * line.unit_price"/></div>
+                                <div class="fake-cell ci8"><t t-esc="line.shenishvna_for_print or ''"/></div>
+                            </div>
+                            <t t-set="num" t-value="num + 1"/>
+                        </t>
+                        <div style="width:100%; border-left:1px solid black; border-right:1px solid black; border-bottom:1px solid black; height:0;"/>
+
+                        <div style="height:16px;"/>
+
+                        <!-- APPROVER HEADER -->
+                        <div class="fake-row bg" style="border-top:1px solid black !important;">
+                            <div class="fake-cell ca1" style="border-top:1px solid black !important; font-weight:bold;">თანამდებობა</div>
+                            <div class="fake-cell ca2" style="border-top:1px solid black !important; font-weight:bold;">სახელი და გვარი</div>
+                            <div class="fake-cell ca3" style="border-top:1px solid black !important; font-weight:bold;">თარიღი</div>
+                            <div class="fake-cell ca4" style="border-top:1px solid black !important; font-weight:bold;">ხელმოწერა</div>
+                        </div>
+
+                        <!-- APPROVER ROWS -->
+                        <t t-foreach="doc.approver_users_ids" t-as="approver">
+                            <div class="fake-row" style="min-height:50px;">
+                                <div class="fake-cell ca1">
+                                    <span t-if="approver.job_position" t-esc="approver.job_position.name or ''"/>
+                                </div>
+                                <div class="fake-cell ca2">
+                                    <span t-if="approver.user_id" t-esc="approver.user_id.name or ''"/>
+                                </div>
+                                <div class="fake-cell ca3">
+                                    <t t-if="approver.approve_datetime_plus_4h">
+                                        <span t-esc="approver.approve_datetime_plus_4h"/>
+                                    </t>
+                                </div>
+                                <div class="fake-cell ca4">
+                                    <t t-if="approver.user_signature">
+                                        <img t-attf-src="data:image/*;base64,{{approver.user_signature}}"
+                                             style="max-height:80px; max-width:145px; display:block; margin:auto;"/>
+                                    </t>
+                                </div>
+                            </div>
+                        </t>
+
+                        <div style="width:100%; border-left:1px solid black; border-right:1px solid black; border-bottom:1px solid black; height:0;"/>
+                    </div>
+
+                </div>
+            </t>
+        </t>
+    </t>
+        </template>
+    </data>
+</odoo>

@@ -1,0 +1,41 @@
+<odoo>
+  <record id="view_journal_entry_report_wizard" model="ir.ui.view">
+    <field name="name">journal.entry.report.wizard.form</field>
+    <field name="model">journal.entry.report.wizard</field>
+    <field name="arch" type="xml">
+      <form string="Journal Entry Report">
+        <group>
+          <field name="start_date"/>
+          <field name="end_date"/>
+          <field name="debit_accounts" widget="many2many_tags"/>
+          <field name="credit_accounts" widget="many2many_tags"/>
+        </group>
+        <footer>
+          <button name="action_generate_report" type="object" string="Print Report" class="btn-primary"/>
+          <button string="Cancel" class="btn-secondary" special="cancel"/>
+        </footer>
+      </form>
+    </field>
+  </record>
+
+  <record id="action_journal_entry_report_wizard" model="ir.actions.act_window">
+    <field name="name">Journal Entry Report</field>
+    <field name="res_model">journal.entry.report.wizard</field>
+    <field name="view_mode">form</field>
+    <field name="target">new</field>
+  </record>
+
+  <record id="action_journal_entry_report_wizard_nato" model="ir.actions.act_window">
+    <field name="name">Journal Entry Report (NATO)</field>
+    <field name="res_model">journal.entry.report.wizard</field>
+    <field name="view_mode">form</field>
+    <field name="target">new</field>
+    <field name="context">{'is_nato_report': True}</field>
+  </record>
+
+  <menuitem id="menu_journal_entry_report_root" name="Journal Reports" parent="account.menu_finance_entries"/>
+  <menuitem id="menu_journal_entry_report" name="განაცემთა ინფორმაცია" parent="menu_journal_entry_report_root"
+            action="action_journal_entry_report_wizard"/>
+  <menuitem id="menu_journal_entry_report_nato" name="განაცემთა ინფორმაცია (ნატო)" parent="menu_journal_entry_report_root"
+            action="action_journal_entry_report_wizard_nato"/>
+</odoo>

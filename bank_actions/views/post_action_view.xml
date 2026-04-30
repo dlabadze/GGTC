@@ -1,0 +1,37 @@
+<odoo>
+    <record id="action_smart_validate_st_line_v18" model="ir.actions.server">
+        <field name="name">Validate Bank Statement Lines</field>
+        <field name="model_id" ref="account.model_account_bank_statement_line"/>
+        <field name="binding_model_id" ref="account.model_account_bank_statement_line"/>
+        <field name="binding_view_types">list</field>
+        <field name="state">code</field>
+        <field name="code">
+result = records.action_validate_batch()
+success_count = result.get('success_count', 0)
+error_count = result.get('error_count', 0)
+errors = result.get('errors', [])
+
+if error_count > 0:
+    messages = []
+    if success_count > 0:
+        messages.append(f"✓ Validated {success_count} line(s)")
+    messages.append(f"✗ Errors: {error_count} line(s)")
+    for err in errors[:10]:
+        messages.append(f"  - {err}")
+    if len(errors) > 10:
+        messages.append(f"  ... and {len(errors) - 10} more")
+    raise UserError("\n".join(messages))
+elif success_count > 0:
+    action = {
+        'type': 'ir.actions.client',
+        'tag': 'display_notification',
+        'params': {
+            'title': 'Success',
+            'message': f'Successfully validated {success_count} line(s).',
+            'type': 'success',
+            'sticky': False,
+        }
+    }
+        </field>
+    </record>
+</odoo>

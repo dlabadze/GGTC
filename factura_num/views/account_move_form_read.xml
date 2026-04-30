@@ -1,0 +1,20 @@
+<odoo>
+    <record id="view_move_form_inherit_editable_invoices" model="ir.ui.view">
+        <field name="name">account.move.form.inherit.editable</field>
+        <field name="model">account.move</field>
+        <field name="inherit_id" ref="extension_views.view_move_form_inherit"/>
+        <field name="arch" type="xml">
+
+            <xpath expr="//field[@name='invoice_number']" position="attributes">
+                <attribute name="force_save">0</attribute>
+                <attribute name="readonly">False</attribute>
+            </xpath>
+
+          <xpath expr="//field[@name='get_invoice_id']" position="attributes">
+            <attribute name="force_save">0</attribute>
+            <attribute name="readonly">False</attribute>
+          </xpath>
+
+        </field>
+    </record>
+</odoo>

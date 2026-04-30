@@ -1,0 +1,3 @@
+id,name,model_id:id,group_id:id,perm_read,perm_write,perm_create,perm_unlink
+approval_table_line_user,approval.table.line user,model_approval_table_line,base.group_user,1,1,1,1
+approval_table_line_ext_user,approval.table.line.ext user,model_approval_table_line_ext,base.group_user,1,1,1,1

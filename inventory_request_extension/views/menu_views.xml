@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <menuitem id="menu_reports_2"
+              name="Reports"
+              parent="inventory_requests.menu_inventory_requests_root"
+              sequence="20"/>
+    
+    <menuitem id="menu_request_report"
+              name="Request Report"
+              action="action_request_report_wizard"
+              parent="menu_reports_2"
+              sequence="10"/>
+    
+    <menuitem id="menu_budget_items_comparison"
+              name="Comparison of budget items"
+              action="action_budget_items_comparison"
+              parent="menu_reports_2"
+              sequence="20"/>
+</odoo>
+

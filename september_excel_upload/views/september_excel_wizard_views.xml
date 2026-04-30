@@ -1,0 +1,37 @@
+<odoo>
+    <!-- Wizard Form -->
+    <record id="view_september_excel_wizard" model="ir.ui.view">
+        <field name="name">september.excel.wizard.form</field>
+        <field name="model">september.excel.wizard</field>
+        <field name="arch" type="xml">
+            <form string="Upload Excel">
+                <sheet>
+                    <group>
+                        <field name="request_id" invisible="1"/>
+                        <field name="file_name"/>
+                        <field name="excel_file" filename="file_name"/>
+                    </group>
+                    <footer>
+                        <button string="Upload" type="object" name="action_upload_excel" class="btn-primary"/>
+                        <button string="Cancel" class="btn-secondary" special="cancel"/>
+                    </footer>
+                </sheet>
+            </form>
+        </field>
+    </record>
+
+    <record id="september_request_form_inherit_excel_button" model="ir.ui.view">
+        <field name="name">september.request.form.excel.button</field>
+        <field name="model">september.request</field>
+        <field name="inherit_id" ref="september_requests.view_september_request_form"/>
+        <field name="priority">99</field>
+        <field name="arch" type="xml">
+            <xpath expr="//sheet" position="inside">
+                <button name="action_open_excel_wizard"
+                        type="object"
+                        string="Upload Excel"
+                        class="btn-primary"/>
+            </xpath>
+        </field>
+    </record>
+</odoo>

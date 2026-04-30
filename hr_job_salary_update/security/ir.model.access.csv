@@ -1,0 +1,2 @@
+id,name,model_id:id,group_id:id,perm_read,perm_write,perm_create,perm_unlink
+access_job_salary_update_wizard,job.salary.update.wizard,model_job_salary_update_wizard,,1,1,1,1

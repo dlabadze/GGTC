@@ -1,0 +1,78 @@
+/* =============================================================
+   Inventory Request – Horizontal Scroll Overlay Buttons
+   ============================================================= */
+
+/* ── Wrapper: sits around the entire list renderer ───────────── */
+.o-inv-scroll-wrapper {
+    position: relative;
+    /* anchor for the absolute buttons    */
+    display: block;
+    width: 100%;
+}
+
+/* ── Shared button base ─────────────────────────────────────── */
+.o_inv_req_scroll_btn {
+    /* Span from just below the header row to the very bottom */
+    position: absolute;
+    top: var(--inv-scroll-header-h, 0px);
+    bottom: 0;
+    /* no transform, no fixed height — let top+bottom define the height */
+    z-index: 20;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    width: 40px;
+    border: none;
+    outline: none;
+    border-radius: 0 0 6px 6px;
+    cursor: pointer;
+    user-select: none;
+
+    /* Subtle by default */
+    background: rgba(60, 60, 60, 0.18);
+    opacity: 0.4;
+    transition: background 0.18s ease, opacity 0.18s ease;
+
+    /* Prevent the button itself from being scrolled over */
+    pointer-events: auto;
+}
+
+/* Brighten on hover */
+.o_inv_req_scroll_btn:hover {
+    background: rgba(60, 60, 60, 0.65);
+    opacity: 1;
+}
+
+/* ── Stick to left / right edge of the wrapper ───────────────── */
+.o_inv_req_scroll_btn.o_scroll_left {
+    left: 3px;
+}
+
+.o_inv_req_scroll_btn.o_scroll_right {
+    right: 3px;
+}
+
+/* ── Arrow icons (pure CSS) ──────────────────────────────────── */
+.o_inv_req_scroll_btn::after {
+    content: '';
+    display: block;
+    width: 9px;
+    height: 9px;
+    border-top: 2px solid rgba(255, 255, 255, 0.9);
+    border-right: 2px solid rgba(255, 255, 255, 0.9);
+}
+
+.o_inv_req_scroll_btn.o_scroll_left::after {
+    transform: rotate(-135deg) translate(-1px, 1px);
+}
+
+.o_inv_req_scroll_btn.o_scroll_right::after {
+    transform: rotate(45deg) translate(-1px, 1px);
+}
+
+/* ── Hidden state ─────────────────────────────────────────────── */
+.o_inv_req_scroll_btn.o-inv-scroll-hidden {
+    display: none !important;
+}

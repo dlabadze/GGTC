@@ -1,0 +1,25 @@
+<odoo>
+    <!-- Add to warehouse form -->
+    <record id="view_warehouse_form_inherit_auto_id" model="ir.ui.view">
+        <field name="name">stock.warehouse.form.auto.id</field>
+        <field name="model">stock.warehouse</field>
+        <field name="inherit_id" ref="stock.view_warehouse"/>
+        <field name="arch" type="xml">
+            <field name="code" position="after">
+                <field name="x_unique_warehouse_id" readonly="0"/>
+            </field>
+        </field>
+    </record>
+
+     <record id="view_warehouse_list_inherit_auto_id" model="ir.ui.view">
+        <field name="name">stock.warehouse.list.auto.id</field>
+        <field name="model">stock.warehouse</field>
+        <field name="inherit_id" ref="stock.view_warehouse_tree"/>
+        <field name="arch" type="xml">
+            <field name="name" position="after">
+                <field name="x_unique_warehouse_id"/>
+            </field>
+        </field>
+    </record>
+
+</odoo>

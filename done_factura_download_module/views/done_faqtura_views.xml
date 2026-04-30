@@ -1,0 +1,174 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="view_done_faqturi_list" model="ir.ui.view">
+        <field name="name">done.factura.list</field>
+        <field name="model">done.factura</field>
+        <field name="arch" type="xml">
+            <list create="false">
+                <header>
+                    <button name="%(action_done_faqturis_gadmowera)d" type="action" string="ჩამოტვირთვა" class="btn-primary" display="always"/>
+                    <button name="action_transfer_to_budget" type="object" string="ბიუჯეტში გატარება" class="btn-warning" display="always"/>
+                </header>
+                <field name="invoice_id"/>
+                <field name="series"/>
+                <field name="number"/>
+                <field name="agree_date" string="დადასტურების თარიღი"/>
+                <field name="transfer_date"/>
+                <field name="registration_date"/>
+                <field name="operation_date"/>
+                <field name="organization_id"/>
+                <field name="related_account_move_ids" widget="many2many_tags" optional="show"/>
+                <field name="has_account_move_state" widget="badge" optional="show"
+                    decoration-danger="has_account_move_state == '1'"
+                    decoration-success="has_account_move_state == '2'"/>
+                <field name="related_purchase_ids" widget="many2many_tags" optional="show" column_invisible="1"/>
+                <field name="has_purchase_state" widget="badge" optional="show" column_invisible="1"
+                    decoration-danger="has_purchase_state == '1'"
+                    decoration-success="has_purchase_state == '2'"/>
+                <field name="tanxa"/>
+                <field name="vat"/>
+                <field name="sa_ident_no"/>
+                <field name="status"/>
+                <field name="has_avansi" widget="badge"/>
+                <field name="status_text"/>
+                <field name="waybill_type"/>
+                <field name="mdgomareoba"/>
+            </list>
+        </field>
+    </record>
+
+    <record id="view_done_faqturi_form" model="ir.ui.view">
+        <field name="name">done.faqturia.form</field>
+        <field name="model">done.factura</field>
+        <field name="arch" type="xml">
+            <form>
+                <header>
+                    <button name="create_invoice_or_bill" string="ბუღალტერიაში გატარება" type="object" class="btn-primary" invisible="1"/>
+                    <button name="action_some" string="ბანკში ატვირთვა" type="object" class="btn-success"/>
+                    <button name="action_reject" string="უარყოფა" type="object" class="btn-danger"/>
+                    <button name="action_transfer_to_budget" string="ბიუჯეტში გატარება" type="object" class="btn-warning"/>
+                </header>
+                <sheet>
+                    <div class="oe_button_box" name="button_box">
+                        <button name="action_view_account_moves" type="object" class="oe_stat_button" icon="fa-file-text-o">
+                            <div class="o_field_widget o_stat_info">
+                                <span class="o_stat_value">
+                                    <field name="related_account_move_count" nolabel="1"/>
+                                </span>
+                                <span class="o_stat_text">ინვოისები</span>
+                            </div>
+                        </button>
+                        <button name="action_view_purchase_orders" type="object" class="oe_stat_button" icon="fa-shopping-cart" invisible="1">
+                            <div class="o_field_widget o_stat_info">
+                                <span class="o_stat_value">
+                                    <field name="purchase_order_count" nolabel="1"/>
+                                </span>
+                                <span class="o_stat_text">შესყიდვები</span>
+                            </div>
+                        </button>
+                    </div>
+                    <group>
+                        <field name="invoice_id"/>
+                        <field name="series"/>
+                        <field name="number"/>
+                        <field name="agree_date" string="დადასტურების თარიღი"/>
+                        <field name="transfer_date"/>
+                        <field name="registration_date"/>
+                        <field name="operation_date"/>
+                        <field name="organization_id"/>
+                        <field name="related_account_move_ids" widget="many2many_tags" readonly="1"/>
+                        <field name="has_account_move_state" widget="badge" readonly="1"
+                            decoration-danger="has_account_move_state == '1'"
+                            decoration-success="has_account_move_state == '2'"/>
+                        <field name="related_purchase_ids" widget="many2many_tags" invisible="1"/>
+                        <field name="has_purchase_state" widget="badge" readonly="1" invisible="1"
+                            decoration-danger="has_purchase_state == '1'"
+                            decoration-success="has_purchase_state == '2'"/>
+                        <field name="tanxa"/>
+                        <field name="vat"/>
+                        <field name="buyer_un_id" invisible="1"/>
+                        <field name="sa_ident_no"/>
+                        <field name="status"/>
+                        <field name="has_avansi" widget="badge"/>
+                        <field name="status_text"/>
+                        <!-- <field name="waybill_type"/> -->
+                        <field name="xarjang"/>
+                        <field name="purchase_order_id" readonly="1" invisible="1"/>
+                    </group>
+                    <notebook>
+                        <page string="Lines">
+                            <field name="line_ids">
+                                <list editable="bottom">
+                                    <field name="product_id"/>
+                                    <field name="account_move_line_id" optional="hide"/>
+                                    <field name="GOODS"/>
+                                    <field name="G_UNIT"/>
+                                    <field name="G_NUMBER"/>
+                                    <field name="price_unit"/>
+                                    <field name="FULL_AMOUNT"/>
+                                    <field name="DRG_AMOUNT"/>
+                                    <field name="AKCIS_ID"/>
+                                    <field name="VAT_TYPE"/>
+                                    <field name="SDRG_AMOUNT"/>
+                                    <field name="xarjang"/>
+                                    <field name="analytic_distribution"
+                                           widget="analytic_distribution"
+                                           options="{'product_field': 'product_id', 'account_field': 'xarjang', 'amount_field': 'FULL_AMOUNT', 'business_domain': 'general'}"/>
+                                    <field name="budget_analytic_id"/>
+                                </list>
+                            </field>
+                        </page>
+                        <page string="Documents">
+                            <field name="document_ids">
+                                <list editable="bottom">
+                                    <field name="document_number"/>
+                                    <field name="date"/>
+                                </list>
+                            </field>
+                        </page>
+                    </notebook>
+                </sheet>
+            </form>
+        </field>
+    </record>
+
+    <record id="view_move_form_done_factura_check" model="ir.ui.view">
+        <field name="name">account.move.form.done.factura.check</field>
+        <field name="model">account.move</field>
+        <field name="inherit_id" ref="account.view_move_form"/>
+        <field name="arch" type="xml">
+            <xpath expr="//header" position="inside">
+                <button name="action_open_check_done_factura_wizard"
+                        string="ფაქტურის შემოწმება"
+                        type="object"
+                        class="oe_highlight"
+                        invisible="not factura_ids"/>
+            </xpath>
+            <xpath expr="//group[@id='header_left_group']" position="inside">
+                <field name="done_factura_date" readonly="1"/>
+                <field name="factura_ids">
+                    <list editable="bottom">
+                        <field name="f_number"/>                       
+                    </list>
+                </field>
+                <field name="rs_tanxa"/>
+                <field name="factura_status" readonly="1" widget="badge"
+                    decoration-danger="factura_status == '1'"
+                    decoration-success="factura_status == '0'"
+                    decoration-warning="factura_status == '2'"
+                    invisible="1"/>
+                <field name="done_factura_id" readonly="1" invisible="1"/>
+            </xpath>
+        </field>
+    </record>
+
+    <record id="action_done_faqturi" model="ir.actions.act_window">
+        <field name="name">Done ფაქტურა</field>
+        <field name="res_model">done.factura</field>
+        <field name="view_mode">list,form</field>
+        <field name="view_id" ref="view_done_faqturi_list"/>
+    </record>
+
+    <menuitem id="menu_done_faqturi_root" name="Done RS ფაქტურა" sequence="2"/>
+    <menuitem id="menu_done_faqturi" name="ფაქტურა" parent="menu_done_faqturi_root" action="action_done_faqturi" sequence="10"/>
+</odoo>

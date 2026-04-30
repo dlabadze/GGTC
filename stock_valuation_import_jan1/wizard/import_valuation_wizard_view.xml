@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="view_stock_valuation_import_wizard" model="ir.ui.view">
+        <field name="name">stock.valuation.import.wizard.view</field>
+        <field name="model">stock.valuation.import.wizard</field>
+        <field name="arch" type="xml">
+            <form string="Import Product Costs &amp; Fix Valuation (Jan 1st)">
+                <group>
+                    <field name="excel_file" filename="excel_filename"/>
+                    <field name="excel_filename" invisible="1"/>
+                    <field name="target_date" help="The date to force for cost updates &amp; backdating (default Jan 1st 2026)."/>
+                    <field name="cleanup_today" help="If checked, deletes any accidental revaluation moves created today."/>
+                    <field name="process_all_sheets" help="Normally Odoo expects one sheet. Check this if the Excel has multiple sheets to process."/>
+                </group>
+                <footer>
+                    <button name="action_import_and_fix" string="Import &amp; Fix All" type="object" class="btn-primary"/>
+                    <button name="action_regenerate_entries" string="Regenerate Accounting Entries Only" type="object" class="btn-secondary"/>
+                    <button string="Cancel" class="btn-secondary" special="cancel"/>
+                </footer>
+            </form>
+        </field>
+    </record>
+
+    <record id="action_stock_valuation_import_wizard" model="ir.actions.act_window">
+        <field name="name">Stock Valuation Import &amp; Fix</field>
+        <field name="res_model">stock.valuation.import.wizard</field>
+        <field name="view_mode">form</field>
+        <field name="target">new</field>
+    </record>
+
+    <menuitem id="menu_stock_valuation_import_wizard"
+              name="Stock Valuation Reset / Fix"
+              parent="stock.menu_stock_warehouse_mgmt"
+              action="action_stock_valuation_import_wizard"
+              sequence="100"/>
+</odoo>

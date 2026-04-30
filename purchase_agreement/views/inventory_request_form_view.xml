@@ -1,0 +1,26 @@
+<odoo>
+    <record id="inventory_request_form_purchase_inherit" model="ir.ui.view">
+        <field name="name">inventory.request.form.purchase.inherit</field>
+        <field name="model">inventory.request</field>
+        <field name="inherit_id" ref="inventory_requests.view_inventory_request_form"/>
+        <field name="arch" type="xml">
+            <xpath expr="//sheet/div[@name = 'button_box']" position="inside">
+                <button class="oe_stat_button" icon="fa-file-o" type="object" name="action_view_purchase_agreements">
+                  <field widget="statinfo" name="purchase_count" string="შესყიდვები"/>
+                </button>
+
+                <button class="oe_stat_button" icon="fa-diamond" type="action" name="studio_customization.transfers_fcc3cc0a-b3db-4012-b772-54b3cc6e36ea">
+                  <field widget="statinfo" name="x_request_id_inventory_line_count" string="შექმინილი შესყიდვები"/>
+                </button>
+          </xpath>
+
+          <!-- <xpath expr="//field[@name='']" position="after">
+                <button name="action_view_stock_on_hand"
+                        string="On Hand"
+                        type="object"
+                        icon="fa-cubes"
+                        class="btn-primary"/>
+          </xpath> -->
+        </field>
+    </record>
+</odoo>

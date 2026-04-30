@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<odoo>
+    <record id="view_inherit_inventory_form_attachment" model="ir.ui.view">
+        <field name="name">view.inherit.inventory.form.attachment</field>
+        <field name="model">inventory.request</field>
+        <field name="inherit_id" ref="studio_customization.odoo_studio_inventor_2b542e42-6193-438d-b6db-31c22c541287"/>
+        <field name="arch" type="xml">
+          <xpath expr="//field[@name='x_studio_binary_field_1fj_1j809ovdh_filename']" position="replace">
+                    <field name="files" widget="many2many_binary"/>
+          </xpath>
+        </field>
+    </record>
+</odoo>

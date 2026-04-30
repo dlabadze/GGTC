@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+	<data>
+		<record id="view_account_asset_form_inherit_extra" model="ir.ui.view">
+			<field name="name">account.asset.form.inherit.extra</field>
+			<field name="model">account.asset</field>
+			<field name="inherit_id" ref="account_asset.view_account_asset_form"/>
+			<field name="arch" type="xml">
+				<xpath expr="//sheet/notebook" position="inside">
+					<page string="Extra Values">
+						<group>
+							<group string="იმპორტირებული მონაცემები">
+								<field name="original_value_new"/>
+								<field name="old_depre"/>
+								<field name="already_depreciated_amount_import_new"/>
+							</group>
+							<group string="ჯამური მონაცემები (გამოთვლილი)">
+								<field name="full_original_value_new" widget="monetary" readonly="1"/>
+								<field name="full_depreciated_amount" widget="monetary" readonly="1"/>
+							</group>
+						</group>
+					</page>
+				</xpath>
+			</field>
+		</record>
+		
+		<!-- Tree View - ჯამური ველების დამატება -->
+		<record id="view_account_asset_tree_inherit_extra" model="ir.ui.view">
+			<field name="name">account.asset.tree.inherit.extra</field>
+			<field name="model">account.asset</field>
+			<field name="inherit_id" ref="account_asset.view_account_asset_tree"/>
+			<field name="arch" type="xml">
+				<xpath expr="//field[@name='book_value']" position="after">
+					<field name="full_original_value_new" widget="monetary" optional="hide"/>
+					<field name="full_depreciated_amount" widget="monetary" optional="show"/>
+				</xpath>
+			</field>
+		</record>
+	</data>
+</odoo>
+
+

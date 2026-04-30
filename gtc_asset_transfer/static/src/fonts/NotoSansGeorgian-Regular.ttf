@@ -1,0 +1,9 @@
+<style>
+    @font-face {
+        font-family: 'Noto Sans Georgian';
+        src: url('/gtc_asset_transfer/static/src/fonts/NotoSansGeorgian-Regular.ttf') format('truetype');
+    }
+    body, * {
+        font-family: 'Noto Sans Georgian', 'DejaVu Sans', sans-serif !important;
+    }
+</style>

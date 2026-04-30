@@ -1,0 +1,22 @@
+<odoo>
+    <record id="hr_payroll_payslips_employees_form_inherit" model="ir.ui.view">
+        <field name="name">hr.payslip.employees.form.inherit</field>
+        <field name="model">hr.payslip.employees</field>
+        <field name="inherit_id" ref="hr_payroll.view_hr_payslip_by_employees"/>
+        <field name="arch" type="xml">
+            <xpath expr="//field[@name='employee_ids']" position="before">
+                <div class="d-flex justify-content-end mb-3">
+                    <field name="total_employee_count"
+                           readonly="1"
+                           class="oe_inline"
+                           invisible="total_employee_count > 40"/>
+                    <span invisible="total_employee_count > 40">/</span>
+                    <field name="total_employee_count"
+                           readonly="1"
+                           class="oe_inline"
+                           invisible="total_employee_count > 40"/>
+                </div>
+            </xpath>
+        </field>
+    </record>
+</odoo>

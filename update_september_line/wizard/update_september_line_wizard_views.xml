@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="view_update_september_line_wizard_form" model="ir.ui.view">
+        <field name="name">update.september.line.wizard.form</field>
+        <field name="model">update.september.line.wizard</field>
+        <field name="arch" type="xml">
+            <form string="Update September Line">
+                <group>
+                    <field name="excel_file" filename="filename" widget="binary"/>
+                    <field name="filename" invisible="1"/>
+                    <field name="september_line_ids" widget="many2many_tags" invisible="1"/>
+                </group>
+                <div class="alert alert-info" role="alert">
+                    <strong>Instructions:</strong>
+                    <ul>
+                        <li>Column A: Code</li>
+                        <li>Column B: Analytic Account</li>
+                    </ul>
+                </div>
+                <footer>
+                    <button name="action_process_excel" type="object" 
+                            string="Process Excel" class="btn-primary"/>
+                    <button string="Cancel" class="btn-secondary" special="cancel"/>
+                </footer>
+            </form>
+        </field>
+    </record>
+
+    <record id="action_update_september_line_wizard" model="ir.actions.act_window">
+        <field name="name">Update September Line</field>
+        <field name="res_model">update.september.line.wizard</field>
+        <field name="view_mode">form</field>
+        <field name="target">new</field>
+        <field name="view_id" ref="view_update_september_line_wizard_form"/>
+    </record>
+</odoo>

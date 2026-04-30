@@ -1,0 +1,156 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data>
+
+        <!-- Paper Format -->
+        <record id="sabechdi_formebi_paperformat_otxia" model="report.paperformat">
+            <field name="name">საბეჭდი ფორმები 4ა Format</field>
+            <field name="format">A4</field>
+            <field name="orientation">Portrait</field>
+            <field name="margin_top">15</field>
+            <field name="margin_bottom">10</field>
+            <field name="margin_left">7</field>
+            <field name="margin_right">7</field>
+            <field name="header_spacing">0</field>
+            <field name="header_line" eval="False"/>
+        </record>
+
+        <!-- Report Action -->
+        <record id="action_report_nimushis_forma_otxia" model="ir.actions.report">
+            <field name="name">ფორმა 4ა</field>
+            <field name="model">stock.picking</field>
+            <field name="report_type">qweb-pdf</field>
+            <field name="report_name">sabechdi_formebi.nimushis_forma_otxia_document</field>
+            <field name="report_file">sabechdi_formebi.nimushis_forma_otxia_document</field>
+            <field name="binding_model_id" ref="stock.model_stock_picking"/>
+            <field name="binding_type">report</field>
+            <field name="paperformat_id" ref="sabechdi_formebi.sabechdi_formebi_paperformat_otxia"/>
+        </record>
+
+        <!-- TEMPLATE -->
+        <template id="nimushis_forma_otxia_document">
+            <t t-call="web.basic_layout">
+                <t t-foreach="docs" t-as="doc">
+                    <div style="font-family:'DejaVu Sans', sans-serif; font-size:20px; padding:10px;">
+
+                        <!-- HEADER -->
+                        <div style="display:flex; justify-content:space-between; margin-bottom:15px; margin-top:50px;">
+                            <div style="font-weight:bold;">ფორმა 4ა</div>
+
+                            <div style="text-align:center; font-size:large; font-weight:bold; margin-top:50px;">
+                                შიდა ბრუნვის ზედდებული <br/>
+                                აქტის N <t t-esc="doc.x_studio_aqtis_nomeri"/>
+                            </div>
+
+                            <div style="text-align:right; font-weight:bold;">
+                                თარიღი:
+                                <t t-if="doc.date_of_transfer">
+                                    <t t-esc="doc.date_of_transfer.strftime('%d/%m/%Y')"/>
+                                </t>
+                            </div>
+                        </div>
+
+
+                        <!-- MAIN TABLE -->
+                        <table style="width:100%; border-collapse:collapse; font-size:10pt; text-align:center; border:1px solid black; margin-top:50px; page-break-inside: avoid;">
+
+                            <!-- 30% / 70% -->
+                            <tr>
+                                <td style="border:1px solid black; width:30%; padding:5px;">საფუძველი</td>
+                                <td colspan="3" style="border:1px solid black; width:70%; padding:5px;">
+                                    <t t-if="doc.comment">
+                                        <t t-esc="doc.comment"/>
+                                    </t>
+                                </td>
+                            </tr>
+
+                            <!-- Supplier / Receiver -->
+                            <tr>
+                                <td style="border:1px solid black; padding:5px;">მომწოდებელი</td>
+                                <td style="border:1px solid black; padding:5px;">
+                                    <t t-esc="doc.location_id.display_name"/>
+                                </td>
+
+                                <td style="border:1px solid black; padding:5px;">მიმღები მატერიალური პირი</td>
+                                <td style="border:1px solid black; padding:5px;">
+                                    <t t-esc="doc.location_dest_id.display_name"/>
+                                </td>
+                            </tr>
+
+                            <!-- ITEM HEADER (ALL BORDERS FIXED) -->
+                            <tr>
+                                <td colspan="4" style="padding:0; border:1px solid black;">
+                                    <table style="width:100%; border-collapse:collapse; text-align:center;">
+                                        <!-- HEADER ROW -->
+                                        <tr>
+                                            <td colspan="3" style="border:1px solid black; padding:4px;">
+                                                რომელი მოთხ საფუძველზე გაიცა
+                                            </td>
+                                            <td rowspan="2" style="border:1px solid black; padding:5px;">სასაქ. კოდი</td>
+                                            <td rowspan="2" style="border:1px solid black; padding:5px;">დასახელება, ტიპი, მარკა, სხვა მახასიათებელი</td>
+                                            <td rowspan="2" style="border:1px solid black; padding:5px;">განზ.ერთ</td>
+                                            <td rowspan="2" style="border:1px solid black; padding:5px;">რაოდენობა</td>
+                                        </tr>
+                                        <tr>
+                                            <td style="border:1px solid black; padding:3px;">N</td>
+                                            <td style="border:1px solid black; padding:3px;">მოთხ. წინასწ. N</td>
+                                            <td style="border:1px solid black; padding:3px;">მოთხ. რეგ. თარიღი</td>
+                                        </tr>
+
+                                        <!-- DATA ROWS -->
+                                        <t t-foreach="doc.move_ids_without_package" t-as="line">
+                                            <tr>
+                                                <td style="border:1px solid black; padding:5px;">
+                                                    <t t-esc="line_index + 1"/>
+                                                </td>
+                                                <td style="border:1px solid black; padding:5px;">
+                                                    <t t-esc="doc.x_studio_related_field_2sg_1j7espk8g"/>
+                                                </td>
+                                                <td style="border:1px solid black; padding:5px;">
+                                                    <t t-esc="doc.scheduled_date.strftime('%d/%m/%Y') if doc.scheduled_date else ''"/>
+                                                </td>
+                                                <td style="border:1px solid black; padding:5px;">
+                                                    <t t-if="line.product_id.default_code">
+                                                        <t t-esc="line.product_id.default_code"/>
+                                                    </t>
+                                                </td>
+                                                <td style="border:1px solid black; padding:5px;">
+                                                    <t t-esc="line.product_id.name"/>
+                                                </td>
+                                                <td style="border:1px solid black; padding:5px;">
+                                                    <t t-esc="line.product_uom.name"/>
+                                                </td>
+                                                <td style="border:1px solid black; padding:5px;">
+                                                    <t t-esc="line.quantity"
+                                                       t-options='{"widget": "float", "precision": 4}'/>
+                                                </td>
+                                            </tr>
+                                        </t>
+                                    </table>
+                                </td>
+                            </tr>
+
+                            <!-- SIGNATURES -->
+                            <tr>
+                                <td colspan="2" style="border:1px solid black; text-align:left; height:50px; padding:5px;">გავეცი</td>
+                                <td colspan="2" style="border:1px solid black; text-align:left; height:50px; padding:5px;">მივიღე</td>
+                            </tr>
+                        </table>
+
+
+                    </div>
+                </t>
+            </t>
+        </template>
+
+    </data>
+</odoo>
+
+
+
+
+
+
+
+
+

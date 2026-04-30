@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+    <record id="action_job_salary_update_wizard" model="ir.actions.act_window">
+        <field name="name">Update Expected Salary</field>
+        <field name="res_model">job.salary.update.wizard</field>
+        <field name="view_mode">form</field>
+        <field name="target">new</field>
+    </record>
+
+    <record id="view_hr_job_tree_inherit_salary_button" model="ir.ui.view">
+        <field name="name">hr.job.list.salary.button</field>
+        <field name="model">hr.job</field>
+        <field name="inherit_id" ref="hr.view_hr_job_tree"/>
+        <field name="arch" type="xml">
+            <xpath expr="//list" position="inside">
+                <header>
+                    <button
+                        name="%(action_job_salary_update_wizard)d"
+                        string="Update Expected Salary %"
+                        type="action"
+                        class="btn-primary"
+                        display="selection"/>
+                </header>
+            </xpath>
+        </field>
+    </record>
+
+</odoo>

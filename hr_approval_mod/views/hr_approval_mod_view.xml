@@ -1,0 +1,116 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="view_approval_request_form_employee_tab" model="ir.ui.view">
+        <field name="name">approval.request.form.employee.tab</field>
+        <field name="model">approval.request</field>
+        <field name="inherit_id" ref="approvals.approval_request_view_form"/>
+        <field name="arch" type="xml">
+
+            <xpath expr="//page[field[@name='approver_ids']]" position="before">
+
+
+                <page string="პრემია">
+                    <group invisible="premia_lines_count == 0">
+                        <field name="premia_lines_count" readonly="1"/>
+                    </group>
+                    <group invisible="category_id != 28">
+                        <field name="transfer_department_id"/>
+                        <field name="transfer_job_id"/>
+                    </group>
+                    <field name="premia_line_ids">
+                        <list editable="bottom">
+                            <field name="employee_id"/>
+                            <field name="department_id"/>
+                            <field name="job_id"/>
+                            <field name="current_wage"/>
+                            <field name="new_department_id" column_invisible="parent.category_id != 28"/>
+                            <field name="new_job_id" column_invisible="parent.category_id != 28" domain="[('department_id', '=', new_department_id)]"/>
+                            <field name="new_wage"/>
+                        </list>
+                    </field>
+                </page>
+            </xpath>
+
+          
+
+
+
+            <xpath expr="//field[@name='request_status']" position="attributes">
+                <attribute name="statusbar_visible">new,pending,approved,refused</attribute>
+            </xpath>
+
+            <!-- <xpath expr="//header" position="inside">
+                <button name="action_open_line_forward_wizard"
+                        type="object"
+                        class="btn-secondary"
+                        string="გადაწერა"
+                        invisible="not can_forward_line or request_status == 'order_preparation'"/>
+            </xpath> -->            
+
+        </field>
+    </record>
+
+
+
+    <!-- Wizard Form View -->
+
+
+
+
+  
+
+
+    <record id="approval_request_inherit_adresati" model="ir.ui.view">
+        <field name="name">approval.request.adresati</field>
+        <field name="model">approval.request</field>
+        <field name="inherit_id" ref="approvals.approval_request_view_form"/>
+        <field name="arch" type="xml">
+            <xpath expr="//field[@name='category_id']" position="after">
+                <field name="adresati_ids" widget="many2many_avatar_user" placeholder="აირჩიეთ ადრესატები"/>
+            </xpath>
+        </field>
+    </record>
+
+    <!-- Line Forward Wizard -->
+    <!-- Line Forward Wizard -->
+    <!-- <record id="view_approval_line_forward_wizard_form" model="ir.ui.view">
+        <field name="name">approval.line.forward.wizard.form</field>
+        <field name="model">approval.line.forward.wizard</field>
+        <field name="arch" type="xml">
+            <form string="Forward Line">
+                <sheet>
+                    <group>
+                        <field name="user_ids" widget="many2many_avatar_user"/>
+                        <field name="role"/> 
+                    </group>
+                </sheet>
+                <footer>
+                    <button string="Forward" name="action_forward" type="object" class="btn-primary"/>
+                    <button string="Cancel" class="btn-secondary" special="cancel"/>
+                </footer>
+            </form>
+        </field>
+    </record>
+
+    <record id="action_approval_line_forward_wizard" model="ir.actions.act_window">
+        <field name="name">Forward Line</field>
+        <field name="res_model">approval.line.forward.wizard</field>
+        <field name="view_mode">form</field>
+        <field name="target">new</field>
+    </record> -->
+
+
+
+
+    <record id="view_approval_request_search_inherit" model="ir.ui.view">
+        <field name="name">approval.request.search.inherit</field>
+        <field name="model">approval.request</field>
+        <field name="inherit_id" ref="approvals.approval_search_view_search"/>
+        <field name="arch" type="xml">
+            <xpath expr="//field[@name='name']" position="after">
+                <field name="x_studio_tanamshromlebi_det"/>
+            </xpath>
+        </field>
+    </record>
+
+</odoo>

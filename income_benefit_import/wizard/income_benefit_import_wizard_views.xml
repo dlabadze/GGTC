@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <!-- Income Benefit Import Wizard Form View -->
+    <record id="income_benefit_import_wizard_form_view" model="ir.ui.view">
+        <field name="name">income.benefit.import.wizard.form</field>
+        <field name="model">income.benefit.import.wizard</field>
+        <field name="arch" type="xml">
+            <form string="საშემოსავლო შეღავათის ატვირთვა">
+                <group>
+                    <field name="excel_file" filename="filename"/>
+                    <field name="filename" invisible="1"/>
+                </group>
+                <div class="alert alert-info" role="alert">
+                    <div class="d-flex align-items-start">
+                        <i class="fa fa-info-circle fa-2x mt-1 me-3 text-primary"/>
+                        <div>
+                            <h5 class="alert-heading mb-2">ინფორმაცია</h5>
+                            <p class="mb-1"><strong>Excel ფაილი უნდა შეიცავდეს შემდეგ სვეტებს:</strong></p>
+                            <ul class="mb-0">
+                                <li><strong>employee</strong> - ინფორმაციული</li>
+                                <li><strong>identification_id</strong> - თანამშრომლის პირადი ნომერი</li>
+                                <li><strong>benefit</strong> - x_studio_shegavati</li>
+                                <li><strong>start date</strong> - x_studio_start_date_1 (date) - ფორმატი: დღე/თვე/წელი ან დღე.თვე.წელი (მაგ: 25/05/2025 ან 25.05.2025)</li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+                <footer>
+                    <button string="ატვირთვა" name="action_import" type="object" class="btn-primary"/>
+                    <button string="გაუქმება" class="btn-secondary" special="cancel"/>
+                </footer>
+            </form>
+        </field>
+    </record>
+
+    <!-- Wizard Window Action -->
+    <record id="action_income_benefit_import_wizard" model="ir.actions.act_window">
+        <field name="name">საშემოსავლო შეღავათის ატვირთვა</field>
+        <field name="res_model">income.benefit.import.wizard</field>
+        <field name="view_mode">form</field>
+        <field name="target">new</field>
+    </record>
+</odoo>
+

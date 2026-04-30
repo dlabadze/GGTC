@@ -1,0 +1,30 @@
+<odoo>
+    <record id="view_wizard_invoice_import" model="ir.ui.view">
+        <field name="name">wizard.invoice.import.form</field>
+        <field name="model">wizard.invoice.import</field>
+        <field name="arch" type="xml">
+            <form string="Import Invoices">
+                <group>
+                    <field name="file" filename="filename"/>
+                    <field name="journal_name_"/>
+                </group>
+                <footer>
+                    <button string="Import" type="object" name="action_import_invoices" class="btn-primary"/>
+                    <button string="Cancel" class="btn-secondary" special="cancel"/>
+                </footer>
+            </form>
+        </field>
+    </record>
+
+    <record id="action_wizard_invoice_import" model="ir.actions.act_window">
+        <field name="name">Import Invoices</field>
+        <field name="res_model">wizard.invoice.import</field>
+        <field name="view_mode">form</field>
+        <field name="target">new</field>
+    </record>
+
+    <menuitem id="menu_import_invoices"
+              name="ჟურნალების იმპორტირება"
+              parent="account.menu_finance_entries"
+              action="action_wizard_invoice_import"/>
+</odoo>

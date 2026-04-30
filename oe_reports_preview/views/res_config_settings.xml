@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- This module is under copyright of 'OdooElevate' -->
+<odoo>
+
+    <record id="inh_res_config_settings_view_form" model="ir.ui.view">
+        <field name="name">inh_res.config.settings.view.form</field>
+        <field name="model">res.config.settings</field>
+        <field name="priority" eval="40"/>
+        <field name="inherit_id" ref="base_setup.res_config_settings_view_form"/>
+        <field name="arch" type="xml">
+            <xpath expr="//div[@id='companies']" position="after">
+                <div id="div_preview_pdf">
+                    <block title="Preview PDF Reports" name="preview_pdf_setting_container">
+                        <div class="col-12 col-lg-6 o_setting_box" id="preview_pdf_reports_id">
+                            <div class="o_setting_left_pane">
+                                <field name="preview_pdf"/>
+                            </div>
+                            <div class="o_setting_right_pane">
+                                <label for="preview_pdf"/>
+                                <div class="text-muted">
+                                    Check this box to view all your PDF reports directly in your browser.
+                                </div>
+                            </div>
+                        </div>
+                    </block>
+                </div>
+            </xpath>
+        </field>
+    </record>
+
+</odoo>

@@ -1,0 +1,184 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+  <data>
+    <!-- Paper Format -->
+    <record id="manufacturing_pdf_paperformat" model="report.paperformat">
+      <field name="name">წარმოების საბეჭდი ფორმა</field>
+      <field name="format">A4</field>
+      <field name="orientation">Portrait</field>
+      <field name="margin_top">15</field>
+      <field name="margin_bottom">10</field>
+      <field name="margin_left">7</field>
+      <field name="margin_right">7</field>
+      <field name="header_spacing">0</field>
+      <field name="header_line" eval="False"/>
+    </record>
+
+    <!-- Report Action -->
+    <record id="action_report_manufacturing_form" model="ir.actions.report">
+      <field name="name">წარმოების საბეჭდი ფორმა</field>
+      <field name="model">mrp.production</field>
+      <field name="report_type">qweb-pdf</field>
+      <field name="report_name">manufacturing_pdf.sawarmoo_forma</field>
+      <field name="report_file">manufacturing_pdf.sawarmoo_forma</field>
+      <field name="binding_model_id" ref="mrp.model_mrp_production"/>
+      <field name="binding_type">report</field>
+      <field name="paperformat_id" ref="manufacturing_pdf.manufacturing_pdf_paperformat"/>
+    </record>
+
+    <!-- TEMPLATE -->
+    <template id="sawarmoo_forma">
+      <t t-call="web.html_container">
+        <t t-call="web.external_layout">
+          <t t-foreach="docs" t-as="doc">
+            <div class="page">
+              <!-- HEADER -->
+              <table style="width:70%; border:1px solid black; border-collapse:collapse; margin-bottom:8px;">
+                <tr>
+                  <td style="padding:10px; vertical-align:top;">
+                    <div style="font-size:16px; font-weight:bold; text-align:left;">
+                      სამუშაოს შესრულების აქტი - <t t-esc="doc.x_studio_char_field_394_1j74f7vfe or ''"/>
+                    </div>
+                    <div style="margin-top:6px;">
+                      მიმღები საწყობი: <t t-esc="doc.location_src_id.display_name or ''"/>
+                    </div>
+                    <div style="margin-top:6px;">
+                      თარიღი: <t t-esc="doc.date_finished and doc.date_finished.strftime('%d/%m/%Y') or ''"/>
+                    </div>
+                  </td>
+                </tr>
+              </table>
+
+              <!-- SEPARATOR -->
+              <div style="width:100%; text-align:center; font-size:11px; margin-bottom:10px;">
+                - - -- - - -- - - -- - - -- - - -- - - -- - - -- - - - - - - -- - - -- - - -- - - -- - - -- - - -- - - -- - - - - - - -- - - -- - - -- - - -- - - -- - - -- - - -- - - - - - - -- - - -- - - -- - - -- - - -- - - -- - - -- - - - -
+              </div>
+
+              <!-- PRODUCT RESULT -->
+              <table style="width:70%; border:1px solid black; border-collapse:collapse; margin-bottom:15px;">
+                <tr>
+                  <th colspan="4" style="border:1px solid black; padding:8px; text-align:center; font-weight:bold;">
+                    მიღებული დამზადებული პროდუქცია
+                  </th>
+                </tr>
+                <tr>
+                  <th style="border:1px solid black; padding:6px; text-align:center;">კოდი</th>
+                  <th style="border:1px solid black; padding:6px; text-align:center;">დასახელება</th>
+                  <th style="border:1px solid black; padding:6px; text-align:center;">ერთეული</th>
+                  <th style="border:1px solid black; padding:6px; text-align:center;">ფაქტიური რაოდენობა</th>
+                </tr>
+                <tr>
+                  <td style="border:1px solid black; padding:6px;">
+                    <t t-esc="doc.product_id.default_code or ''"/>
+                  </td>
+                  <td style="border:1px solid black; padding:6px;">
+                    <t t-esc="doc.product_id.name"/>
+                  </td>
+                  <td style="border:1px solid black; padding:6px;">
+                    <t t-esc="doc.product_uom_id.name"/>
+                  </td>
+                  <td style="border:1px solid black; padding:6px;">
+                    <t t-esc="'%.4f' % (doc.product_qty or 0)"/>
+                  </td>
+                </tr>
+              </table>
+
+              <!-- SEPARATOR -->
+              <div style="width:100%; text-align:center; font-size:11px; margin-bottom:12px;">
+                - - -- - - -- - - -- - - -- - - -- - - -- - - -- - - - - - - -- - - -- - - -- - - -- - - -- - - -- - - -- - - - - - - -- - - -- - - -- - - -- - - -- - - -- - - -- - - - - - - -- - - -- - - -- - - -- - - -- - - -- - - -- - - - -
+              </div>
+
+              <!-- RAW MATERIAL LINES -->
+              <table style="width:100%; border:1px solid black; border-collapse:collapse; margin-bottom:20px;">
+                <tr>
+                  <th colspan="7" style="border:1px solid black; padding:8px; text-align:center; font-weight:bold;">
+                    გახარჯული ნედლეული
+                  </th>
+                </tr>
+                <tr>
+                  <!-- შიდა გადაცემა with nested table -->
+                  <th style="border:1px solid black; width:16%; padding:0;">
+                    <table style="width:100%; border-collapse:collapse; height:100%;">
+                      <tr>
+                        <th colspan="2" style="border-bottom:1px solid black; padding:6px; text-align:center;">
+                          შიდა გადაცემა
+                        </th>
+                      </tr>
+                      <tr>
+                        <th style="border-right:1px solid black; padding:6px; width:50%; text-align:center;">
+                          თარიღი
+                        </th>
+                        <th style="padding:6px; width:50%; text-align:center;">
+                          ნომერი
+                        </th>
+                      </tr>
+                    </table>
+                  </th>
+                  <th style="border:1px solid black; text-align:center; padding:6px;">მოთხ. წინასწ. N</th>
+                  <th style="border:1px solid black; text-align:center; padding:6px;">კოდი</th>
+                  <th style="border:1px solid black; text-align:center; padding:6px;">დასახელება</th>
+                  <th style="border:1px solid black; text-align:center; padding:6px;">ერთეული</th>
+                  <th style="border:1px solid black; text-align:center; padding:6px;">რაოდენობა</th>
+                </tr>
+                <t t-foreach="doc.move_raw_ids" t-as="line">
+                  <tr>
+                    <!-- თარიღი and ნომერი in nested table structure -->
+                    <td style="border:1px solid black; padding:0;">
+                      <table style="width:100%; border-collapse:collapse;">
+                        <tr>
+                          <td style="border-right:1px solid black; padding:6px; width:50%;">
+                            <t t-esc="line.x_studio_date_field_7em_1jab27cev and line.x_studio_date_field_7em_1jab27cev.strftime('%d/%m/%Y') or ''"/>
+                          </td>
+                          <td style="padding:6px; width:50%;">
+                            <t t-esc="line.x_studio_char_field_2j9_1jab25g70 or ''"/>
+                          </td>
+                        </tr>
+                      </table>
+                    </td>
+                    <td style="border:1px solid black; padding:6px;">
+                      <t t-esc="line.x_studio_char_field_9mg_1jab28mvm or ''"/>
+                    </td>
+                    <td style="border:1px solid black; padding:6px;">
+                      <t t-esc="line.product_id.default_code or ''"/>
+                    </td>
+                    <td style="border:1px solid black; padding:6px;">
+                      <t t-esc="line.product_id.name"/>
+                    </td>
+                    <td style="border:1px solid black; padding:6px;">
+                      <t t-esc="line.product_uom.name"/>
+                    </td>
+                    <td style="border:1px solid black; padding:6px;">
+                      <t t-esc="'%.4f' % (line.quantity or 0)"/>
+                    </td>
+                  </tr>
+                </t>
+              </table>
+
+              <!-- Kac/saati -->
+              <div style="margin-top:5px; margin-left:35%; font-size:14px;">
+                  კაც/საათი:
+                  <t t-esc="'%.4f' % (doc.namushevari_saatebis_raodenoba or 0)"/>
+              </div>
+  
+              <!-- RESPONSIBLE -->
+              <div style="margin-top:25px; font-size:14px;">
+                <t t-if="doc.x_studio_many2many_field_6l9_1j8l2gdru">
+                  <t t-foreach="doc.x_studio_many2many_field_6l9_1j8l2gdru" t-as="person">
+                    <div style="margin-bottom:15px;">
+                      პასუხისმგებელი პირი: <t t-esc="person.name"/>
+                    </div>
+                  </t>
+                </t>
+                <t t-else="">
+                  <div>
+                    პასუხისმგებელი პირი: ______________________________
+                  </div>
+                </t>
+              </div>
+            </div>
+          </t>
+        </t>
+      </t>
+    </template>
+  </data>
+</odoo>

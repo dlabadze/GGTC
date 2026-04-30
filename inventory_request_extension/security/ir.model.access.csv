@@ -1,0 +1,7 @@
+id,name,model_id:id,group_id:id,perm_read,perm_write,perm_create,perm_unlink
+access_request_report_line_user,request.report.line.user,model_request_report_line,base.group_user,1,1,1,1
+access_request_report_wizard_user,request.report.wizard.user,model_request_report_wizard,base.group_user,1,1,1,1
+access_budget_items_comparison_user,budget.items.comparison.user,model_budget_items_comparison,base.group_user,1,0,0,0
+access_ganawileba_wizard_user,ganawileba.wizard.user,model_ganawileba_wizard,base.group_user,1,1,1,1
+access_ganfaseba_wizard,ganfaseba.wizard,model_ganfaseba_wizard,base.group_user,1,1,1,1
+

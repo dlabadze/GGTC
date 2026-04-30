@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo noupdate="1">
+
+    <!-- Per-category sequences (each starts from 00001) -->
+    <record id="seq_moxsenebiti_mivlineba" model="ir.sequence">
+        <field name="name">Moxsenebiti - Mivlineba</field>
+        <field name="code">moxsenebiti.mivlineba</field>
+        <field name="padding">5</field>
+        <field name="number_next">1</field>
+        <field name="number_increment">1</field>
+        <field name="prefix"></field>
+    </record>
+
+    <record id="seq_moxsenebiti_shvebuleba" model="ir.sequence">
+        <field name="name">Moxsenebiti - Shvebuleba</field>
+        <field name="code">moxsenebiti.shvebuleba</field>
+        <field name="padding">5</field>
+        <field name="number_next">1</field>
+        <field name="number_increment">1</field>
+        <field name="prefix"></field>
+    </record>
+
+</odoo>

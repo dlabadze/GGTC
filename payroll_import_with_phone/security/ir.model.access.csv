@@ -1,0 +1,8 @@
+id,name,model_id:id,group_id:id,perm_read,perm_write,perm_create,perm_unlink
+access_mobile_debt_user,access.mobile.debt.user,model_mobile_debt,hr_payroll.group_hr_payroll_user,1,1,1,1
+access_mobile_debt_manager,access.mobile.debt.manager,model_mobile_debt,hr_payroll.group_hr_payroll_manager,1,1,1,1
+access_mobile_debt_detail_user,access.mobile.debt.detail.user,model_mobile_debt_detail,hr_payroll.group_hr_payroll_user,1,1,1,1
+access_mobile_debt_detail_manager,access.mobile.debt.detail.manager,model_mobile_debt_detail,hr_payroll.group_hr_payroll_manager,1,1,1,1
+access_mobile_debt_import_wizard_user,access.mobile.debt.import.wizard.user,model_mobile_debt_import_wizard,hr_payroll.group_hr_payroll_user,1,1,1,1
+access_mobile_debt_import_wizard_manager,access.mobile.debt.import.wizard.manager,model_mobile_debt_import_wizard,hr_payroll.group_hr_payroll_manager,1,1,1,1
+

@@ -1,0 +1,205 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="view_generated_sale_report_search" model="ir.ui.view">
+        <field name="name">generated.sale.report.search</field>
+        <field name="model">generated.sale.report</field>
+        <field name="arch" type="xml">
+            <search string="Sales Report">
+                <field name="sale_order_id"/>
+                <field name="pos_order_id"/>
+                <field name="sale_status"/>
+                <field name="pos_status"/>
+                <field name="date_order"/>
+                <field name="delivery_date"/>
+                <field name="product_id"/>
+                <field name="partner_id"/>
+                <field name="gaertianeba"/>
+                <field name="savachro_point_type"/>
+                <group expand="0" string="Group By">
+                    <filter string="პროდუქტის ჯგუფი" name="group_sale_product_group_id" context="{'group_by': 'sale_product_group_id'}"/>
+                    <filter string="Sale Order" name="group_sale_order" context="{'group_by': 'sale_order_id'}"/>
+                    <filter string="POS Order" name="group_pos_order" context="{'group_by': 'pos_order_id'}"/>
+                    <filter string="Sale Status" name="group_sale_status" context="{'group_by': 'sale_status'}"/>
+                    <filter string="POS Status" name="group_pos_status" context="{'group_by': 'pos_status'}"/>
+                    <filter string="პროდუქტი" name="group_product" context="{'group_by': 'product_id'}"/>
+                    <filter string="partner" name="group_partner" context="{'group_by': 'partner_id'}"/>
+                    <filter string="გაერთიანება" name="group_gaertianeba" context="{'group_by': 'gaertianeba'}"/>
+                    <filter string="სავაჭრო წერტილის ტიპი" name="group_savachro_point_type" context="{'group_by': 'savachro_point_type'}"/>
+                    <separator/>
+                    <filter string="Order Date (Day)" name="group_date_order_day" context="{'group_by': 'date_order:day'}"/>
+                    <filter string="Order Date (Week)" name="group_date_order_week" context="{'group_by': 'date_order:week'}"/>
+                    <filter string="Order Date (Month)" name="group_date_order_month" context="{'group_by': 'date_order:month'}"/>
+                    <filter string="Order Date (Year)" name="group_date_order_year" context="{'group_by': 'date_order:year'}"/>
+                    <separator/>
+                    <filter string="Delivery Date (Day)" name="group_delivery_date_day" context="{'group_by': 'delivery_date:day'}"/>
+                    <filter string="Delivery Date (Week)" name="group_delivery_date_week" context="{'group_by': 'delivery_date:week'}"/>
+                    <filter string="Delivery Date (Month)" name="group_delivery_date_month" context="{'group_by': 'delivery_date:month'}"/>
+                    <filter string="Delivery Date (Year)" name="group_delivery_date_year" context="{'group_by': 'delivery_date:year'}"/>
+                </group>
+            </search>
+        </field>
+    </record>
+
+    <record id="view_generated_sale_report_list" model="ir.ui.view">
+        <field name="name">generated.sale.report.list</field>
+        <field name="model">generated.sale.report</field>
+        <field name="priority">1</field>
+        <field name="groups_id" eval="[(4, ref('generated_sale_report.group_sale_report_manager'))]"/>
+        <field name="arch" type="xml">
+            <list string="Sales Report" create="false" delete="false" edit="false">
+                <field name="sale_order_id"/>
+                <field name="pos_order_id"/>
+                 <field name="sale_status" optional="show" widget="badge" decoration-success="sale_status == 'sale'" decoration-info="sale_status == 'draft'" decoration-primary="sale_status == 'sent'"/>
+                <field name="pos_status" optional="show" widget="badge"  decoration-info="pos_status == 'draft'" decoration-success="pos_status not in ('draft','cancel')"/>
+                <field name="date_order"/>
+                <field name="delivery_date"/>
+                <field name="product_id"/>
+                <field name="article_id" optional="show"/>
+                <field name="category_id" optional="show"/>
+                <field name="supplier_id" optional="show"/>
+                <field name="litri" optional="show"/>
+                <field name="buyer_group" optional="show"/>
+                <field name="city_region" optional="show"/>
+                <field name="partner_id" optional="show"/>
+                <field name="salesperson_id" optional="show"/>
+                <field name="sale_quantity" optional="show"/>
+                <field name="sale_delivery_quantity" optional="show"/>
+                <field name="refunded_qty" optional="show"/>
+                <field name="sale_invoice_quantity" optional="show"/>
+                <field name="sale_product_uom" optional="show"/>
+                <field name="sale_packaging_quantity" optional="show"/>
+                <field name="sale_packaging_id" optional="show"/>
+                <field name="unit_price" optional="show"/>
+                 <field name="discount_percent" optional="show"/>
+                <field name="loyalty_program_id" optional="show"/>
+                <field name="sale_amount_until_discount" optional="show"/>
+                <field name="sale_price_total" optional="show"/>
+                <field name="discount_difference" optional="show"/>
+                <field name="sale_product_group_id" optional="show"/>
+                <field name="is_manufactured_product" optional="show"/>
+                <field name="weight" optional="show"/>
+                <field name="volume" optional="show"/>
+                <field name="gaertianeba" optional="show"/>
+                <field name="savachro_point_type" optional="show"/>
+                <field name="cost" optional="show"/>
+                <field name="erteuli_cost" optional="show"/>
+                <field name="delivery_amount" optional="show"/>
+                <field name="delivery_untaxed_amount" optional="show"/>
+                <field name="returned_invoice_amount" optional="show"/>
+                <field name="real_invoice_amount" optional="show"/>
+                <field name="real_invoice_untaxed_amount" optional="show"/>
+                <field name="returned_qty" optional="show"/>
+                <field name="earned_amount" optional="show"/>
+                <field name="margin" optional="show" widget="percentage"/>
+            </list>
+        </field>
+    </record>
+
+    <!-- Full column set for users without Sale Report Manager; tune with column_invisible as needed -->
+    <record id="view_generated_sale_report_list_user" model="ir.ui.view">
+        <field name="name">generated.sale.report.list.user</field>
+        <field name="model">generated.sale.report</field>
+        <field name="priority">16</field>
+        <field name="arch" type="xml">
+            <list string="Sales Report" create="false" delete="false" edit="false">
+                <field name="sale_order_id"/>
+                <field name="sale_order_line_id"/>
+                <field name="pos_order_id"/>
+                <field name="pos_order_line_id"/>
+                <field name="sale_status" widget="badge" decoration-success="sale_status == 'sale'" decoration-info="sale_status == 'draft'" decoration-primary="sale_status == 'sent'"/>
+                <field name="pos_status" widget="badge" decoration-info="pos_status == 'draft'" decoration-success="pos_status not in ('draft','cancel')"/>
+                <field name="date_order"/>
+                <field name="delivery_date"/>
+                <field name="product_id"/>
+                <field name="article_id"/>
+                <field name="category_id"/>
+                <field name="supplier_id"/>
+                <field name="litri"/>
+                <field name="volume"/>
+                <field name="buyer_group"/>
+                <field name="city_region"/>
+                <field name="partner_id"/>
+                <field name="gaertianeba"/>
+                <field name="savachro_point_type"/>
+                <field name="salesperson_id"/>
+                <field name="sale_quantity"/>
+                <field name="sale_delivery_quantity"/>
+                <field name="returned_qty"/>
+                <field name="refunded_qty"/>
+                <field name="sale_invoice_quantity"/>
+                <field name="sale_product_uom"/>
+                <field name="sale_packaging_quantity"/>
+                <field name="sale_packaging_id"/>
+                <field name="unit_price"/>
+                <field name="discount_percent"/>
+                <field name="loyalty_program_id"/>
+                <field name="sale_amount_until_discount"/>
+                <field name="sale_price_total"/>
+                <field name="discount_difference"/>
+                <field name="sale_product_group_id"/>
+                <field name="is_manufactured_product"/>
+                <field name="weight"/>
+                <field name="cost" column_invisible="1"/>
+                <field name="erteuli_cost" column_invisible="1"/>
+                <field name="delivery_amount"/>
+                <field name="delivery_untaxed_amount"/>
+                <field name="returned_invoice_amount"/>
+                <field name="real_invoice_amount"/>
+                <field name="real_invoice_untaxed_amount" column_invisible="1"/>
+                <field name="earned_amount" column_invisible="1"/>
+                <field name="margin" widget="percentage" column_invisible="1"/>
+            </list>
+        </field>
+    </record>
+
+    <record id="view_generated_sale_report_pivot" model="ir.ui.view">
+        <field name="name">generated.sale.report.pivot</field>
+        <field name="model">generated.sale.report</field>
+        <field name="priority">1</field>
+        <field name="groups_id" eval="[(4, ref('generated_sale_report.group_sale_report_manager'))]"/>
+        <field name="arch" type="xml">
+            <pivot string="Sales Report" sample="1">
+                <field name="sale_price_total" type="measure"/>
+                <field name="delivery_amount" type="measure"/>
+                <field name="sale_quantity" type="measure"/>
+                <field name="cost" type="measure"/>
+            </pivot>
+        </field>
+    </record>
+
+    <!-- All numeric measures for non-managers; adjust with column_invisible / remove measures as needed -->
+    <record id="view_generated_sale_report_pivot_user" model="ir.ui.view">
+        <field name="name">generated.sale.report.pivot.user</field>
+        <field name="model">generated.sale.report</field>
+        <field name="priority">16</field>
+        <field name="arch" type="xml">
+            <pivot string="Sales Report" sample="1">
+                <field name="sale_quantity" type="measure"/>
+                <field name="sale_delivery_quantity" type="measure"/>
+                <field name="returned_qty" type="measure"/>
+                <field name="refunded_qty" type="measure"/>
+                <field name="sale_invoice_quantity" type="measure"/>
+                <field name="sale_packaging_quantity" type="measure"/>
+                <field name="unit_price" type="measure"/>
+                <field name="sale_amount_until_discount" type="measure"/>
+                <field name="sale_price_total" type="measure"/>
+                <field name="discount_difference" type="measure"/>
+                <field name="weight" type="measure"/>
+                <field name="litri" type="measure"/>
+                <field name="volume" type="measure"/>
+                <field name="discount_percent" type="measure"/>
+                <field name="delivery_amount" type="measure"/>
+                <field name="delivery_untaxed_amount" type="measure"/>
+                <field name="returned_invoice_amount" type="measure"/>
+                <field name="real_invoice_amount" type="measure"/>
+            </pivot>
+        </field>
+    </record>
+
+    <record id="action_generated_sale_report_list" model="ir.actions.act_window">
+        <field name="name">Sales Report (List)</field>
+        <field name="res_model">generated.sale.report</field>
+        <field name="view_mode">list,pivot</field>
+        <field name="context">{'search_default_group_sale_order': 1}</field>
+    </record>
+</odoo>

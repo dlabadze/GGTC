@@ -1,0 +1,191 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+    <!-- =========================================================
+         Category views
+         ========================================================= -->
+    <record id="view_accounting_library_category_list" model="ir.ui.view">
+        <field name="name">accounting.library.category.list</field>
+        <field name="model">accounting.library.category</field>
+        <field name="arch" type="xml">
+            <list string="კატეგორიები" editable="bottom">
+                <field name="name"/>
+            </list>
+        </field>
+    </record>
+
+    <record id="view_accounting_library_category_form" model="ir.ui.view">
+        <field name="name">accounting.library.category.form</field>
+        <field name="model">accounting.library.category</field>
+        <field name="arch" type="xml">
+            <form string="კატეგორია">
+                <sheet>
+                    <group>
+                        <field name="name"/>
+                    </group>
+                </sheet>
+            </form>
+        </field>
+    </record>
+
+    <record id="action_accounting_library_category" model="ir.actions.act_window">
+        <field name="name">კატეგორიები</field>
+        <field name="res_model">accounting.library.category</field>
+        <field name="view_mode">list,form</field>
+    </record>
+
+    <!-- =========================================================
+         Library list view
+         ========================================================= -->
+    <record id="view_accounting_library_list" model="ir.ui.view">
+        <field name="name">accounting.library.list</field>
+        <field name="model">accounting.library</field>
+        <field name="arch" type="xml">
+            <list string="რეესტრი"
+                  decoration-success="state == 'done'"
+                  decoration-muted="state == 'sent'">
+                <field name="date"/>
+                <field name="category_id"/>
+                <field name="document_number"/>
+                <field name="inspektireba_id" optional="show"/>
+                <field name="approval_id" optional="show"/>
+                <field name="state" widget="badge"
+                       decoration-success="state == 'done'"
+                       decoration-info="state == 'sent'"/>
+            </list>
+        </field>
+    </record>
+
+    <!-- =========================================================
+         Library form view
+         ========================================================= -->
+    <record id="view_accounting_library_form" model="ir.ui.view">
+        <field name="name">accounting.library.form</field>
+        <field name="model">accounting.library</field>
+        <field name="arch" type="xml">
+            <form string="ჩანაწერი">
+                <header>
+                    <button name="action_mark_done"
+                            type="object"
+                            string="დასრულება"
+                            class="oe_highlight"
+                            invisible="state == 'done'"/>
+                    <button name="action_reset_to_sent"
+                            type="object"
+                            string="დაბრუნება"
+                            invisible="state == 'sent'"/>
+                    <field name="state" widget="statusbar"
+                           statusbar_visible="sent,done"/>
+                </header>
+                <sheet>
+                    <group>
+                        <group>
+                            <field name="category_id"/>
+                            <field name="date"/>
+                            <field name="document_number" readonly="1"/>
+                        </group>
+                        <group>
+                            <field name="inspektireba_id"/>
+                            <field name="approval_id"/>
+                        </group>
+                    </group>
+                </sheet>
+                <chatter/>
+            </form>
+        </field>
+    </record>
+
+    <!-- =========================================================
+         Library kanban view
+         ========================================================= -->
+    <record id="view_accounting_library_kanban" model="ir.ui.view">
+        <field name="name">accounting.library.kanban</field>
+        <field name="model">accounting.library</field>
+        <field name="arch" type="xml">
+            <kanban default_group_by="state"
+                    class="o_kanban_small_column"
+                    records_draggable="0">
+                <field name="id"/>
+                <field name="state"/>
+                <field name="category_id"/>
+                <field name="document_number"/>
+                <field name="date"/>
+                <templates>
+                    <t t-name="kanban-box">
+                        <div t-attf-class="oe_kanban_card oe_kanban_global_click">
+                            <div class="o_kanban_record_top">
+                                <div class="o_kanban_record_headings">
+                                    <strong class="o_kanban_record_title">
+                                        <field name="document_number"/>
+                                    </strong>
+                                </div>
+                            </div>
+                            <div class="o_kanban_record_body">
+                                <field name="category_id"/>
+                            </div>
+                            <div class="o_kanban_record_bottom">
+                                <div class="oe_kanban_bottom_left">
+                                    <field name="date"/>
+                                </div>
+                            </div>
+                        </div>
+                    </t>
+                </templates>
+            </kanban>
+        </field>
+    </record>
+
+    <!-- =========================================================
+         Library search view
+         ========================================================= -->
+    <record id="view_accounting_library_search" model="ir.ui.view">
+        <field name="name">accounting.library.search</field>
+        <field name="model">accounting.library</field>
+        <field name="arch" type="xml">
+            <search string="ძიება">
+                <field name="document_number"/>
+                <field name="category_id"/>
+                <field name="inspektireba_id"/>
+                <field name="approval_id"/>
+                <filter name="filter_sent" string="გაგზავნილი"
+                        domain="[('state', '=', 'sent')]"/>
+                <filter name="filter_done" string="დასრულებული"
+                        domain="[('state', '=', 'done')]"/>
+                <group expand="0" string="დაჯგუფება">
+                    <filter name="group_state" string="სტატუსი"
+                            context="{'group_by': 'state'}"/>
+                    <filter name="group_category" string="კატეგორია"
+                            context="{'group_by': 'category_id'}"/>
+                </group>
+            </search>
+        </field>
+    </record>
+
+    <!-- =========================================================
+         Library actions (All / Not Done / Done)
+         ========================================================= -->
+    <record id="action_accounting_library_all" model="ir.actions.act_window">
+        <field name="name">ყველა</field>
+        <field name="res_model">accounting.library</field>
+        <field name="view_mode">list,kanban,form</field>
+        <field name="search_view_id" ref="view_accounting_library_search"/>
+    </record>
+
+    <record id="action_accounting_library_not_done" model="ir.actions.act_window">
+        <field name="name">დასასრულებელი</field>
+        <field name="res_model">accounting.library</field>
+        <field name="view_mode">list,kanban,form</field>
+        <field name="search_view_id" ref="view_accounting_library_search"/>
+        <field name="domain">[('state', '=', 'sent')]</field>
+        <field name="context">{'default_state': 'sent'}</field>
+    </record>
+
+    <record id="action_accounting_library_done" model="ir.actions.act_window">
+        <field name="name">დასრულებული</field>
+        <field name="res_model">accounting.library</field>
+        <field name="view_mode">list,kanban,form</field>
+        <field name="search_view_id" ref="view_accounting_library_search"/>
+        <field name="domain">[('state', '=', 'done')]</field>
+    </record>
+
+</odoo>

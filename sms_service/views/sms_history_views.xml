@@ -1,0 +1,95 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data>
+        <!-- SMS History Form View -->
+        <record id="view_sms_history_form" model="ir.ui.view">
+            <field name="name">sms.history.form</field>
+            <field name="model">sms.history</field>
+            <field name="arch" type="xml">
+                <form>
+                    <header>
+                        <button name="resend_sms" string="Resend SMS" type="object" class="btn-primary"/>
+                        <button name="view_response" string="View Response" type="object" class="btn-secondary"/>
+                    </header>
+                    <sheet>
+                        <group>
+                            <group string="SMS Details">
+                                <field name="config_id"/>
+                                <field name="to_number"/>
+                                <field name="sender"/>
+                                <field name="create_date"/>
+                                <field name="create_uid"/>
+                            </group>
+                            <group string="Status">
+                                <field name="status_display"/>
+                                <field name="success"/>
+                                <field name="response_code"/>
+                            </group>
+                        </group>
+                        <group string="Message">
+                            <field name="message" nolabel="1"/>
+                        </group>
+                        <group string="Response">
+                            <field name="response_text" nolabel="1"/>
+                        </group>
+                    </sheet>
+                </form>
+            </field>
+        </record>
+
+        <!-- SMS History List View -->
+        <record id="view_sms_history_tree" model="ir.ui.view">
+            <field name="name">sms.history.tree</field>
+            <field name="model">sms.history</field>
+            <field name="arch" type="xml">
+                <list>
+                    <field name="create_date"/>
+                    <field name="to_number"/>
+                    <field name="sender"/>
+                    <field name="config_id"/>
+                    <field name="status_display" widget="badge"/>
+                    <field name="response_code"/>
+                    <field name="create_uid"/>
+                </list>
+            </field>
+        </record>
+
+        <!-- SMS History Search View -->
+        <record id="view_sms_history_search" model="ir.ui.view">
+            <field name="name">sms.history.search</field>
+            <field name="model">sms.history</field>
+            <field name="arch" type="xml">
+                <search>
+                    <field name="to_number"/>
+                    <field name="sender"/>
+                    <field name="config_id"/>
+                    <field name="create_uid"/>
+                    <filter string="Success" name="success" domain="[('success', '=', True)]"/>
+                    <filter string="Failed" name="failed" domain="[('success', '=', False)]"/>
+                    <filter string="Today" name="today" domain="[('create_date', '>=', context_today())]"/>
+                    <group string="Group By">
+                        <filter string="Status" name="group_status" context="{'group_by': 'status_display'}"/>
+                        <filter string="Configuration" name="group_config" context="{'group_by': 'config_id'}"/>
+                        <filter string="Date" name="group_date" context="{'group_by': 'create_date:day'}"/>
+                    </group>
+                </search>
+            </field>
+        </record>
+
+        <!-- SMS History Action -->
+        <record id="action_sms_history" model="ir.actions.act_window">
+            <field name="name">SMS History</field>
+            <field name="res_model">sms.history</field>
+            <field name="view_mode">list,form</field>
+            <field name="context">{'search_default_today': 1}</field>
+            <field name="help" type="html">
+                <p class="o_view_nocontent_smiling_face">
+                    No SMS messages sent yet!
+                </p>
+                <p>
+                    SMS history will appear here once you start sending messages.
+                </p>
+            </field>
+        </record>
+    </data>
+</odoo> 

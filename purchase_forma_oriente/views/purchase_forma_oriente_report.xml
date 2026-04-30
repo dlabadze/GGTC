@@ -1,0 +1,220 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data>
+
+        <!-- Paper Format -->
+        <record id="purchase_forma_oriente_paperformat" model="report.paperformat">
+            <field name="name">Purchase Form Format (ფორმა 2)</field>
+            <field name="format">A4</field>
+            <field name="orientation">Portrait</field>
+            <field name="margin_top">15</field>
+            <field name="margin_bottom">10</field>
+            <field name="margin_left">10</field>
+            <field name="margin_right">10</field>
+            <field name="header_spacing">0</field>
+            <field name="header_line" eval="False"/>
+        </record>
+
+        <!-- Report Action -->
+        <record id="action_report_purchase_forma_oriente" model="ir.actions.report">
+            <field name="name">ფორმა 2 - Purchase Document</field>
+            <field name="model">purchase.order</field>
+            <field name="report_type">qweb-pdf</field>
+            <field name="report_name">purchase_forma_oriente.report_purchase_forma_oriente_document</field>
+            <field name="report_file">purchase_forma_oriente.report_purchase_forma_oriente_document</field>
+            <field name="binding_model_id" ref="purchase.model_purchase_order"/>
+            <field name="binding_type">report</field>
+            <field name="paperformat_id" ref="purchase_forma_oriente.purchase_forma_oriente_paperformat"/>
+        </record>
+
+        <!-- Report Template -->
+        <template id="report_purchase_forma_oriente_document">
+            <t t-call="web.basic_layout">
+                <t t-foreach="docs" t-as="doc">
+
+                    <div style="font-family: 'DejaVu Sans', sans-serif; font-size: 11px; padding: 10px;">
+
+                        <!-- HEADER -->
+                        <div style="display: flex; justify-content: space-between; margin-bottom: 10px;">
+                            <div style="font-weight: bold;">ფორმა 2</div>
+                            <div style="text-align: center; font-weight: bold; font-size: large;">
+                                შეძენილი ფასეულობის საწყობისთვის ჩაბარება <br/>
+                                აქტი N
+                            </div>
+                            <div style="text-align: right; font-weight: bold;">
+                                საწყობი: <t t-esc="doc.picking_type_id.name"/><br/>
+                                თარიღი: <t t-if="doc.date_approve">
+                                            <t t-esc="doc.date_approve.strftime('%d-%m-%Y')"/>
+                                        </t>
+
+                            </div>
+                        </div>
+
+                        <!-- MAIN TABLE -->
+                        <table style="width: 100%; border-collapse: collapse; margin-top: 15px; font-size: 10pt;">
+
+                            <!-- FIRST ROW: BIG HEADERS -->
+                            <tr>
+                                <td colspan="5" style="border:2px solid black; text-align:center; font-weight:bold; padding:8px;">
+                                    მომწოდებლის დასახელება
+                                </td>
+                                <td colspan="7" style="border:2px solid black; text-align:center; font-weight:bold; padding:8px;">
+                                    <t t-esc="doc.partner_id.name"/>
+                                </td>
+                            </tr>
+
+                            <!-- SECOND ROW: "თანმხლები დოკუმენტი" spans over 4 columns, სასაქონლო კოდი, and right side headers -->
+                            <tr>
+                                <!-- LEFT SIDE: თანმხლები დოკუმენტი (upper part of the box) -->
+                                <td colspan="4" style="border:2px solid black; text-align:center; font-weight:bold; padding:8px; border-bottom:1px solid black;">
+                                    თანმხლები დოკუმენტი
+                                </td>
+
+                                <!-- სასაქონლო კოდი -->
+                                <td rowspan="2" style="border:2px solid black; text-align:center; font-weight:bold; padding:8px; vertical-align:middle;">
+                                    სასაქონლო კოდი
+                                </td>
+
+                                <!-- RIGHT SIDE: საქონლის დასახელება section headers -->
+                                <td rowspan="2" style="border:2px solid black; text-align:center; font-weight:bold; padding:8px; vertical-align:middle;">
+                                    საქონლის დასახელება, ტიპი, მარკა, სხვა მახასიათებლები
+                                </td>
+                                <td rowspan="2" style="border:2px solid black; text-align:center; font-weight:bold; padding:8px; vertical-align:middle;">
+                                    ზომის ერთეული
+                                </td>
+                                <td rowspan="2" style="border:2px solid black; text-align:center; font-weight:bold; padding:8px; vertical-align:middle;">
+                                    რაოდენობა
+                                </td>
+                                <td rowspan="2" style="border:2px solid black; text-align:center; font-weight:bold; padding:8px; vertical-align:middle;">
+                                    ერთეულის ფასი (დღგ)
+                                </td>
+                                <td rowspan="2" style="border:2px solid black; text-align:center; font-weight:bold; padding:8px; vertical-align:middle;">
+                                    თანხა
+                                </td>
+                                <td rowspan="2" style="border:2px solid black; text-align:center; font-weight:bold; padding:8px; vertical-align:middle;">
+                                    მოთხ. წინასწ. N
+                                </td>
+                                <td rowspan="2" style="border:2px solid black; text-align:center; font-weight:bold; padding:8px; vertical-align:middle;">
+                                    მოთხ. რეგისტრაციის თარიღი
+                                </td>
+                            </tr>
+
+                            <!-- THIRD ROW: Subheaders under 'თანმხლები დოკუმენტი' (lower part of the box) -->
+                            <tr>
+                                <td style="border:2px solid black; text-align:center; font-weight:bold; padding:8px; border-top:none;">
+                                    ანბ. ფაქტურა
+                                </td>
+                                <td style="border:2px solid black; text-align:center; font-weight:bold; padding:8px; border-top:none;">
+                                    სასაქ. ზედნადები
+                                </td>
+                                <td style="border:2px solid black; text-align:center; font-weight:bold; padding:8px; border-top:none;">
+                                    ხელშ. ნომერი
+                                </td>
+                                <td style="border:2px solid black; text-align:center; font-weight:bold; padding:8px; border-top:none;">
+                                    თარიღი
+                                </td>
+                                <!-- სასაქონლო კოდი and right side continue from rowspan above -->
+                            </tr>
+
+                            <!-- DATA ROWS -->
+                            <t t-foreach="doc.order_line" t-as="line">
+                                <tr>
+                                    <!-- 1) ანბ. ფაქტურა (empty) -->
+                                    <td style="border:2px solid black; padding:8px;"></td>
+
+                                    <!-- 2) სასაქ. ზედნადები → invoice_number -->
+                                    <td style="border:2px solid black; padding:8px;">
+                                        <t t-if="doc.invoice_number">
+                                            <t t-esc="doc.invoice_number"/>
+                                        </t>
+                                    </td>
+
+                                    <!-- 3) ხელშ. ნომერი → doc.name -->
+                                    <td style="border:2px solid black; padding:8px;">
+                                        <t t-esc="doc.name"/>
+                                    </td>
+
+                                    <!-- 4) თარიღი → doc.date_approve -->
+                                    <td style="border:2px solid black; padding:8px;">
+                                        <t t-if="doc.date_approve">
+                                            <t t-esc="doc.date_approve.strftime('%d-%m-%Y')"/>
+                                        </t>
+
+                                    </td>
+
+                                    <!-- 5) სასაქონლო კოდი → barcode of product -->
+                                    <td style="border:2px solid black; padding:8px;">
+                                        <t t-if="line.product_id.barcode">
+                                            <t t-esc="line.product_id.barcode"/>
+                                        </t>
+                                    </td>
+
+                                    <!-- 6) საქონლის დასახელება, ტიპი, მარკა… → product_id -->
+                                    <td style="border:2px solid black; padding:8px;">
+                                        <t t-esc="line.product_id.display_name"/>
+                                    </td>
+
+                                    <!-- 7) ზომის ერთეული → product_uom -->
+                                    <td style="border:2px solid black; padding:8px;">
+                                        <t t-esc="line.product_uom.name"/>
+                                    </td>
+
+                                    <!-- 8) რაოდენობა → qty_received -->
+                                    <td style="border:2px solid black; padding:8px;">
+                                        <t t-esc="line.qty_received"/>
+                                    </td>
+
+                                    <!-- 9) ერთეულის ფასი(დღგ) → price_unit -->
+                                    <td style="border:2px solid black; padding:8px;">
+                                        <t t-esc="line.price_unit"/>
+                                    </td>
+
+                                    <!-- 10) თანხა → price_subtotal -->
+                                    <td style="border:2px solid black; padding:8px;">
+                                        <t t-esc="line.price_subtotal"/>
+                                    </td>
+
+                                    <!-- 11) მოთხ. წინასწ. N → x_studio_ -->
+                                    <td style="border:2px solid black; padding:8px;">
+                                        <t t-if="line.x_studio_">
+                                            <t t-esc="line.x_studio_"/>
+                                        </t>
+                                    </td>
+
+                                    <!-- 12) მოთხ. რეგ. თარიღი → purchase_plan_id (display name only if exists) -->
+                                    <td style="border:2px solid black; padding:8px;">
+                                        <t t-if="line.purchase_plan_id">
+                                            <t t-esc="line.purchase_plan_id.name or ''"/>
+                                        </t>
+                                    </td>
+                                </tr>
+                            </t>
+
+                        </table>
+
+
+                        <!-- FOOTER -->
+                        <div style="margin-top: 40px;">
+                            <table style="width: 100%; border-collapse: collapse;">
+                                <tr>
+                                    <td style="width: 50%; vertical-align: top;">
+                                        <div style="font-weight: bold;">ჩააბარა</div>
+                                        <div style="margin-top: 10px; font-weight: bold;">გვარი, სახელი</div>
+                                        <div style="margin-top: 10px; font-weight: bold;">ხელმოწერა</div>
+                                    </td>
+                                    <td style="width: 50%; vertical-align: top;">
+                                        <div style="font-weight: bold;">მიიღო</div>
+                                        <div style="margin-top: 10px; font-weight: bold;">გვარი, სახელი</div>
+                                        <div style="margin-top: 10px; font-weight: bold;">ხელმოწერა</div>
+                                    </td>
+                                </tr>
+                            </table>
+                        </div>
+
+                    </div>
+                </t>
+            </t>
+        </template>
+
+    </data>
+</odoo>

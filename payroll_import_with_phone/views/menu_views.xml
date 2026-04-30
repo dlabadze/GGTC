@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <!-- Add menu items to Payroll menu -->
+    <menuitem id="menu_mobile_debt_import"
+              name="მობილურის ნომრით ატვირთვა"
+              action="action_mobile_debt_import_wizard"
+              parent="hr_work_entry_contract_enterprise.menu_hr_payroll_root"
+              sequence="105"/>
+
+    <menuitem id="menu_mobile_debt"
+              name="მობილურის დაკავებები"
+              action="action_mobile_debt"
+              parent="hr_work_entry_contract_enterprise.menu_hr_payroll_root"
+              sequence="110"/>
+</odoo>
+

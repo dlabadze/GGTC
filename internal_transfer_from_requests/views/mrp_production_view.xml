@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="mrp_production_form_inherit_inventory_request" model="ir.ui.view">
+        <field name="name">mrp.production.form.inventory.request</field>
+        <field name="model">mrp.production</field>
+        <field name="inherit_id" ref="mrp.mrp_production_form_view"/>
+        <field name="arch" type="xml">
+
+            <xpath expr="//div[@class='oe_button_box']" position="inside">
+                <button
+                    name="action_view_inventory_request"
+                    type="object"
+                    class="oe_stat_button"
+                    icon="fa-external-link">
+                    <field name="inventory_request_count" widget="statinfo" string="Inventory Requests"/>
+                </button>
+            </xpath>
+
+        </field>
+    </record>
+
+     <record id="view_mrp_production_form_inherit" model="ir.ui.view">
+        <field name="name">mrp.production.form.inherit.inventory.request</field>
+        <field name="model">mrp.production</field>
+        <field name="inherit_id" ref="studio_customization.odoo_studio_mrp_prod_4c88e6e0-9490-4de8-a384-104d8b8c901f"/>
+        <field name="arch" type="xml">
+            <xpath expr="//field[@name='x_studio_many2many_field_6l9_1j8l2gdru']" position="after">
+                <field name="inventory_request_id"/>
+                <field name="inventory_request_number"/>
+                <field name="inventory_request_description" string="საფუძველი დეტალურად"/>
+            </xpath>
+        </field>
+    </record>
+</odoo>

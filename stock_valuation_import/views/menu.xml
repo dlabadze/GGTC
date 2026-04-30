@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+    <!--
+        Places the wizard under:
+          Inventory > Operations > Import Product Costs
+        Also accessible under:
+          Accounting > Accounting > Import Product Costs  (if account module menu exists)
+    -->
+    <menuitem
+        id="menu_stock_valuation_import_wizard"
+        name="Import Product Costs"
+        parent="stock.menu_stock_root"
+        action="action_stock_valuation_import_wizard"
+        sequence="99"
+        groups="stock.group_stock_manager,account.group_account_manager"/>
+
+</odoo>

@@ -1,0 +1,9 @@
+id,name,model_id:id,group_id:id,perm_read,perm_write,perm_create,perm_unlink
+access_inventory_request_user,inventory.request.user,model_inventory_request,base.group_user,1,1,1,1
+access_inventory_line_user,inventory.line.user,model_inventory_line,base.group_user,1,1,1,1
+access_inventory_request_stage_user,inventory.request.stage.user,model_inventory_request_stage,base.group_user,1,1,1,1
+access_inventory_line_stage_user,inventory.line.stage.user,model_inventory_line_stage,base.group_user,1,1,1,1
+access_inventory_request_tag_user,inventory.request.tag.user,model_inventory_request_tag,base.group_user,1,1,1,1
+access_inventory_line_tag_user,inventory.line.tag.user,model_inventory_line_tag,base.group_user,1,1,1,1
+access_vendor_selection_wizard_user,vendor.selection.wizard.user,model_vendor_selection_wizard,base.group_user,1,1,1,1
+access_agreement_vendor_selection_wizard_user,access.agreement.vendor.selection.wizard.user,model_agreement_vendor_selection_wizard,base.group_user,1,1,1,1

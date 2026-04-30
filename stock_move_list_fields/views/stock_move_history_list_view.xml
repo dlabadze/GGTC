@@ -1,0 +1,14 @@
+<odoo>
+<record id="view_move_line_history_list_inherit_request" model="ir.ui.view">
+    <field name="name">stock.move.history.list.inherit</field>
+    <field name="model">stock.move.line</field>
+    <field name="inherit_id" ref="stock_report_location.view_stock_move_line_history_list"/>
+    <field name="arch" type="xml">
+        <xpath expr="//field[@name='request_number']" position="after">
+            <field name="request_manual_num" string="მოთხოვნის ნომერი (ხელით)" optional="show"/>
+            <field name="x_studio_request_number"  string="მოთხოვნის ნომერი" optional="show"/>
+            <field name="request_date" string="მოთხოვნის თარიღი" optional="show"/>
+        </xpath>
+    </field>
+</record>
+</odoo>

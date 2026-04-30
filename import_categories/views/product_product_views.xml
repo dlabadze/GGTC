@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<odoo>
+    <!-- Inherit Product Product List View -->
+    <record id="product_product_tree_view_inherit" model="ir.ui.view">
+        <field name="name">product.product.tree.view.inherit</field>
+        <field name="model">product.product</field>
+        <field name="inherit_id" ref="product.product_product_tree_view"/>
+        <field name="arch" type="xml">
+            <xpath expr="//list" position="inside">
+                <header>
+                    <button name="%(action_update_products_wizard)d" 
+                            string="Update Products from Excel" 
+                            type="action" 
+                            class="btn-primary"
+                            display="always"/>
+                </header>
+            </xpath>
+        </field>
+    </record>
+</odoo>

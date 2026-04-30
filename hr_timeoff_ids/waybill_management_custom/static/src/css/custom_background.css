@@ -1,0 +1,7 @@
+.o_data_row.o_data_row_decoration_success {
+    background-color: #d4edda !important; /* Light Green */
+}
+
+.o_data_row.o_data_row_decoration_warning {
+    background-color: #fff3cd !important; /* Light Yellow */
+}

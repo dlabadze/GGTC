@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="view_budgeting_request_form_decorations" model="ir.ui.view">
+        <field name="name">budgeting.request.form.decorations</field>
+        <field name="model">budgeting.request</field>
+        <field name="inherit_id" ref="studio_customization.odoo_studio_budgetin_9c6c2921-5a59-407e-9f61-285c05dfd0a3"/>
+        <field name="priority" eval="1000"/>
+        <field name="arch" type="xml">
+            <!-- Add decoration-success to x_studio_float_field_38e_1j1ftullr -->
+            <xpath expr="//field[@name='line_ids']/list/field[@name='x_studio_float_field_38e_1j1ftullr']" position="attributes">
+                <attribute name="decoration-success">stage_id.name == 'ლოჯისტიკის სამსახური' and x_studio_float_field_8ss_1j1ftvflr > 0 and x_studio_float_field_38e_1j1ftullr > 0</attribute>
+            </xpath>
+
+            <!-- Add decoration-success to x_studio_float_field_8ss_1j1ftvflr -->
+            <xpath expr="//field[@name='line_ids']/list/field[@name='x_studio_float_field_8ss_1j1ftvflr']" position="attributes">
+                <attribute name="decoration-success">stage_id.name == 'ლოჯისტიკის სამსახური' and x_studio_float_field_8ss_1j1ftvflr > 0 and x_studio_float_field_38e_1j1ftullr > 0</attribute>
+            </xpath>
+
+            <!-- Add decoration-success to x_studio_float_field_gr_1j1fu1rj7 -->
+            <xpath expr="//field[@name='line_ids']/list/field[@name='x_studio_float_field_gr_1j1fu1rj7']" position="attributes">
+                <attribute name="decoration-success">stage_id.name == 'ფინანსური სამმართველო' and (x_studio_float_field_gr_1j1fu1rj7 > 0 or x_studio_float_field_7bi_1j1fu738v > 0)</attribute>
+            </xpath>
+
+            <!-- Add decoration-success to x_studio_float_field_7bi_1j1fu738v -->
+            <xpath expr="//field[@name='line_ids']/list/field[@name='x_studio_float_field_7bi_1j1fu738v']" position="attributes">
+                <attribute name="decoration-success">stage_id.name == 'ფინანსური სამმართველო' and (x_studio_float_field_gr_1j1fu1rj7 > 0 or x_studio_float_field_7bi_1j1fu738v > 0)</attribute>
+            </xpath>
+        </field>
+    </record>
+</odoo>

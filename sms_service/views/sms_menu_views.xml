@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data>
+        <!-- Main SMS Menu -->
+        <menuitem id="menu_sms_root" 
+                  name="SMS Service" 
+                  sequence="100"/>
+
+        <!-- SMS Configuration Menu -->
+        <menuitem id="menu_sms_config" 
+                  name="Configuration" 
+                  parent="menu_sms_root" 
+                  sequence="10"/>
+
+        <menuitem id="menu_sms_config_list" 
+                  name="SMS Configurations" 
+                  parent="menu_sms_config" 
+                  action="action_sms_config" 
+                  sequence="10"/>
+
+        <!-- SMS History Menu -->
+        <menuitem id="menu_sms_history" 
+                  name="History" 
+                  parent="menu_sms_root" 
+                  sequence="20"/>
+
+        <menuitem id="menu_sms_history_list" 
+                  name="SMS History" 
+                  parent="menu_sms_history" 
+                  action="action_sms_history" 
+                  sequence="10"/>
+    </data>
+</odoo> 

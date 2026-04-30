@@ -1,0 +1,27 @@
+<odoo>
+    <record id="view_bank_import_wizard_form" model="ir.ui.view">
+        <field name="name">bank.import.wizard.form</field>
+        <field name="model">bank.import.wizard</field>
+        <field name="arch" type="xml">
+            <form string="ბანკის ამონაწერი Excel-დან">
+                <group>
+                    <field name="journal_id" />
+                    <field name="excel_file" filename="file_name" />
+                    <field name="line_from"/>
+                    <field name="line_to"/>
+                </group>
+                <footer>
+                    <button string="იმპორტი" type="object" name="action_import_excel" class="btn-primary"/>
+                    <button string="დახურვა" class="btn-secondary" special="cancel"/>
+                </footer>
+            </form>
+        </field>
+    </record>
+<!--action-->
+    <record id="action_bank_import_wizard" model="ir.actions.act_window">
+        <field name="name">ბანკის იმპორტი Excel-დან</field>
+        <field name="res_model">bank.import.wizard</field>
+        <field name="view_mode">form</field>
+        <field name="target">new</field>
+    </record>
+</odoo>

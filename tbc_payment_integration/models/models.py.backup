@@ -1,0 +1,2383 @@
+from odoo import models, fields, api, _
+from odoo.exceptions import UserError
+import logging
+
+_logger = logging.getLogger(__name__)
+
+
+# class BankRecWidget(models.Model):
+#     _inherit = 'bank.rec.widget'
+#
+#     def _action_trigger_matching_rules(self):
+#         """Override to prioritize lines from our source journal entry"""
+#         self.ensure_one()
+#
+#         if self.st_line_id.x_source_move_id:
+#             source_move = self.st_line_id.x_source_move_id
+#
+#             bank_account = self.st_line_id.journal_id.default_account_id
+#             suspense_account = self.st_line_id.journal_id.suspense_account_id
+#
+#             # Get NON-bank account lines (your mapping account lines)
+#             source_amls = source_move.line_ids.filtered(
+#                 lambda l: l.account_id != bank_account
+#                           and l.account_id != suspense_account
+#                           and not l.reconciled
+#             )
+#
+#             if source_amls:
+#                 # Load these lines - they will automatically get the opposite sign
+#                 self._action_add_new_amls(source_amls, allow_partial=False)
+#
+#                 if self.line_ids.filtered(lambda x: x.flag == 'new_aml'):
+#                     return {'amls': source_amls, 'model': False, 'status': 'success'}
+#
+#         return super()._action_trigger_matching_rules()
+
+class AccountBankStatementLine(models.Model):
+    _inherit = 'account.bank.statement.line'
+
+    x_source_move_id = fields.Many2one(
+        'account.move',
+        string='Source Journal Entry',
+        help='Original journal entry created from TBC transaction',
+        index=True,
+    )
+
+class TBCPartnerSelectionWizard(models.TransientModel):
+    _name = 'tbc.partner.selection.wizard'
+    _description = 'TBC Partner Selection Wizard'
+
+    transaction_id = fields.Many2one('tbc_payment_integration.tbc_payment_integration',
+                                     string='Transaction', required=True)
+    partner_id = fields.Many2one('res.partner', string='Select Partner', required=False)
+    partner_name = fields.Char(string='Partner Name from Transaction', readonly=True)
+    partner_inn = fields.Char(string='Partner INN from Transaction', readonly=True)
+    transaction_type = fields.Char(string='Transaction Type', readonly=True)
+
+    def action_confirm_partner(self):
+        """Confirm partner selection and continue processing the transaction."""
+        if not self.partner_id:
+            raise UserError(_('Please select a partner to continue.'))
+
+        # Continue processing the transaction with the selected partner
+        return self.transaction_id.with_context(
+            selected_partner_id=self.partner_id.id
+        )._continue_transaction_processing()
+
+class AccountAccount(models.Model):
+    _inherit = 'account.account'
+
+    bank_type_id = fields.Many2one('custom.bank', string='Bank Type')
+
+
+class CustomBank(models.Model):
+    _name = 'custom.bank'
+    _description = 'Bank Type'
+
+    name = fields.Char(string='Bank Name', required=True)
+
+class res_users_ex(models.Model):
+    _inherit = 'res.users'
+
+    bog_client_secret = fields.Char(string='bog client secret')
+    bog_client_id = fields.Char(string='bog client id')
+
+
+class TBCCodeMapping(models.Model):
+    _name = 'tbc.code.mapping'
+    _description = 'TBC Code Mapping for Account Generation'
+    _rec_name = 'code_field'
+
+    code_field = fields.Char(string='Code', required=True, index=True)
+    comment = fields.Text(string='Comment Keywords',
+                          help='Enter keywords separated by commas to search in comments (e.g., ხელფასი, პრემია, ბონუსი)')
+    debit_credit = fields.Selection([
+        ('debit', 'Debit'),
+        ('credit', 'Credit')
+    ], string='Debit/Credit', required=True)
+    account_id = fields.Many2one('account.account', string='Account', required=True)
+
+    # NEW FIELD: Partner finding requirement
+    partner_required = fields.Selection([
+        ('yes', 'Yes - Partner Required'),
+        ('no', 'No - Partner Not Required')
+    ], string='Partner Finding Required', required=True, default='yes',
+        help='Determines if partner finding is mandatory for this mapping')
+
+
+class AccountPayment(models.Model):
+    _inherit = 'account.payment'
+
+    # Add a field to link back to the TBC transaction
+    tbc_transaction_id = fields.Many2one(
+        'tbc_payment_integration.tbc_payment_integration',
+        string='TBC Transaction',
+        help='The TBC transaction that generated this payment'
+    )
+    tbc_movement_id = fields.Many2one(
+        'tbc.movements',
+        string='TBC Movement',
+        help='The TBC movement that generated this payment'
+    )
+
+    def unlink(self):
+        # Before deleting payments, revert associated TBC transaction/movement states
+        for payment in self:
+            if payment.tbc_transaction_id:
+                payment.tbc_transaction_id.state = 'draft'
+                _logger.info("Reverted TBC transaction %s state to draft due to payment deletion",
+                             payment.tbc_transaction_id.id)
+
+            if payment.tbc_movement_id:
+                payment.tbc_movement_id.state = 'draft'
+                _logger.info("Reverted TBC movement %s state to draft due to payment deletion",
+                             payment.tbc_movement_id.id)
+
+        return super(AccountPayment, self).unlink()
+
+
+class TBCPaymentIntegration(models.Model):
+    _name = 'tbc_payment_integration.tbc_payment_integration'
+    _description = 'TBC Payment Integration'
+
+    entry_date = fields.Date(string="შეყვანის თარიღი")
+    entry_document_number = fields.Char(string="დოკუმენტის ნომერი")
+    entry_account_number = fields.Char(string="შეყვანილი ბანკის ანგარიში")
+    entry_amount_debit = fields.Float(string="დებეტის თანხა")
+    entry_amount_debit_base = fields.Float(string="ძირითადი დებეტის თანხა")
+    entry_amount_credit = fields.Float(string="კრედიტის თანხა")
+    entry_amount_credit_base = fields.Float(string="ძირითადი კრედიტის თანხა")
+    entry_amount_base = fields.Float(string="ძირითადი თანხა")
+    entry_amount = fields.Float(string="შეყვანილი თანხა")
+    entry_comment = fields.Text(string="კომენტარი")
+    entry_department = fields.Char(string="შეყვანილი დეპარტამენტი")
+    entry_account_point = fields.Char(string="ანგარიშის წერტილი")
+
+    document_product_group = fields.Char(string="დოკუმენტის პროდუქტის ჯგუფი")
+    # NEW FIELD: Related to code mapping model
+    document_product_group_mapping = fields.Many2one(
+        'tbc.code.mapping',
+        string='Product Group Mapping',
+        compute='_compute_product_group_mapping',
+        store=True
+    )
+
+    document_value_date = fields.Date(string="დოკუმენტის ღირებულების თარიღი")
+
+    # Sender Details
+    sender_details_name = fields.Char(string="გამგზავნის სახელი")
+    sender_details_inn = fields.Char(string="გამგზავნის საიდენტიფიკაციო ნომერი")
+    sender_details_account_number = fields.Char(string="ბანკის ანგარიში")
+    sender_details_bank_code = fields.Char(string="ბანკის კოდი")
+    sender_details_bank_name = fields.Char(string="ბანკის სახელი")
+
+    # Beneficiary Details
+    beneficiary_details_name = fields.Char(string="ბენეფიციარის სახელი")
+    beneficiary_details_inn = fields.Char(string="ბენეფიციარის საიდენტიფიკაციო ნომერი")
+    beneficiary_details_account_number = fields.Char(string="ბენეფიციარის ბანკის ანგარიში")
+    beneficiary_details_bank_code = fields.Char(string="ბენეფიციარის ბანკის კოდი")
+    beneficiary_details_bank_name = fields.Char(string="ბენეფიციარის ბანკის სახელი")
+
+    document_treasury_code = fields.Char(string="დოკუმენტის ხაზინარი კოდი")
+    document_nomination = fields.Char(string="დოკუმენტის ნომინაცია")
+    document_information = fields.Text(string="დოკუმენტის ინფორმაცია")
+    document_source_amount = fields.Float(string="დოკუმენტის წყაროს თანხა")
+    document_source_currency = fields.Char(string="დოკუმენტის წყაროს ვალუტა")
+    document_destination_amount = fields.Float(string="დოკუმენტის დანიშნულების თანხა")
+    document_destination_currency = fields.Char(string="დოკუმენტის დანიშნულების ვალუტა")
+    document_receive_date = fields.Date(string="დოკუმენტის მიღების თარიღი")
+    document_branch = fields.Char(string="დოკუმენტის ფილიალი")
+    document_department = fields.Char(string="დოკუმენტის დეპარტამენტი")
+    document_actual_date = fields.Date(string="დოკუმენტის რეალური თარიღი")
+    document_expiry_date = fields.Date(string="დოკუმენტის ვადის გასვლის თარიღი")
+    document_rate_limit = fields.Float(string="დოკუმენტის საპროცენტო საზღვარი")
+    document_rate = fields.Float(string="დოკუმენტის განაკვეთი")
+    document_registration_rate = fields.Float(string="დოკუმენტის რეგისტრაციის განაკვეთი")
+    document_sender_institution = fields.Char(string="დოკუმენტის გამგზავნის ინსტიტუტი")
+    document_intermediary_institution = fields.Char(string="დოკუმენტის შუამავალი ინსტიტუტი")
+    document_beneficiary_institution = fields.Char(string="დოკუმენტის ბენეფიციარის ინსტიტუტი")
+    document_payee = fields.Char(string="დოკუმენტის მიმღები")
+    document_correspondent_account_number = fields.Char(string="დოკუმენტის კორესპონდენტის ანგარიშის ნომერი")
+    document_correspondent_bank_code = fields.Char(string="დოკუმენტის კორესპონდენტის ბანკის კოდი")
+    document_correspondent_bank_name = fields.Char(string="დოკუმენტის კორესპონდენტის ბანკის სახელი")
+    document_key = fields.Char(string="დოკუმენტის გასაღები")
+    entry_id = fields.Char(string="შეყვანის ID")
+    doc_comment = fields.Text(string="დოკუმენტის კომენტარი")
+    document_payer_inn = fields.Char(string="დოკუმენტის გადამხდელის TIN")
+    document_payer_name = fields.Char(string="დოკუმენტის გადამხდელის სახელი")
+    my_bank_id = fields.Char(string="მითითებული ბანკის ანგარიში")
+    state = fields.Selection([
+        ('draft', 'დაუდასტურებელი'),
+        ('done', 'გატარებული'),
+        ('error', 'პრობლემური')
+    ], string='სტატუსი', default='draft')
+    payment_id = fields.Many2one(
+        'account.payment',
+        string='Related Payment',
+        help='The payment record created from this transaction'
+    )
+    related_journal_entry_id = fields.Many2one(
+        'account.move',
+        string='Related Journal Entry',
+        help='The journal entry record created from this transaction'
+    )
+
+    def _prepare_payment_vals(self, transaction, partner_id, amount, is_debit, enhanced_comment, journal_entry_id):
+        """Prepare payment values based on transaction data."""
+        # Determine payment type based on transaction direction
+        payment_type = 'outbound' if is_debit else 'inbound'
+
+        # Determine which account number to use based on transaction direction
+        if is_debit:
+            # Money going out - use sender account number for journal lookup
+            account_number = transaction.sender_details_account_number
+        else:
+            # Money coming in - use beneficiary account number for journal lookup
+            account_number = transaction.beneficiary_details_account_number
+
+        if not account_number:
+            # Fallback to entry_account_number if specific account not found
+            account_number = transaction.entry_account_number
+
+        # Find journal based on account number
+        journal = None
+        if account_number:
+            # Remove currency suffix (like GEL) if present for better matching
+            search_number = account_number.replace('GEL', '').replace('USD', '').replace('EUR', '').strip()
+            
+            # First, try to find journal by exact account number match
+            journal = self.env['account.journal'].search([
+                ('name', '=', account_number),
+                ('type', '=', 'bank')
+            ], limit=1)
+            
+            # If not found, try with stripped version
+            if not journal and search_number != account_number:
+                journal = self.env['account.journal'].search([
+                    ('name', '=', search_number),
+                    ('type', '=', 'bank')
+                ], limit=1)
+            
+            # If still not found, try searching by bank account name in journal's bank_account_id
+            if not journal:
+                # Find account first
+                account = self.env['account.account'].search([
+                    ('name', '=', search_number)
+                ], limit=1)
+                
+                if account:
+                    # Find journal that uses this account as default account
+                    journal = self.env['account.journal'].search([
+                        ('default_account_id', '=', account.id),
+                        ('type', '=', 'bank')
+                    ], limit=1)
+
+        # If no journal found by account number, get the default bank journal
+        if not journal:
+            journal = self.env['account.journal'].search([
+                ('type', '=', 'bank')
+            ], limit=1)
+            
+            _logger.warning("Could not find journal for account number: %s. Using default bank journal: %s", 
+                        account_number, journal.name if journal else 'None')
+
+        # Final fallback to first available journal
+        if not journal:
+            journal = self.env['account.journal'].search([], limit=1)
+            _logger.error("No bank journal found. Using first available journal: %s", 
+                        journal.name if journal else 'None')
+
+        # Prepare payment values
+        payment_vals = {
+            'payment_type': payment_type,
+            'partner_id': partner_id,
+            'amount': amount,
+            'currency_id': self.env.company.currency_id.id,
+            'date': transaction.entry_date or fields.Date.today(),
+            'memo': enhanced_comment,
+            'journal_id': journal.id if journal else False,  # This is the correct field for journal
+            'x_studio_journal_entry': journal_entry_id,  # Link to the created journal entry
+        }
+
+        _logger.info("Payment values prepared for transaction ID: %s, Journal: %s (ID: %s), Account: %s", 
+                    transaction.id, journal.name if journal else 'None', 
+                    journal.id if journal else 'None', account_number)
+
+        return payment_vals
+
+    def _get_bank_journal_for_transaction(self, transaction, is_debit):
+        """Pick bank journal matching transaction account number, fallback to any bank journal."""
+        account_number = transaction.sender_details_account_number if is_debit else transaction.beneficiary_details_account_number
+        if not account_number:
+            account_number = transaction.entry_account_number
+
+        journal = False
+        if account_number:
+            search_number = account_number.replace('GEL', '').replace('USD', '').replace('EUR', '').strip()
+            journal = self.env['account.journal'].search([
+                ('name', '=', account_number),
+                ('type', '=', 'bank')
+            ], limit=1)
+            if not journal and search_number != account_number:
+                journal = self.env['account.journal'].search([
+                    ('name', '=', search_number),
+                    ('type', '=', 'bank')
+                ], limit=1)
+            if not journal:
+                account = self.env['account.account'].search([('name', '=', search_number)], limit=1)
+                if account:
+                    journal = self.env['account.journal'].search([
+                        ('default_account_id', '=', account.id),
+                        ('type', '=', 'bank')
+                    ], limit=1)
+
+        if not journal:
+            journal = self.env['account.journal'].search([('type', '=', 'bank')], limit=1)
+        return journal
+
+    def _get_or_create_statement(self, journal, date_):
+        """Get existing bank statement for journal/date or create a new one."""
+        statement = self.env['account.bank.statement'].search([
+            ('journal_id', '=', journal.id),
+            ('date', '=', date_)
+        ], limit=1)
+        if not statement:
+            statement = self.env['account.bank.statement'].create({
+                'name': f'Import {date_} {journal.name}',
+                'journal_id': journal.id,
+                'date': date_,
+            })
+        return statement
+
+    def _create_bank_statement_line(self, transaction, move, payment, is_debit, amount, partner_id, account_id=None):
+        """Create a bank statement line to appear in reconciliation."""
+        date_ = transaction.entry_date or fields.Date.today()
+        journal = self._get_bank_journal_for_transaction(transaction, is_debit)
+        if not journal:
+            return False
+        statement = self._get_or_create_statement(journal, date_)
+        signed_amount = amount if not is_debit else -amount
+
+        vals = {
+            'statement_id': statement.id,
+            'date': date_,
+            'payment_ref': transaction.entry_comment or transaction.entry_document_number or '/',
+            'amount': signed_amount,
+            'partner_id': partner_id or False,
+            'x_source_move_id': move.id if move else False,  # ADD THIS
+        }
+
+        line = self.env['account.bank.statement.line'].create(vals)
+        _logger.info("Bank statement line created for transaction %s linked to move %s",
+                     transaction.id, move.id if move else None)
+        return line
+
+    def action_process_multiple_transactions(self):
+        """Processes multiple transactions and creates journal entries with error handling."""
+        # Filter out transactions that are already in 'done' state
+        transactions_to_process = self.filtered(lambda t: t.state != 'done')
+
+        if not transactions_to_process:
+            return {
+                'type': 'ir.actions.client',
+                'tag': 'display_notification',
+                'params': {
+                    'title': _('No Transactions to Process'),
+                    'message': _('All selected transactions are already processed (done state).'),
+                    'type': 'warning',
+                    'sticky': True,
+                }
+            }
+
+        created_moves = []
+        failed_transactions = []
+        success_count = 0
+        created_journal_ids = []
+        created_payment_ids = []
+        skipped_count = len(self) - len(transactions_to_process)
+
+        for transaction in transactions_to_process:
+            try:
+                # Check conditions for special handling
+                find_partner = True
+                use_direct_account_search = False
+
+                if transaction.sender_details_inn and transaction.beneficiary_details_inn and \
+                        transaction.sender_details_inn == transaction.beneficiary_details_inn:
+                    find_partner = False
+                    use_direct_account_search = True
+
+                is_debit = transaction.entry_amount_debit > 0
+                transaction_type = 'debit' if is_debit else 'credit'
+                mapping = False
+
+                # Only search for mappings if we're not using direct account search
+                if not use_direct_account_search:
+                    all_mappings = self.env['tbc.code.mapping'].search([
+                        ('code_field', '=', transaction.document_product_group)
+                    ])
+
+                    type_filtered_mappings = all_mappings.filtered(
+                        lambda m: m.debit_credit == transaction_type
+                    )
+
+                    if type_filtered_mappings:
+                        if len(type_filtered_mappings) > 1:
+                            comment_text = ''
+                            if transaction.entry_comment:
+                                comment_text += transaction.entry_comment.lower()
+                            if transaction.doc_comment:
+                                comment_text += ' ' + transaction.doc_comment.lower()
+
+                            if comment_text.strip():
+                                for map_record in type_filtered_mappings:
+                                    if map_record.comment and map_record.comment.strip():
+                                        keywords = [keyword.strip().lower() for keyword in
+                                                    map_record.comment.split(',')]
+                                        if any(keyword in comment_text for keyword in keywords):
+                                            mapping = map_record
+                                            break
+
+                        if not mapping:
+                            empty_comment_mapping = type_filtered_mappings.filtered(
+                                lambda m: not m.comment or m.comment.strip() == ''
+                            )
+                            if empty_comment_mapping:
+                                mapping = empty_comment_mapping[0]
+
+                        if not mapping:
+                            mapping = type_filtered_mappings[0]
+
+                    elif all_mappings:
+                        mapping = all_mappings[0]
+
+                amount = abs(transaction.entry_amount_debit) if is_debit else abs(transaction.entry_amount_credit)
+
+                # Create enhanced comment
+                enhanced_comment = transaction.entry_comment or ''
+                if is_debit:
+                    if transaction.beneficiary_details_name:
+                        enhanced_comment += f" | Beneficiary: {transaction.beneficiary_details_name}"
+                    if transaction.beneficiary_details_inn:
+                        enhanced_comment += f" | INN: {transaction.beneficiary_details_inn}"
+                    if transaction.beneficiary_details_account_number:
+                        enhanced_comment += f" | Account: {transaction.beneficiary_details_account_number}"
+                else:
+                    if transaction.sender_details_name:
+                        enhanced_comment += f" | Sender: {transaction.sender_details_name}"
+                    if transaction.sender_details_inn:
+                        enhanced_comment += f" | INN: {transaction.sender_details_inn}"
+                    if transaction.sender_details_account_number:
+                        enhanced_comment += f" | Account: {transaction.sender_details_account_number}"
+
+                enhanced_comment = enhanced_comment.lstrip(' | ')
+
+                # Find partner based on mapping's partner_required field OR same INN condition
+                partner_id = False
+                partner_id_opposite = False  # NEW - for bank line, OPTIONAL
+                partner_required_for_mapping = False
+                create_payment_for_same_inn = False
+
+                if find_partner and not use_direct_account_search:
+                    partner_finding_required = True
+                    if mapping and mapping.partner_required == 'no':
+                        partner_finding_required = False
+                    else:
+                        partner_required_for_mapping = True
+
+                    if partner_finding_required:
+                        if is_debit:
+                            # MAIN partner - MANDATORY
+                            if transaction.beneficiary_details_inn:
+                                partner_id = self._find_existing_partner(
+                                    transaction.beneficiary_details_inn
+                                )
+                                if not partner_id:
+                                    raise UserError(
+                                        _('Partner not found for beneficiary with tax code: "%s". '
+                                          'Please create the partner first or check the tax code.') %
+                                        transaction.beneficiary_details_inn
+                                    )
+                            else:
+                                raise UserError(
+                                    _('Beneficiary tax code (INN) is required for debit transaction but not provided.')
+                                )
+
+                            # OPPOSITE partner - OPTIONAL
+                            if transaction.sender_details_inn:
+                                partner_id_opposite = self._find_existing_partner(transaction.sender_details_inn)
+
+                        else:
+                            # MAIN partner - MANDATORY
+                            if transaction.sender_details_inn:
+                                partner_id = self._find_existing_partner(
+                                    transaction.sender_details_inn
+                                )
+                                if not partner_id:
+                                    raise UserError(
+                                        _('Partner not found for sender with tax code: "%s". '
+                                          'Please create the partner first or check the tax code.') %
+                                        transaction.sender_details_inn
+                                    )
+                            else:
+                                raise UserError(
+                                    _('Sender tax code (INN) is required for credit transaction but not provided.')
+                                )
+
+                            # OPPOSITE partner - OPTIONAL
+                            if transaction.beneficiary_details_inn:
+                                partner_id_opposite = self._find_existing_partner(transaction.beneficiary_details_inn)
+
+                # NEW: Check for same INN condition even in direct account search
+                elif use_direct_account_search and transaction.sender_details_inn and transaction.beneficiary_details_inn and \
+                        transaction.sender_details_inn == transaction.beneficiary_details_inn:
+                    create_payment_for_same_inn = True
+                    # Find partner for same INN case
+                    partner_id = self._find_existing_partner(transaction.sender_details_inn)
+                    _logger.info("Same INN condition detected for transaction ID: %s, partner found: %s",
+                                 transaction.id, bool(partner_id))
+
+                bank_account_id = self._get_bank_account_from_transaction_exact(transaction, is_debit)
+
+                # Handle account selection and create journal entry lines
+                if use_direct_account_search:
+                    if is_debit:
+                        account_search_term = transaction.beneficiary_details_account_number
+                    else:
+                        account_search_term = transaction.sender_details_account_number
+
+                    account = self.env['account.account'].search([
+                        ('name', '=', account_search_term)
+                    ], limit=1)
+
+                    if not account:
+                        raise UserError(
+                            _('No account found with exact name: "%s". Please check the account name.') % account_search_term
+                        )
+
+                    account_id = account.id
+
+                    if is_debit:
+                        debit_line = {
+                            'account_id': account_id,
+                            'debit': amount,
+                            'credit': 0.0,
+                            'name': transaction.entry_comment or '/',
+                        }
+                        credit_line = {
+                            'account_id': bank_account_id,
+                            'debit': 0.0,
+                            'credit': amount,
+                            'name': transaction.entry_comment or '/',
+                        }
+                    else:
+                        debit_line = {
+                            'account_id': bank_account_id,
+                            'debit': amount,
+                            'credit': 0.0,
+                            'name': transaction.entry_comment or '/',
+                        }
+                        credit_line = {
+                            'account_id': account_id,
+                            'debit': 0.0,
+                            'credit': amount,
+                            'name': transaction.entry_comment or '/',
+                        }
+
+                    # Add partner to both lines if partner exists (for same INN case)
+                    if partner_id:
+                        debit_line['partner_id'] = partner_id
+                        credit_line['partner_id'] = partner_id
+
+                else:
+                    if not mapping:
+                        raise UserError(
+                            _('No mapping found for document product group "%s" with type "%s". '
+                              'Please create a mapping configuration.') % (
+                                transaction.document_product_group, transaction_type)
+                        )
+
+                    account_id = mapping.account_id.id
+
+                    if mapping.debit_credit == 'debit':
+                        debit_line = {
+                            'account_id': account_id,
+                            'debit': amount,
+                            'credit': 0.0,
+                            'name': transaction.entry_comment or '/',
+                        }
+                        credit_line = {
+                            'account_id': bank_account_id,
+                            'debit': 0.0,
+                            'credit': amount,
+                            'name': transaction.entry_comment or '/',
+                        }
+                        # Add main partner to mapping account line
+                        if partner_id:
+                            debit_line['partner_id'] = partner_id
+                        # Add opposite partner to bank line (OPTIONAL)
+                        if partner_id_opposite:
+                            credit_line['partner_id'] = partner_id_opposite
+                    else:
+                        debit_line = {
+                            'account_id': bank_account_id,
+                            'debit': amount,
+                            'credit': 0.0,
+                            'name': transaction.entry_comment or '/',
+                        }
+                        credit_line = {
+                            'account_id': account_id,
+                            'debit': 0.0,
+                            'credit': amount,
+                            'name': transaction.entry_comment or '/',
+                        }
+                        # Add main partner to mapping account line
+                        if partner_id:
+                            credit_line['partner_id'] = partner_id
+                        # Add opposite partner to bank line (OPTIONAL)
+                        if partner_id_opposite:
+                            debit_line['partner_id'] = partner_id_opposite
+
+                # Get the bank journal that matches the transaction
+                bank_journal = self._get_bank_journal_for_transaction(transaction, is_debit)
+
+                # Create journal entry
+                move_vals = {
+                    'journal_id': bank_journal.id if bank_journal else False,
+                    'date': transaction.entry_date or fields.Date.today(),
+                    'ref': transaction.entry_document_number or transaction.entry_comment,
+                    'comment': enhanced_comment,
+                    'line_ids': [
+                        (0, 0, debit_line),
+                        (0, 0, credit_line)
+                    ]
+                }
+
+                move = self.env['account.move'].with_context(check_move_validity=False).create(move_vals)
+
+                try:
+                    move.action_post()
+                except Exception as post_error:
+                    _logger.warning("Failed to post journal entry for transaction ID %s: %s",
+                                    transaction.id, str(post_error))
+
+                created_moves.append(move.id)
+                created_journal_ids.append(move.id)
+
+                # NEW: Create payment if partner was required for the mapping OR same INN condition is met
+                if (partner_required_for_mapping and partner_id) or (create_payment_for_same_inn and partner_id):
+                    payment_vals = self._prepare_payment_vals(transaction, partner_id, amount, is_debit,
+                                                              enhanced_comment, move.id)
+                    payment = self.env['account.payment'].create(payment_vals)
+                    created_payment_ids.append(payment.id)
+
+                    # Set the payment_id field on the transaction
+                    transaction.payment_id = payment.id
+                    transaction.related_journal_entry_id = move.id
+
+                    payment_reason = "same INN condition" if create_payment_for_same_inn else "mapping requirement"
+                    _logger.info("Payment created for transaction ID: %s, Payment ID: %s (Reason: %s)",
+                                 transaction.id, payment.id, payment_reason)
+
+                    # Create bank statement line
+                    try:
+                        self._create_bank_statement_line(transaction, move, payment, is_debit, amount,
+                                                         partner_id or False, account_id)
+                    except Exception as st_err:
+                        _logger.warning("Failed to create bank statement line for transaction %s: %s", transaction.id,
+                                        st_err)
+                else:
+                    # No payment created: still create bank statement line
+                    try:
+                        self._create_bank_statement_line(transaction, move, False, is_debit, amount,
+                                                         partner_id or False, account_id)
+                    except Exception as st_err:
+                        _logger.warning("Failed to create bank statement line for transaction %s: %s", transaction.id,
+                                        st_err)
+
+                transaction.state = 'done'
+                success_count += 1
+
+            except Exception as e:
+                transaction.state = 'error'
+                error_msg = str(e)
+                failed_transactions.append({
+                    'transaction_id': transaction.id,
+                    'error': error_msg
+                })
+                _logger.error("FAILED: Error processing transaction ID %s: %s", transaction.id, error_msg)
+                continue
+
+        # Prepare result message (keep existing message code)
+        total_selected = len(self)
+        processed_transactions = len(transactions_to_process)
+        failed_count = len(failed_transactions)
+
+        if failed_count == 0 and success_count > 0:
+            message = _('%d transactions processed successfully!') % success_count
+            if skipped_count > 0:
+                message += _(' %d transactions were skipped (already done).') % skipped_count
+            if created_payment_ids:
+                message += f'\nPayments created: {len(created_payment_ids)}'
+        elif success_count == 0 and processed_transactions > 0:
+            message = _('All %d processable transactions failed.') % processed_transactions
+            if skipped_count > 0:
+                message += _(' %d transactions were skipped (already done).') % skipped_count
+        elif success_count > 0:
+            message = _('%d of %d transactions processed successfully. %d failed.') % (
+                success_count, processed_transactions, failed_count)
+            if skipped_count > 0:
+                message += _(' %d transactions were skipped (already done).') % skipped_count
+            if created_payment_ids:
+                message += f'\nPayments created: {len(created_payment_ids)}'
+        else:
+            message = _('No transactions were processed.')
+            if skipped_count > 0:
+                message += _(' %d transactions were skipped (already done).') % skipped_count
+
+        if failed_transactions:
+            message += '\n\nFailed transactions:\n'
+            for failed in failed_transactions[:5]:
+                message += f"- Transaction ID {failed['transaction_id']}: {failed['error']}\n"
+            if len(failed_transactions) > 5:
+                message += f'... and {len(failed_transactions) - 5} more errors.'
+
+        if created_journal_ids:
+            message += f'\n\nCreated Journal Entry IDs: {", ".join(map(str, created_journal_ids))}'
+        if created_payment_ids:
+            message += f'\nCreated Payment IDs: {", ".join(map(str, created_payment_ids))}'
+
+        # Return notification based on results
+        if failed_count == 0 and success_count > 0:
+            return {
+                'type': 'ir.actions.client',
+                'tag': 'display_notification',
+                'params': {
+                    'title': _('Success'),
+                    'message': message,
+                    'type': 'success',
+                    'sticky': True,
+                }
+            }
+        elif success_count == 0 and processed_transactions > 0:
+            return {
+                'type': 'ir.actions.client',
+                'tag': 'display_notification',
+                'params': {
+                    'title': _('Processing Failed'),
+                    'message': message,
+                    'type': 'danger',
+                    'sticky': True,
+                }
+            }
+        elif success_count > 0:
+            return {
+                'type': 'ir.actions.client',
+                'tag': 'display_notification',
+                'params': {
+                    'title': _('Partial Success'),
+                    'message': message,
+                    'type': 'warning',
+                    'sticky': True,
+                }
+            }
+        else:
+            return {
+                'type': 'ir.actions.client',
+                'tag': 'display_notification',
+                'params': {
+                    'title': _('No Processing Done'),
+                    'message': message,
+                    'type': 'info',
+                    'sticky': True,
+                }
+            }
+
+    def action_process_single_transaction(self):
+        """Processes a single transaction and creates a journal entry - original function behavior."""
+        if len(self) != 1:
+            raise UserError(_('This function can only process one transaction at a time. '
+                              'Use action_process_multiple_transactions for batch processing.'))
+
+        # Call the multiple transaction function but ensure single transaction behavior
+        return self.action_process_multiple_transactions()
+
+    def action_process_transaction(self):
+        """Processes a single transaction and creates a journal entry."""
+        for transaction in self:
+            # Check conditions for special handling
+            find_partner = True  # Default to finding partner
+            use_direct_account_search = False  # Flag for direct account search
+
+            # First condition: sender_details_inn == beneficiary_details_inn
+            if transaction.sender_details_inn and transaction.beneficiary_details_inn and \
+                    transaction.sender_details_inn == transaction.beneficiary_details_inn:
+                find_partner = False  # Don't find partner when both INNs are the same
+                use_direct_account_search = True  # Skip mapping lookup entirely
+
+            # Determine if transaction is debit or credit
+            is_debit = transaction.entry_amount_debit > 0
+            transaction_type = 'debit' if is_debit else 'credit'
+
+            mapping = False
+
+            # Only search for mappings if we're not using direct account search
+            if not use_direct_account_search:
+                # Search for all mappings with matching code
+                all_mappings = self.env['tbc.code.mapping'].search([
+                    ('code_field', '=', transaction.document_product_group)
+                ])
+
+                # Filter by debit/credit type
+                type_filtered_mappings = all_mappings.filtered(
+                    lambda m: m.debit_credit == transaction_type
+                )
+
+                if type_filtered_mappings:
+                    # If we have multiple mappings after filtering by type, try to filter by comment
+                    if len(type_filtered_mappings) > 1:
+                        # Check keywords in both entry_comment and doc_comment
+                        comment_text = ''
+                        if transaction.entry_comment:
+                            comment_text += transaction.entry_comment.lower()
+                        if transaction.doc_comment:
+                            comment_text += ' ' + transaction.doc_comment.lower()
+
+                        if comment_text.strip():
+                            # First try to find mapping with matching keywords
+                            for map_record in type_filtered_mappings:
+                                if map_record.comment and map_record.comment.strip():
+                                    keywords = [keyword.strip().lower() for keyword in map_record.comment.split(',')]
+                                    # Check if any keyword is in the combined comment text
+                                    if any(keyword in comment_text for keyword in keywords):
+                                        mapping = map_record
+                                        break
+
+                    # If no keyword match found, look for mapping with empty comment
+                    if not mapping:
+                        empty_comment_mapping = type_filtered_mappings.filtered(
+                            lambda m: not m.comment or m.comment.strip() == ''
+                        )
+                        if empty_comment_mapping:
+                            mapping = empty_comment_mapping[0]
+                            _logger.info("Using mapping with empty comment for document_product_group: %s",
+                                         transaction.document_product_group)
+
+                    # If still no mapping found, use the first available mapping
+                    if not mapping:
+                        mapping = type_filtered_mappings[0]
+                        _logger.warning(
+                            "No keyword match or empty comment mapping found. Using first available mapping for document_product_group: %s",
+                            transaction.document_product_group)
+
+                elif all_mappings:
+                    # If no type-filtered mappings but we have mappings, log warning and use first
+                    _logger.warning(
+                        'No mapping found for document_product_group "%s" with type "%s". Using first available mapping.',
+                        transaction.document_product_group, transaction_type
+                    )
+                    mapping = all_mappings[0]
+
+            # MODIFIED PARTNER FINDING LOGIC
+            partner_id = False
+            if find_partner and not use_direct_account_search:
+                # Check if mapping requires partner finding
+                partner_finding_required = True  # Default behavior
+                if mapping and mapping.partner_required == 'no':
+                    partner_finding_required = False
+                    _logger.info("Partner finding disabled for mapping: %s", mapping.code_field)
+
+                if partner_finding_required:
+                    # Check if we have a pre-selected partner from wizard context
+                    selected_partner_id = self.env.context.get('selected_partner_id')
+                    if selected_partner_id:
+                        partner_id = selected_partner_id
+                    else:
+                        if is_debit:
+                            # Money going out - find partner in beneficiary
+                            partner_inn = transaction.beneficiary_details_inn
+                            partner_name = transaction.beneficiary_details_name
+                            direction = 'beneficiary'
+                        else:
+                            # Money coming in - find partner in sender
+                            partner_inn = transaction.sender_details_inn
+                            partner_name = transaction.sender_details_name
+                            direction = 'sender'
+
+                        # Try to find partner by INN if provided
+                        if partner_inn:
+                            partner_id = self._find_existing_partner(partner_inn)
+
+                        # If INN is empty OR partner not found, open partner selection wizard
+                        if not partner_inn or not partner_id:
+                            return self._open_partner_selection_wizard(
+                                transaction, partner_name, partner_inn, direction
+                            )
+                else:
+                    # Partner finding not required for this mapping
+                    _logger.info("Skipping partner finding for transaction ID: %s due to mapping configuration",
+                                 transaction.id)
+
+            # Continue with the rest of the processing
+            return self._continue_transaction_processing()
+
+    def _open_partner_selection_wizard(self, transaction, partner_name, partner_inn, direction):
+        """Open partner selection wizard when partner is needed but not found."""
+        wizard_vals = {
+            'transaction_id': transaction.id,
+            'partner_name': partner_name or '',
+            'partner_inn': partner_inn or '',
+            'transaction_type': f'{direction} ({_("Money going out") if direction == "beneficiary" else _("Money coming in")})'
+        }
+
+        wizard = self.env['tbc.partner.selection.wizard'].create(wizard_vals)
+
+        return {
+            'type': 'ir.actions.act_window',
+            'name': _('Select Partner'),
+            'res_model': 'tbc.partner.selection.wizard',
+            'view_mode': 'form',
+            'res_id': wizard.id,
+            'target': 'new',
+            'context': self.env.context,
+        }
+
+    def _continue_transaction_processing(self):
+        """Continue processing the transaction after partner selection or when no partner is needed."""
+        for transaction in self:
+            # Re-determine transaction parameters
+            find_partner = True
+            use_direct_account_search = False
+
+            if transaction.sender_details_inn and transaction.beneficiary_details_inn and \
+                    transaction.sender_details_inn == transaction.beneficiary_details_inn:
+                find_partner = False
+                use_direct_account_search = True
+
+            is_debit = transaction.entry_amount_debit > 0
+            transaction_type = 'debit' if is_debit else 'credit'
+
+            # Get mapping
+            mapping = self._get_transaction_mapping(transaction, transaction_type, use_direct_account_search)
+
+            # Determine amount
+            amount = abs(transaction.entry_amount_debit) if is_debit else abs(transaction.entry_amount_credit)
+
+            # Create enhanced comment
+            enhanced_comment = transaction.entry_comment or ''
+
+            if is_debit:
+                if transaction.beneficiary_details_name:
+                    enhanced_comment += f" | Beneficiary: {transaction.beneficiary_details_name}"
+                if transaction.beneficiary_details_inn:
+                    enhanced_comment += f" | INN: {transaction.beneficiary_details_inn}"
+                if transaction.beneficiary_details_account_number:
+                    enhanced_comment += f" | Account: {transaction.beneficiary_details_account_number}"
+            else:
+                if transaction.sender_details_name:
+                    enhanced_comment += f" | Sender: {transaction.sender_details_name}"
+                if transaction.sender_details_inn:
+                    enhanced_comment += f" | INN: {transaction.sender_details_inn}"
+                if transaction.sender_details_account_number:
+                    enhanced_comment += f" | Account: {transaction.sender_details_account_number}"
+
+            enhanced_comment = enhanced_comment.lstrip(' | ')
+
+            # Get partner ID (either from context or find existing)
+            partner_id = self.env.context.get('selected_partner_id', False)
+            partner_id_opposite = False  # NEW - for bank line, OPTIONAL
+
+            # Determine if partner is required for mapping OR if same INN condition applies
+            partner_required_for_mapping = False
+            create_payment_for_same_inn = False
+
+            if find_partner and not use_direct_account_search and mapping:
+                if mapping.partner_required != 'no':
+                    partner_required_for_mapping = True
+                    # If we don't have partner from context, try to find it
+                    if not partner_id:
+                        if is_debit and transaction.beneficiary_details_inn:
+                            partner_id = self._find_existing_partner(transaction.beneficiary_details_inn)
+                        elif not is_debit and transaction.sender_details_inn:
+                            partner_id = self._find_existing_partner(transaction.sender_details_inn)
+
+                    # Find OPPOSITE partner - OPTIONAL
+                    if is_debit and transaction.sender_details_inn:
+                        partner_id_opposite = self._find_existing_partner(transaction.sender_details_inn)
+                    elif not is_debit and transaction.beneficiary_details_inn:
+                        partner_id_opposite = self._find_existing_partner(transaction.beneficiary_details_inn)
+
+            # NEW CONDITION: Check if sender and beneficiary INNs are the same
+            elif use_direct_account_search and transaction.sender_details_inn and transaction.beneficiary_details_inn and \
+                    transaction.sender_details_inn == transaction.beneficiary_details_inn:
+                create_payment_for_same_inn = True
+                if not partner_id:
+                    partner_id = self._find_existing_partner(transaction.sender_details_inn)
+                _logger.info("Same INN condition detected - will create payment for transaction ID: %s", transaction.id)
+
+            # Get bank account
+            try:
+                bank_account_id = self._get_bank_account_from_transaction_exact(transaction, is_debit)
+            except UserError as e:
+                _logger.error("Transaction ID %s failed - Bank account not found: %s", transaction.id, str(e))
+                transaction.state = 'error'
+                raise UserError(
+                    _('Transaction processing failed for document %s:\n%s') %
+                    (transaction.entry_document_number or f"ID {transaction.id}", str(e))
+                )
+
+            # Handle account selection
+            if use_direct_account_search:
+                if is_debit:
+                    account_search_term = transaction.beneficiary_details_account_number
+                else:
+                    account_search_term = transaction.sender_details_account_number
+
+                if not account_search_term:
+                    raise UserError(
+                        _('No %s account number found in transaction. Cannot process without account information.') %
+                        ('beneficiary' if is_debit else 'sender')
+                    )
+
+                account = self.env['account.account'].search([
+                    ('name', '=', account_search_term)
+                ], limit=1)
+
+                if not account:
+                    search_term_stripped = account_search_term.replace('GEL', '').replace('USD', '').replace('EUR',
+                                                                                                             '').strip()
+                    account = self.env['account.account'].search([
+                        ('name', '=', search_term_stripped)
+                    ], limit=1)
+
+                    if not account:
+                        raise UserError(
+                            _('No account found with exact name: "%s" or "%s". Please ensure the account exists with this exact name.') %
+                            (account_search_term, search_term_stripped)
+                        )
+
+                account_id = account.id
+
+                if is_debit:
+                    debit_line = {
+                        'account_id': account_id,
+                        'debit': amount,
+                        'credit': 0.0,
+                        'name': transaction.entry_comment or '/',
+                    }
+                    credit_line = {
+                        'account_id': bank_account_id,
+                        'debit': 0.0,
+                        'credit': amount,
+                        'name': transaction.entry_comment or '/',
+                    }
+                else:
+                    debit_line = {
+                        'account_id': bank_account_id,
+                        'debit': amount,
+                        'credit': 0.0,
+                        'name': transaction.entry_comment or '/',
+                    }
+                    credit_line = {
+                        'account_id': account_id,
+                        'debit': 0.0,
+                        'credit': amount,
+                        'name': transaction.entry_comment or '/',
+                    }
+
+                # Add partner to both lines if partner exists (for same INN case)
+                if partner_id:
+                    debit_line['partner_id'] = partner_id
+                    credit_line['partner_id'] = partner_id
+
+            else:
+                if not mapping:
+                    raise UserError(
+                        _('No mapping found for document product group "%s" with type "%s". '
+                          'Please create a mapping configuration.') % (
+                            transaction.document_product_group, transaction_type)
+                    )
+
+                if not mapping.account_id:
+                    raise UserError(
+                        _('Mapping for document product group "%s" does not have an account configured. '
+                          'Please configure the account in the mapping.') % transaction.document_product_group
+                    )
+
+                account_id = mapping.account_id.id
+
+                if mapping.debit_credit == 'debit':
+                    debit_line = {
+                        'account_id': account_id,
+                        'debit': amount,
+                        'credit': 0.0,
+                        'name': transaction.entry_comment or '/',
+                    }
+                    credit_line = {
+                        'account_id': bank_account_id,
+                        'debit': 0.0,
+                        'credit': amount,
+                        'name': transaction.entry_comment or '/',
+                    }
+                    # Add main partner to mapping account line
+                    if partner_id:
+                        debit_line['partner_id'] = partner_id
+                    # Add opposite partner to bank line (OPTIONAL)
+                    if partner_id_opposite:
+                        credit_line['partner_id'] = partner_id_opposite
+
+                else:  # credit
+                    debit_line = {
+                        'account_id': bank_account_id,
+                        'debit': amount,
+                        'credit': 0.0,
+                        'name': transaction.entry_comment or '/',
+                    }
+                    credit_line = {
+                        'account_id': account_id,
+                        'debit': 0.0,
+                        'credit': amount,
+                        'name': transaction.entry_comment or '/',
+                    }
+                    # Add main partner to mapping account line
+                    if partner_id:
+                        credit_line['partner_id'] = partner_id
+                    # Add opposite partner to bank line (OPTIONAL)
+                    if partner_id_opposite:
+                        debit_line['partner_id'] = partner_id_opposite
+
+            # Get the bank journal
+            bank_journal = self._get_bank_journal_for_transaction(transaction, is_debit)
+
+            # Create exactly 2 lines
+            move_vals = {
+                'journal_id': bank_journal.id if bank_journal else False,
+                'date': transaction.entry_date or fields.Date.today(),
+                'ref': transaction.entry_document_number or transaction.entry_comment,
+                'comment': enhanced_comment,
+                'line_ids': [
+                    (0, 0, debit_line),
+                    (0, 0, credit_line)
+                ]
+            }
+
+            try:
+                # Create the journal entry
+                move = self.env['account.move'].with_context(check_move_validity=False).create(move_vals)
+
+                transaction.state = 'done'
+                _logger.info("Journal entry created successfully for transaction ID: %s", transaction.id)
+
+                # Create payment if needed
+                if (partner_required_for_mapping and partner_id) or (create_payment_for_same_inn and partner_id):
+                    payment_vals = self._prepare_payment_vals(transaction, partner_id, amount, is_debit,
+                                                              enhanced_comment, move.id)
+                    payment = self.env['account.payment'].create(payment_vals)
+
+                    transaction.payment_id = payment.id
+                    transaction.related_journal_entry_id = move.id
+
+                    payment_reason = "same INN condition" if create_payment_for_same_inn else "mapping requirement"
+                    _logger.info("Payment created successfully for transaction ID: %s, Payment ID: %s (Reason: %s)",
+                                 transaction.id, payment.id, payment_reason)
+
+                    try:
+                        move.action_post()
+                        _logger.info("Journal entry posted successfully for transaction ID: %s", transaction.id)
+                    except Exception as post_error:
+                        _logger.warning("Failed to post journal entry for transaction ID %s: %s",
+                                        transaction.id, str(post_error))
+
+                    # try:
+                    #     self._create_bank_statement_line(transaction, move, payment, is_debit, amount,
+                    #                                      partner_id or False, account_id)
+                    # except Exception as st_err:
+                    #     _logger.warning("Failed to create bank statement line for transaction %s: %s", transaction.id,
+                    #                     st_err)
+
+                    return {
+                        'type': 'ir.actions.act_window',
+                        'name': _('Payment'),
+                        'res_model': 'account.payment',
+                        'view_mode': 'form',
+                        'res_id': payment.id,
+                        'target': 'current',
+                    }
+                else:
+                    try:
+                        move.action_post()
+                        _logger.info("Journal entry posted successfully for transaction ID: %s", transaction.id)
+                    except Exception as post_error:
+                        _logger.warning("Failed to post journal entry for transaction ID %s: %s",
+                                        transaction.id, str(post_error))
+
+                    # try:
+                    #     self._create_bank_statement_line(transaction, move, False, is_debit, amount,
+                    #                                      partner_id or False, account_id)
+                    # except Exception as st_err:
+                    #     _logger.warning("Failed to create bank statement line for transaction %s: %s", transaction.id,
+                    #                     st_err)
+
+                    return {
+                        'type': 'ir.actions.act_window',
+                        'name': _('Journal Entry'),
+                        'res_model': 'account.move',
+                        'view_mode': 'form',
+                        'res_id': move.id,
+                        'target': 'current',
+                    }
+            except Exception as e:
+                _logger.error("Error creating journal entry for transaction ID %s: %s", transaction.id, str(e))
+                transaction.state = 'error'
+                raise UserError(_('Failed to create journal entry: %s') % e)
+
+    def _get_transaction_mapping(self, transaction, transaction_type, use_direct_account_search):
+        """Helper method to get mapping for transaction."""
+        if use_direct_account_search:
+            return False
+
+        # Search for all mappings with matching code
+        all_mappings = self.env['tbc.code.mapping'].search([
+            ('code_field', '=', transaction.document_product_group)
+        ])
+
+        # Filter by debit/credit type
+        type_filtered_mappings = all_mappings.filtered(
+            lambda m: m.debit_credit == transaction_type
+        )
+
+        mapping = False
+        if type_filtered_mappings:
+            # If we have multiple mappings after filtering by type, try to filter by comment
+            if len(type_filtered_mappings) > 1:
+                comment_text = ''
+                if transaction.entry_comment:
+                    comment_text += transaction.entry_comment.lower()
+                if transaction.doc_comment:
+                    comment_text += ' ' + transaction.doc_comment.lower()
+
+                if comment_text.strip():
+                    # First try to find mapping with matching keywords
+                    for map_record in type_filtered_mappings:
+                        if map_record.comment and map_record.comment.strip():
+                            keywords = [keyword.strip().lower() for keyword in map_record.comment.split(',')]
+                            if any(keyword in comment_text for keyword in keywords):
+                                mapping = map_record
+                                break
+
+            # If no keyword match found, look for mapping with empty comment
+            if not mapping:
+                empty_comment_mapping = type_filtered_mappings.filtered(
+                    lambda m: not m.comment or m.comment.strip() == ''
+                )
+                if empty_comment_mapping:
+                    mapping = empty_comment_mapping[0]
+                else:
+                    mapping = type_filtered_mappings[0]
+
+        elif all_mappings:
+            mapping = all_mappings[0]
+
+        return mapping
+
+    def _find_existing_partner(self, tax_code):
+        """Find existing partner based on tax code. Returns partner ID or False if not found."""
+        if not tax_code:
+            return False
+
+        partner = self.env['res.partner'].search([('vat', '=', tax_code)], limit=1)
+
+        if partner:
+            _logger.info("Found existing partner: %s with tax code: %s", partner.name, tax_code)
+            return partner.id
+        else:
+            _logger.warning("No existing partner found with tax code: %s", tax_code)
+            return False
+
+    def _get_bank_account_from_transaction_exact(self, transaction, is_debit):
+        """Get bank account ID based on transaction direction and account numbers with STRICT exact match."""
+        account_number = None
+
+        # Determine which account number to use based on transaction direction
+        if is_debit:
+            # Money going out - use sender account number
+            account_number = transaction.sender_details_account_number
+        else:
+            # Money coming in - use beneficiary account number
+            account_number = transaction.beneficiary_details_account_number
+
+        if not account_number:
+            # Fallback to entry_account_number if specific account not found
+            account_number = transaction.entry_account_number
+
+        # STRICT VALIDATION: Account number is mandatory
+        if not account_number:
+            raise UserError(
+                _('No account number found in transaction for %s. Cannot process without account information.\n'
+                  'Transaction ID: %s\n'
+                  'Document Number: %s') %
+                ('sender' if is_debit else 'beneficiary',
+                 transaction.id,
+                 transaction.entry_document_number or 'N/A')
+            )
+
+        # Search for account with exact name match
+        # Remove currency suffix (like GEL) if present for better matching
+        search_number = account_number.replace('GEL', '').replace('USD', '').replace('EUR', '').strip()
+
+        bank_account = self.env['account.account'].search([
+            ('name', '=', search_number)
+        ], limit=1)
+
+        if not bank_account:
+            # Try with original account number if stripped version didn't work
+            if search_number != account_number:
+                bank_account = self.env['account.account'].search([
+                    ('name', '=', account_number)
+                ], limit=1)
+
+        # STRICT VALIDATION: No fallback - raise error if exact account not found
+        if not bank_account:
+            available_accounts = self.env['account.account'].search([
+                ('account_type', 'in', ['asset_cash', 'asset_current'])
+            ], limit=5)
+
+            available_names = ', '.join(
+                [acc.name for acc in available_accounts]) if available_accounts else 'None found'
+
+            raise UserError(
+                _('No bank account found with exact name: "%s" or "%s".\n\n'
+                  'Please ensure the account exists with this exact name.\n'
+                  'Transaction ID: %s\n'
+                  'Document Number: %s\n\n'
+                  'Available bank accounts (first 5): %s') %
+                (account_number, search_number,
+                 transaction.id,
+                 transaction.entry_document_number or 'N/A',
+                 available_names)
+            )
+
+        _logger.info("Found bank account: %s for account number: %s", bank_account.name, account_number)
+        return bank_account.id
+
+    def action_open_payment_wizard(self):
+        self.ensure_one()
+        return {
+            'type': 'ir.actions.act_window',
+            'name': 'TBC Payment Wizard',
+            'res_model': 'tbc.payment.wizard',
+            'view_mode': 'form',
+            'view_id': self.env.ref('tbc_payment_integration.view_tbc_payment_wizard_form').id,
+            'target': 'new',
+            'context': {
+                'default_tbc_payment_id': self.id,
+            },
+        }
+
+    def open_bog_statement_wizard(self):
+        """Action to open the BOG Statement PDF Wizard."""
+        return {
+            'name': _('Upload BOG Statement PDF'),
+            'type': 'ir.actions.act_window',
+            'res_model': 'bog.statement.pdf.wizard',
+            'view_mode': 'form',
+            'target': 'new',
+        }
+
+
+import logging
+from odoo import models, fields, api, _
+from odoo.exceptions import UserError
+
+_logger = logging.getLogger(__name__)
+
+
+class TBCMovementPartnerSelectionWizard(models.TransientModel):
+    _name = 'tbc.movement.partner.selection.wizard'
+    _description = 'TBC Movement Partner Selection Wizard'
+
+    movement_id = fields.Many2one('tbc.movements', string='Movement', required=True)
+    partner_id = fields.Many2one('res.partner', string='Select Partner', required=False)
+    partner_name = fields.Char(string='Partner Name from Movement', readonly=True)
+    partner_inn = fields.Char(string='Partner INN from Movement', readonly=True)
+    transaction_type = fields.Char(string='Movement Type', readonly=True)
+
+    def action_confirm_partner(self):
+        """Confirm partner selection and continue processing the movement."""
+        if not self.partner_id:
+            raise UserError(_('Please select a partner to continue.'))
+
+        # Get mapping from context if available
+        mapping_id = self.env.context.get('mapping_id')
+
+        # Continue processing the movement with the selected partner
+        result = self.movement_id.with_context(
+            selected_partner_id=self.partner_id.id,
+            mapping_id=mapping_id
+        )._continue_movement_processing()
+
+        # Make sure we return the journal entry action
+        if result and isinstance(result, dict) and result.get('res_model') == 'account.move':
+            # Close the wizard and open the journal entry
+            return result
+        else:
+            # Fallback - close wizard and refresh the view
+            return {'type': 'ir.actions.act_window_close'}
+
+
+class TBCMovementsCodeMapping(models.Model):
+    _name = 'tbc.movements.code.mapping'
+    _description = 'TBC Movements Code Mapping for Account Generation'
+    _rec_name = 'code_field'
+
+    code_field = fields.Char(string='Code', required=True, index=True)
+    comment = fields.Text(string='Comment Keywords',
+                          help='Enter keywords separated by commas to search in comments (e.g., ხელფასი, პრემია, ბონუსი)')
+    debit_credit = fields.Selection([
+        ('debit', 'Debit'),
+        ('credit', 'Credit')
+    ], string='Debit/Credit', required=True)
+    account_id = fields.Many2one('account.account', string='Account', required=True)
+
+    # Partner finding requirement
+    partner_required = fields.Selection([
+        ('yes', 'Yes - Partner Required'),
+        ('no', 'No - Partner Not Required')
+    ], string='Partner Finding Required', required=True, default='yes',
+        help='Determines if partner finding is mandatory for this mapping')
+
+
+class TBCMovements(models.Model):
+    _name = 'tbc.movements'
+    _description = 'TBC Account Movements'
+
+    movement_id = fields.Char(string='მოძრაობის ID')
+    external_payment_id = fields.Char(string='გარე გადახდის ID')
+    debit_credit = fields.Char(string='დებიტი/კრედიტი')
+    value_date = fields.Char(string='თარიღი')
+    description = fields.Char(string='აღწერა')
+    amount = fields.Char(string='თანხა')
+    currency = fields.Char(string='ვალუტა')
+    account_number = fields.Char(string='ბანკის ანგარიში')
+    account_name = fields.Char(string='სახელი')
+    additional_information = fields.Char(string='დამატებითი ინფორმაცია')
+    document_date = fields.Char(string='დოკუმენტის თარიღი')
+    document_number = fields.Char(string='დოკუმენტის ნომერი')
+    partner_account_number = fields.Char(string='პარტნიორის ანგარიშის ნომერი')
+    partner_name = fields.Char(string='პარტნიორის სახელი')
+    partner_tax_code = fields.Char(string='პარტნიორის საგადასახადო კოდი')
+    taxpayer_code = fields.Char(string='გადასახადის გადამხდელის კოდი')
+    taxpayer_name = fields.Char(string='გადასახადის გადამხდელის სახელი')
+    operation_code = fields.Char(string='ოპერაციის კოდი')
+
+    operation_code_mapping = fields.Many2one(
+        'tbc.movements.code.mapping',
+        string='Operation Code Mapping',
+        compute='_compute_operation_code_mapping',
+        store=True
+    )
+
+    exchange_rate = fields.Char(string='გაცვლითი კურსი')
+    partner_personal_number = fields.Char(string='პარტნიორის პირადი ნომერი')
+    partner_document_type = fields.Char(string='პარტნიორის დოკუმენტის ტიპი')
+    partner_document_number = fields.Char(string='პარტნიორის დოკუმენტის ნომერი')
+    parent_external_payment_id = fields.Char(string='გარე გადახდის ID')
+    status_code = fields.Char(string='სტატუსის კოდი')
+    transaction_type = fields.Char(string='ტრანზაქციის ტიპი')
+    get_account_movements_response_io_id = fields.Char(string='პასუხის IO ID')
+
+    state = fields.Selection([
+        ('draft', 'დაუდასტურებელი'),
+        ('done', 'გატარებული'),
+        ('error', 'პრობლემური')
+    ], string='სტატუსი', default='draft')
+
+    payment_id = fields.Many2one(
+        'account.payment',
+        string='Related Payment',
+        help='The payment record created from this movement'
+    )
+
+    @api.depends('operation_code')
+    def _compute_operation_code_mapping(self):
+        """Compute the operation code mapping based on the operation code."""
+        for record in self:
+            if record.operation_code:
+                mapping = self.env['tbc.movements.code.mapping'].search([
+                    ('code_field', '=', record.operation_code)
+                ], limit=1)
+                record.operation_code_mapping = mapping
+            else:
+                record.operation_code_mapping = False
+
+    def _prepare_payment_vals_for_movement(self, partner_id, amount, is_debit, description, journal_entry_id):
+        """Prepare payment values based on movement data."""
+        # Determine payment type based on movement direction
+        payment_type = 'outbound' if is_debit else 'inbound'
+
+        # Get the default journal for payments (usually bank journal)
+        journal = self.env['account.journal'].search([
+            ('type', '=', 'bank')
+        ], limit=1)
+
+        if not journal:
+            # Fallback to first available journal
+            journal = self.env['account.journal'].search([], limit=1)
+
+        payment_vals = {
+            'payment_type': payment_type,
+            'partner_id': partner_id,
+            'amount': amount,
+            'currency_id': self.env.company.currency_id.id,
+            'date': self.value_date or fields.Date.today(),
+            'memo': description,
+            'x_studio_journal_entry': journal_entry_id,  # Link to the created journal entry
+        }
+
+        return payment_vals
+
+    def action_process_movement(self):
+        """Process a single movement and create journal entry."""
+        self.ensure_one()
+
+        try:
+            # Validate movement has required data
+            if not self.operation_code:
+                raise UserError(_('Operation code is required for processing movement.'))
+
+            if not self.amount:
+                raise UserError(_('Amount is required for processing movement.'))
+
+            # Determine movement characteristics
+            is_debit = self.debit_credit in ['0', 'debit']
+            movement_type = 'debit' if is_debit else 'credit'
+
+            # Special handling for transaction type '1' - direct account search
+            if self.transaction_type == '1':
+                return self._process_direct_account_movement()
+
+            # Get and validate mapping FIRST
+            mapping = self._get_movement_mapping(movement_type)
+            if not mapping:
+                raise UserError(
+                    _('No mapping configuration found for operation code "%s" with type "%s". '
+                      'Please create a mapping configuration first.') % (self.operation_code, movement_type)
+                )
+
+            # Check if partner is required for this mapping
+            partner_required = mapping.partner_required == 'yes'
+
+            if partner_required:
+                # Check if partner is already selected from wizard context
+                selected_partner_id = self.env.context.get('selected_partner_id')
+
+                if selected_partner_id:
+                    # Partner already selected, create journal entry
+                    return self._create_journal_entry_with_mapping(mapping, selected_partner_id)
+                else:
+                    # Try to find existing partner
+                    partner_id = self._find_existing_partner()
+
+                    if partner_id:
+                        # Partner found, create journal entry
+                        return self._create_journal_entry_with_mapping(mapping, partner_id)
+                    else:
+                        # No partner found, open wizard
+                        return self._open_partner_selection_wizard(mapping)
+            else:
+                # No partner required, create journal entry without partner
+                return self._create_journal_entry_with_mapping(mapping, False)
+
+        except Exception as e:
+            _logger.error("Error processing movement %s: %s", self.movement_id, str(e))
+            raise
+
+    def action_process_multiple_movements(self):
+        """Process multiple movements and create journal entries with error handling."""
+        # Filter out movements that are already in 'done' state
+        movements_to_process = self.filtered(lambda m: m.state != 'done')
+
+        if not movements_to_process:
+            return {
+                'type': 'ir.actions.client',
+                'tag': 'display_notification',
+                'params': {
+                    'title': _('No Movements to Process'),
+                    'message': _('All selected movements are already processed (done state).'),
+                    'type': 'warning',
+                    'sticky': True,
+                }
+            }
+
+        created_moves = []
+        failed_movements = []
+        success_count = 0
+        created_payment_ids = []  # Track created payment IDs
+        skipped_count = len(self) - len(movements_to_process)  # Count of skipped movements
+
+        for movement in movements_to_process:
+            try:
+                # Validate movement has required data
+                if not movement.operation_code:
+                    raise UserError(_('Operation code is required for processing movement.'))
+
+                if not movement.amount:
+                    raise UserError(_('Amount is required for processing movement.'))
+
+                # Determine movement characteristics
+                is_debit = movement.debit_credit in ['0', 'debit']
+                movement_type = 'debit' if is_debit else 'credit'
+                partner_required_for_mapping = False
+
+                # Special handling for transaction type '1' - direct account search
+                if movement.transaction_type == '1':
+                    move = movement._process_direct_account_movement_for_batch()
+                else:
+                    # Use mapping-based approach (same as single processing)
+                    mapping = movement._get_movement_mapping(movement_type)
+                    if not mapping:
+                        raise UserError(
+                            _('No mapping configuration found for operation code "%s" with type "%s". '
+                              'Please create a mapping configuration first.') % (movement.operation_code, movement_type)
+                        )
+
+                    # Check if partner is required for this mapping
+                    partner_required = mapping.partner_required == 'yes'
+                    partner_id = False
+
+                    if partner_required:
+                        partner_required_for_mapping = True
+                        # Try to find existing partner
+                        partner_id = movement._find_existing_partner()
+
+                        if not partner_id:
+                            # Skip this movement if partner required but not found
+                            raise UserError(
+                                _('Partner not found for movement with tax code: "%s". '
+                                  'Please create the partner first or process individually to select partner.') %
+                                (movement.partner_tax_code or 'N/A')
+                            )
+
+                    # Create journal entry with mapping (use same method as single processing)
+                    move = movement._create_journal_entry_with_mapping_for_batch(mapping, partner_id)
+
+                # Create payment if partner was required for the mapping
+                if partner_required_for_mapping and partner_id:
+                    amount = abs(float(movement.amount))
+                    description = movement.description or ''
+                    if partner_id:
+                        partner = self.env['res.partner'].browse(partner_id)
+                        description += f" | Partner: {partner.name}"
+                        if partner.vat:
+                            description += f" | VAT: {partner.vat}"
+                    description = description.lstrip(' | ')
+
+                    payment_vals = movement._prepare_payment_vals_for_movement(
+                        partner_id, amount, is_debit, description, move.id)
+                    payment = self.env['account.payment'].create(payment_vals)
+                    created_payment_ids.append(payment.id)
+                    _logger.info("Payment created for movement ID: %s, Payment ID: %s", movement.movement_id,
+                                 payment.id)
+
+                    # POST THE LINKED JOURNAL ENTRY WHEN PAYMENT IS CREATED
+                    try:
+                        move.action_post()
+                        _logger.info("Journal entry posted successfully for movement ID: %s", movement.movement_id)
+                    except Exception as post_error:
+                        _logger.warning("Failed to post journal entry for movement ID %s: %s",
+                                        movement.movement_id, str(post_error))
+                else:
+                    # Post journal entry normally when no payment is created
+                    try:
+                        move.action_post()
+                        _logger.info("Journal entry posted successfully for movement ID: %s", movement.movement_id)
+                    except Exception as post_error:
+                        _logger.warning("Failed to post journal entry for movement ID %s: %s",
+                                        movement.movement_id, str(post_error))
+
+                created_moves.append(move.id)
+                movement.state = 'done'
+                success_count += 1
+                _logger.info("Journal entry created successfully for movement ID: %s", movement.movement_id)
+
+            except Exception as e:
+                # Mark movement as failed and log error
+                movement.state = 'error'
+                error_msg = str(e)
+                failed_movements.append({
+                    'movement_id': movement.movement_id or movement.id,
+                    'error': error_msg
+                })
+                _logger.error("Error processing movement ID %s: %s", movement.movement_id, error_msg)
+                continue
+
+        # Prepare result message
+        total_selected = len(self)
+        processed_movements = len(movements_to_process)
+        failed_count = len(failed_movements)
+
+        if failed_count == 0 and success_count > 0:
+            message = _('%d movements processed successfully!') % success_count
+            if skipped_count > 0:
+                message += _(' %d movements were skipped (already done).') % skipped_count
+            if created_payment_ids:
+                message += f'\nPayments created: {len(created_payment_ids)}'
+        elif success_count == 0 and processed_movements > 0:
+            message = _('All %d processable movements failed.') % processed_movements
+            if skipped_count > 0:
+                message += _(' %d movements were skipped (already done).') % skipped_count
+        elif success_count > 0:
+            message = _('%d of %d movements processed successfully. %d failed.') % (
+                success_count, processed_movements, failed_count)
+            if skipped_count > 0:
+                message += _(' %d movements were skipped (already done).') % skipped_count
+            if created_payment_ids:
+                message += f'\nPayments created: {len(created_payment_ids)}'
+        else:
+            message = _('No movements were processed.')
+            if skipped_count > 0:
+                message += _(' %d movements were skipped (already done).') % skipped_count
+
+        if failed_movements:
+            message += '\n\nFailed movements:\n'
+            for failed in failed_movements[:5]:
+                message += f"- Movement ID {failed['movement_id']}: {failed['error']}\n"
+            if len(failed_movements) > 5:
+                message += f'... and {len(failed_movements) - 5} more errors.'
+
+        if created_moves:
+            message += f'\n\nCreated Journal Entry IDs: {", ".join(map(str, created_moves))}'
+        if created_payment_ids:
+            message += f'\nCreated Payment IDs: {", ".join(map(str, created_payment_ids))}'
+
+        # Show notification based on results
+        if failed_count == 0 and success_count > 0:
+            # All successful
+            return {
+                'type': 'ir.actions.client',
+                'tag': 'display_notification',
+                'params': {
+                    'title': _('Success'),
+                    'message': message,
+                    'type': 'success',
+                    'sticky': True,
+                }
+            }
+        elif success_count == 0 and processed_movements > 0:
+            # All failed
+            return {
+                'type': 'ir.actions.client',
+                'tag': 'display_notification',
+                'params': {
+                    'title': _('Processing Failed'),
+                    'message': message,
+                    'type': 'danger',
+                    'sticky': True,
+                }
+            }
+        elif success_count > 0:
+            # Mixed results
+            return {
+                'type': 'ir.actions.client',
+                'tag': 'display_notification',
+                'params': {
+                    'title': _('Partial Success'),
+                    'message': message,
+                    'type': 'warning',
+                    'sticky': True,
+                }
+            }
+        else:
+            return {
+                'type': 'ir.actions.client',
+                'tag': 'display_notification',
+                'params': {
+                    'title': _('No Processing Done'),
+                    'message': message,
+                    'type': 'info',
+                    'sticky': True,
+                }
+            }
+
+    def _process_direct_account_movement_for_batch(self):
+        """Process movement with direct account search for batch processing."""
+        # Find account based on description (use same logic as single processing)
+        account = self._find_direct_account(self)
+
+        if not account:
+            raise UserError(_('No suitable account found for direct search with description: "%s"') % self.description)
+
+        return self._create_direct_journal_entry_for_batch(account)
+
+    def _create_direct_journal_entry_for_batch(self, account):
+        """Create journal entry for direct account search (batch version)."""
+        amount = abs(float(self.amount))
+        is_debit = self.debit_credit in ['0', 'debit']
+
+        # Get bank account (use same method as single processing)
+        bank_account = self._get_bank_account()
+
+        # Prepare move values
+        move_vals = {
+            'date': self.value_date or fields.Date.today(),
+            'ref': self.movement_id or self.description,
+            'narration': self.description or '',
+            'line_ids': []
+        }
+
+        # Create journal entry lines (same logic as single processing)
+        if is_debit:
+            # Debit the found account, Credit the bank account
+            move_vals['line_ids'] = [
+                (0, 0, {
+                    'account_id': account.id,
+                    'debit': amount,
+                    'credit': 0.0,
+                    'name': self.description or '/',
+                }),
+                (0, 0, {
+                    'account_id': bank_account.id,
+                    'debit': 0.0,
+                    'credit': amount,
+                    'name': self.description or '/',
+                })
+            ]
+        else:
+            # Debit the bank account, Credit the found account
+            move_vals['line_ids'] = [
+                (0, 0, {
+                    'account_id': bank_account.id,
+                    'debit': amount,
+                    'credit': 0.0,
+                    'name': self.description or '/',
+                }),
+                (0, 0, {
+                    'account_id': account.id,
+                    'debit': 0.0,
+                    'credit': amount,
+                    'name': self.description or '/',
+                })
+            ]
+
+        # Create and return the move (don't show form view in batch)
+        move = self.env['account.move'].create(move_vals)
+        return move
+
+    def _create_journal_entry_with_mapping_for_batch(self, mapping, partner_id):
+        """Create journal entry using mapping configuration for batch processing."""
+        amount = abs(float(self.amount))
+        bank_account = self._get_bank_account()
+
+        # Create enhanced description with partner info (same logic as single processing)
+        description = self.description or ''
+        if partner_id:
+            partner = self.env['res.partner'].browse(partner_id)
+            description += f" | Partner: {partner.name}"
+            if partner.vat:
+                description += f" | VAT: {partner.vat}"
+
+        description = description.lstrip(' | ')
+
+        # Prepare move values
+        move_vals = {
+            'date': self.value_date or fields.Date.today(),
+            'ref': self.movement_id or self.description,
+            'narration': description,
+            'line_ids': []
+        }
+
+        # Create lines based on mapping debit/credit setting (same logic as single processing)
+        if mapping.debit_credit == 'debit':
+            # Debit the mapping account, Credit the bank account
+            debit_line = {
+                'account_id': mapping.account_id.id,
+                'debit': amount,
+                'credit': 0.0,
+                'name': self.description or '/',
+            }
+            credit_line = {
+                'account_id': bank_account.id,
+                'debit': 0.0,
+                'credit': amount,
+                'name': self.description or '/',
+            }
+
+            # Add partner to the debit line if exists
+            if partner_id:
+                debit_line['partner_id'] = partner_id
+
+        else:  # credit
+            # Debit the bank account, Credit the mapping account
+            debit_line = {
+                'account_id': bank_account.id,
+                'debit': amount,
+                'credit': 0.0,
+                'name': self.description or '/',
+            }
+            credit_line = {
+                'account_id': mapping.account_id.id,
+                'debit': 0.0,
+                'credit': amount,
+                'name': self.description or '/',
+            }
+
+            # Add partner to the credit line if exists
+            if partner_id:
+                credit_line['partner_id'] = partner_id
+
+        move_vals['line_ids'] = [
+            (0, 0, debit_line),
+            (0, 0, credit_line)
+        ]
+
+        # Create and return the move (don't show form view in batch)
+        move = self.env['account.move'].create(move_vals)
+        return move
+
+    def _get_movement_mapping(self, movement_type):
+        """Get the appropriate mapping for this movement."""
+        if not self.operation_code:
+            return False
+
+        # Search for mappings with the operation code
+        mappings = self.env['tbc.movements.code.mapping'].search([
+            ('code_field', '=', self.operation_code)
+        ])
+
+        if not mappings:
+            return False
+
+        # Filter by movement type (debit/credit)
+        type_mappings = mappings.filtered(lambda m: m.debit_credit == movement_type)
+
+        if not type_mappings:
+            _logger.warning(
+                'No mapping found for operation code "%s" with type "%s"',
+                self.operation_code, movement_type
+            )
+            return False
+
+        # If multiple mappings, try to find the best match using comment keywords
+        if len(type_mappings) > 1 and self.description:
+            for mapping in type_mappings:
+                if mapping.comment and mapping.comment.strip():
+                    keywords = [k.strip().lower() for k in mapping.comment.split(',')]
+                    if any(keyword in self.description.lower() for keyword in keywords):
+                        return mapping
+
+            # If no keyword match, prefer mapping with empty comment
+            empty_comment_mapping = type_mappings.filtered(
+                lambda m: not m.comment or not m.comment.strip()
+            )
+            if empty_comment_mapping:
+                return empty_comment_mapping[0]
+
+        # Return first available mapping
+        return type_mappings[0]
+
+    def _find_existing_partner(self):
+        """Find existing partner by tax code."""
+        if not self.partner_tax_code:
+            return False
+
+        partner = self.env['res.partner'].search([
+            ('vat', '=', self.partner_tax_code)
+        ], limit=1)
+
+        if partner:
+            _logger.info("Found existing partner: %s for tax code: %s", partner.name, self.partner_tax_code)
+            return partner.id
+
+        return False
+
+    def _open_partner_selection_wizard(self, mapping):
+        """Open partner selection wizard."""
+        wizard_vals = {
+            'movement_id': self.id,
+            'partner_name': self.partner_name or '',
+            'partner_inn': self.partner_tax_code or '',
+            'transaction_type': f'Movement ID: {self.movement_id}'
+        }
+
+        wizard = self.env['tbc.movement.partner.selection.wizard'].create(wizard_vals)
+
+        return {
+            'type': 'ir.actions.act_window',
+            'name': _('Select Partner for Movement'),
+            'res_model': 'tbc.movement.partner.selection.wizard',
+            'view_mode': 'form',
+            'res_id': wizard.id,
+            'target': 'new',
+            'context': dict(self.env.context, mapping_id=mapping.id),
+        }
+
+    def _continue_movement_processing(self):
+        """Continue processing after partner selection."""
+        self.ensure_one()
+
+        # Get mapping from context or re-fetch
+        mapping_id = self.env.context.get('mapping_id')
+        if mapping_id:
+            mapping = self.env['tbc.movements.code.mapping'].browse(mapping_id)
+        else:
+            is_debit = self.debit_credit in ['0', 'debit']
+            movement_type = 'debit' if is_debit else 'credit'
+            mapping = self._get_movement_mapping(movement_type)
+
+        if not mapping:
+            raise UserError(_('Mapping configuration not found.'))
+
+        # Get selected partner from context
+        partner_id = self.env.context.get('selected_partner_id', False)
+
+        return self._create_journal_entry_with_mapping(mapping, partner_id)
+
+    def _process_direct_account_movement(self):
+        """Process movement with direct account search (transaction_type == '1')."""
+        # Find account based on description
+        account = False
+        if self.description:
+            account = self.env['account.account'].search([
+                ('name', 'ilike', self.description)
+            ], limit=1)
+
+        if not account:
+            # Fallback to default accounts
+            is_debit = self.debit_credit in ['0', 'debit']
+            if is_debit:
+                account = self.env['account.account'].search([
+                    ('account_type', 'in', ['expense', 'expense_depreciation'])
+                ], limit=1)
+            else:
+                account = self.env['account.account'].search([
+                    ('account_type', 'in', ['income', 'income_other'])
+                ], limit=1)
+
+        if not account:
+            raise UserError(_('No suitable account found for direct search with description: "%s"') % self.description)
+
+        return self._create_direct_journal_entry(account)
+
+    def _create_direct_journal_entry(self, account):
+        """Create journal entry for direct account search (no mapping)."""
+        amount = abs(float(self.amount))
+        is_debit = self.debit_credit in ['0', 'debit']
+
+        # Get bank account
+        bank_account = self._get_bank_account()
+
+        # Prepare move values
+        move_vals = {
+            'date': self.value_date or fields.Date.today(),
+            'ref': self.movement_id or self.description,
+            'narration': self.description or '',
+            'line_ids': []
+        }
+
+        # Create journal entry lines
+        if is_debit:
+            # Debit the found account, Credit the bank account
+            move_vals['line_ids'] = [
+                (0, 0, {
+                    'account_id': account.id,
+                    'debit': amount,
+                    'credit': 0.0,
+                    'name': self.description or '/',
+                }),
+                (0, 0, {
+                    'account_id': bank_account.id,
+                    'debit': 0.0,
+                    'credit': amount,
+                    'name': self.description or '/',
+                })
+            ]
+        else:
+            # Debit the bank account, Credit the found account
+            move_vals['line_ids'] = [
+                (0, 0, {
+                    'account_id': bank_account.id,
+                    'debit': amount,
+                    'credit': 0.0,
+                    'name': self.description or '/',
+                }),
+                (0, 0, {
+                    'account_id': account.id,
+                    'debit': 0.0,
+                    'credit': amount,
+                    'name': self.description or '/',
+                })
+            ]
+
+        return self._create_and_return_move(move_vals)
+
+    def _create_journal_entry_with_mapping(self, mapping, partner_id):
+        """Create journal entry using mapping configuration."""
+        amount = abs(float(self.amount))
+        bank_account = self._get_bank_account()
+
+        # Create enhanced description with partner info
+        description = self.description or ''
+        if partner_id:
+            partner = self.env['res.partner'].browse(partner_id)
+            description += f" | Partner: {partner.name}"
+            if partner.vat:
+                description += f" | VAT: {partner.vat}"
+
+        description = description.lstrip(' | ')
+
+        # Prepare move values
+        move_vals = {
+            'date': self.value_date or fields.Date.today(),
+            'ref': self.movement_id or self.description,
+            'narration': description,
+            'line_ids': []
+        }
+
+        # Create lines based on mapping debit/credit setting
+        if mapping.debit_credit == 'debit':
+            # Debit the mapping account, Credit the bank account
+            debit_line = {
+                'account_id': mapping.account_id.id,
+                'debit': amount,
+                'credit': 0.0,
+                'name': self.description or '/',
+            }
+            credit_line = {
+                'account_id': bank_account.id,
+                'debit': 0.0,
+                'credit': amount,
+                'name': self.description or '/',
+            }
+
+            # Add partner to the debit line if exists
+            if partner_id:
+                debit_line['partner_id'] = partner_id
+
+        else:  # credit
+            # Debit the bank account, Credit the mapping account
+            debit_line = {
+                'account_id': bank_account.id,
+                'debit': amount,
+                'credit': 0.0,
+                'name': self.description or '/',
+            }
+            credit_line = {
+                'account_id': mapping.account_id.id,
+                'debit': 0.0,
+                'credit': amount,
+                'name': self.description or '/',
+            }
+
+            # Add partner to the credit line if exists
+            if partner_id:
+                credit_line['partner_id'] = partner_id
+
+        move_vals['line_ids'] = [
+            (0, 0, debit_line),
+            (0, 0, credit_line)
+        ]
+
+        try:
+            # Create the journal entry
+            move = self.env['account.move'].create(move_vals)
+
+            # Post the journal entry immediately
+            try:
+                move.action_post()
+                _logger.info("Journal entry posted successfully for movement ID: %s", self.movement_id)
+            except Exception as post_error:
+                _logger.warning("Failed to post journal entry for movement ID %s: %s",
+                                self.movement_id, str(post_error))
+
+            self.state = 'done'
+            _logger.info("Journal entry created successfully for movement ID: %s", self.movement_id)
+
+            # NEW LOGIC: Create payment if partner was provided (indicating partner was required)
+            if partner_id:
+                # Ensure journal entry is posted before creating payment
+                if move.state == 'draft':
+                    try:
+                        move.action_post()
+                        _logger.info("Journal entry posted before payment creation for movement ID: %s",
+                                     self.movement_id)
+                    except Exception as post_error:
+                        _logger.warning("Failed to post journal entry before payment creation for movement ID %s: %s",
+                                        self.movement_id, str(post_error))
+
+                is_debit = self.debit_credit in ['0', 'debit']
+                payment_vals = self._prepare_payment_vals_for_movement(partner_id, amount, is_debit, description,
+                                                                       move.id)
+                payment = self.env['account.payment'].create(payment_vals)
+                _logger.info("Payment created successfully for movement ID: %s, Payment ID: %s", self.movement_id,
+                             payment.id)
+
+                # Return action to open the payment instead of journal entry
+                return {
+                    'type': 'ir.actions.act_window',
+                    'name': _('Payment'),
+                    'res_model': 'account.payment',
+                    'view_mode': 'form',
+                    'res_id': payment.id,
+                    'target': 'current',
+                }
+            else:
+                # Return the action to open the created journal entry (original behavior)
+                return {
+                    'type': 'ir.actions.act_window',
+                    'name': _('Journal Entry Created'),
+                    'res_model': 'account.move',
+                    'view_mode': 'form',
+                    'res_id': move.id,
+                    'target': 'current',
+                    'context': {'form_view_initial_mode': 'readonly'},
+                }
+
+        except Exception as e:
+            _logger.error("Error creating journal entry for movement ID %s: %s", self.movement_id, str(e))
+            raise UserError(_('Failed to create journal entry: %s') % str(e))
+
+    def _get_bank_account(self):
+        """Get the bank account for the movement."""
+        # Try to find account by account number
+        if self.account_number:
+            account = self.env['account.account'].search([
+                ('name', 'ilike', self.account_number)
+            ], limit=1)
+            if account:
+                return account
+
+        # Fallback to any bank account
+        account = self.env['account.account'].search([
+            ('account_type', '=', 'asset_current')
+        ], limit=1)
+
+        if not account:
+            raise UserError(_('No bank account found. Please configure a bank account.'))
+
+        return account
+
+    def _find_direct_account(self, movement):
+        """Find account for direct search based on movement description."""
+        account = False
+        if movement.description:
+            account = self.env['account.account'].search([
+                ('name', 'ilike', movement.description)
+            ], limit=1)
+
+        if not account:
+            # Fallback to default accounts
+            is_debit = movement.debit_credit in ['0', 'debit']
+            if is_debit:
+                account = self.env['account.account'].search([
+                    ('account_type', 'in', ['expense', 'expense_depreciation'])
+                ], limit=1)
+            else:
+                account = self.env['account.account'].search([
+                    ('account_type', 'in', ['income', 'income_other'])
+                ], limit=1)
+
+        return account
+
+    def _create_direct_journal_entry_for_movement(self, movement, account):
+        """Create journal entry for direct account search (no mapping)."""
+        amount = abs(float(movement.amount))
+        is_debit = movement.debit_credit in ['0', 'debit']
+
+        # Get bank account
+        bank_account = self._get_bank_account()
+
+        # Prepare move values
+        move_vals = {
+            'date': movement.value_date or fields.Date.today(),
+            'ref': movement.movement_id or movement.description,
+            'narration': movement.description or '',
+            'line_ids': []
+        }
+
+        # Create journal entry lines
+        if is_debit:
+            # Debit the found account, Credit the bank account
+            move_vals['line_ids'] = [
+                (0, 0, {
+                    'account_id': account.id,
+                    'debit': amount,
+                    'credit': 0.0,
+                    'name': movement.description or '/',
+                }),
+                (0, 0, {
+                    'account_id': bank_account.id,
+                    'debit': 0.0,
+                    'credit': amount,
+                    'name': movement.description or '/',
+                })
+            ]
+        else:
+            # Debit the bank account, Credit the found account
+            move_vals['line_ids'] = [
+                (0, 0, {
+                    'account_id': bank_account.id,
+                    'debit': amount,
+                    'credit': 0.0,
+                    'name': movement.description or '/',
+                }),
+                (0, 0, {
+                    'account_id': account.id,
+                    'debit': 0.0,
+                    'credit': amount,
+                    'name': movement.description or '/',
+                })
+            ]
+
+        # Create and return the move
+        move = self.env['account.move'].create(move_vals)
+        return move
+
+    def _create_and_return_move(self, move_vals):
+        """Create the journal entry and return action to view it."""
+        try:
+            move = self.env['account.move'].create(move_vals)
+
+            # Post the journal entry immediately
+            try:
+                move.action_post()
+                _logger.info("Journal entry posted successfully for movement ID: %s", self.movement_id)
+            except Exception as post_error:
+                _logger.warning("Failed to post journal entry for movement ID %s: %s",
+                                self.movement_id, str(post_error))
+
+            self.state = 'done'
+            _logger.info("Journal entry created successfully for movement ID: %s", self.movement_id)
+
+            # Force the action to open in current window, not new tab
+            return {
+                'type': 'ir.actions.act_window',
+                'name': _('Journal Entry Created'),
+                'res_model': 'account.move',
+                'view_mode': 'form',
+                'res_id': move.id,
+                'target': 'current',
+                'context': {'form_view_initial_mode': 'readonly'},
+            }
+
+        except Exception as e:
+            _logger.error("Error creating journal entry for movement ID %s: %s", self.movement_id, str(e))
+            raise UserError(_('Failed to create journal entry: %s') % str(e))
+
+    def action_open_movements_wizard(self):
+        """Open the movements wizard."""
+        return {
+            'type': 'ir.actions.act_window',
+            'res_model': 'tbc.movements.wizard',
+            'view_mode': 'form',
+            'target': 'new',
+        }
+
+    def action_open_account_statement_wizard(self):
+        """Open the account statement import wizard."""
+        return {
+            'type': 'ir.actions.act_window',
+            'res_model': 'tbc.account.statement.wizard',
+            'view_mode': 'form',
+            'target': 'new',
+        }

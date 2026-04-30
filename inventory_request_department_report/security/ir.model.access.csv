@@ -1,0 +1,3 @@
+id,name,model_id:id,group_id:id,perm_read,perm_write,perm_create,perm_unlink
+access_inventory_dept_report_line_user,inventory.dept.report.line.user,model_inventory_dept_report_line,base.group_user,1,1,1,1
+access_inventory_department_report_wizard_user,inventory.department.report.wizard.user,model_inventory_department_report_wizard,base.group_user,1,1,1,1

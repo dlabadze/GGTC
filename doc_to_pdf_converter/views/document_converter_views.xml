@@ -1,0 +1,118 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <!-- list View -->
+    <record id="view_document_converter_list" model="ir.ui.view">
+        <field name="name">document.converter.list</field>
+        <field name="model">document.converter</field>
+        <field name="arch" type="xml">
+            <list string="Documents">
+                <field name="name"/>
+                <field name="docx_filename"/>
+                <field name="pdf_filename"/>
+                <field name="state" widget="badge" decoration-success="state == 'converted'" decoration-info="state == 'draft'"/>
+                <field name="conversion_date"/>
+                <field name="create_date"/>
+            </list>
+        </field>
+    </record>
+
+    <!-- Form View -->
+    <record id="view_document_converter_form" model="ir.ui.view">
+        <field name="name">document.converter.form</field>
+        <field name="model">document.converter</field>
+        <field name="arch" type="xml">
+            <form string="Document Converter">
+                <header>
+                    <button name="action_convert_to_pdf" 
+                            string="Convert to PDF" 
+                            type="object" 
+                            class="oe_highlight"
+                            invisible="state == 'converted'"/>
+                    <button name="action_reset_to_draft" 
+                            string="Reset to Draft" 
+                            type="object"
+                            invisible="state == 'draft'"
+                            confirm="Are you sure you want to reset? This will delete the PDF file."/>
+                    <button name="action_download_pdf" 
+                            string="Download PDF" 
+                            type="object"
+                            class="oe_highlight"
+                            invisible="state == 'draft'"/>
+                    <field name="state" widget="statusbar" statusbar_visible="draft,converted"/>
+                </header>
+                <sheet>
+                    <div class="oe_title">
+                        <label for="name" class="oe_edit_only"/>
+                        <h1>
+                            <field name="name" placeholder="e.g. Contract Document"/>
+                        </h1>
+                    </div>
+                    <group>
+                        <group name="source_document">
+                            <field name="docx_file" filename="docx_filename" widget="binary"/>
+                            <field name="docx_filename" invisible="1"/>
+                        </group>
+                        <group name="converted_document">
+                            <field name="pdf_file" filename="pdf_filename" widget="binary"/>
+                            <field name="pdf_filename" invisible="1"/>
+                            <field name="conversion_date"/>
+                        </group>
+                    </group>
+                    <group>
+                        <field name="notes" placeholder="Add any notes about this document..."/>
+                    </group>
+                </sheet>
+                <chatter reload_on_follower="True"/>
+            </form>
+        </field>
+    </record>
+
+    <!-- Search View -->
+    <record id="view_document_converter_search" model="ir.ui.view">
+        <field name="name">document.converter.search</field>
+        <field name="model">document.converter</field>
+        <field name="arch" type="xml">
+            <search string="Search Documents">
+                <field name="name"/>
+                <field name="docx_filename"/>
+                <field name="pdf_filename"/>
+                <filter string="Draft" name="filter_draft" domain="[('state', '=', 'draft')]"/>
+                <filter string="Converted" name="filter_converted" domain="[('state', '=', 'converted')]"/>
+                <separator/>
+                <filter string="This Month" name="filter_this_month" 
+                        domain="[('create_date', '&gt;=', (context_today() - relativedelta(day=1)).strftime('%Y-%m-%d'))]"/>
+                <group expand="0" string="Group By">
+                    <filter string="Status" name="group_state" context="{'group_by': 'state'}"/>
+                    <filter string="Conversion Date" name="group_conversion_date" context="{'group_by': 'conversion_date'}"/>
+                </group>
+            </search>
+        </field>
+    </record>
+
+    <!-- Action -->
+    <record id="action_document_converter" model="ir.actions.act_window">
+        <field name="name">Document Converter</field>
+        <field name="res_model">document.converter</field>
+        <field name="view_mode">list,form</field>
+        <field name="help" type="html">
+            <p class="o_view_nocontent_smiling_face">
+                Create your first document conversion
+            </p>
+            <p>
+                Upload a DOCX file and convert it to PDF with a single click.
+            </p>
+        </field>
+    </record>
+
+    <!-- Menu -->
+    <menuitem id="menu_document_converter_root"
+              name="Document Converter"
+              sequence="10"/>
+    
+    <menuitem id="menu_document_converter"
+              name="Documents"
+              parent="menu_document_converter_root"
+              action="action_document_converter"
+              sequence="10"/>
+</odoo>
+

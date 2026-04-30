@@ -1,0 +1,21 @@
+<odoo>
+    <record id="view_purchase_form_helper_field" model="ir.ui.view">
+        <field name="name">account.purchase.form.helper.field</field>
+        <field name="model">purchase.order</field>
+        <field name="inherit_id" ref="purchase.purchase_order_form"/>
+        <field name="arch" type="xml">
+            <xpath expr="//field[@name='factura_num']" position="after">
+                <field name="factura_num_helper"/>
+<!--                <field name="zednd_num_helper"/>-->
+            </xpath>
+            <xpath expr="//field[@name='factura_num']" position="attributes">
+                <attribute name="invisible">True</attribute>
+            </xpath>
+
+<!--            <xpath expr="//field[@name='invoice_number']" position="attributes">-->
+<!--                <attribute name="invisible">True</attribute>-->
+<!--            </xpath>-->
+        </field>
+    </record>
+
+</odoo>

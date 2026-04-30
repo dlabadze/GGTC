@@ -1,0 +1,218 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="view_gza_stock_location_report_list" model="ir.ui.view">
+        <field name="name">gza.stock.location.report.list</field>
+        <field name="model">gza.stock.location.report</field>
+        <field name="arch" type="xml">
+            <list string="Stock Report by Location">
+                <field name="product_name" string="პროდუქცია"/>
+                <field name="stock_valuation_account_id" string="Stock Valuation Account"/>
+                <field name="internal_ref" string="პროდუქციის კოდი"/>
+                <field name="category_id" string="კატეგორია"/>
+                <field name="location_id" string="ლოკაცია"/>
+                <field name="unique_location_id" string="ლოკაციის კოდი"/>
+                <field name="uom_name" string="ერთეული"/>
+                <field name="initial_qty" string="საწყისი ნაშთი" sum="საწყისი რაოდენობა"/>
+                <field name="incoming_qty" string="შემოსავალი" sum="შემოსავალი"/>
+                <field name="outgoing_qty" string="გასავალი" sum="გასავალი"/>
+                <field name="final_qty" string="საბოლოო ნაშთი" sum="საბოლოო რაოდენობა"/>
+                <field name="date_from" invisible="0" string="საწყისი თარიღი"/>
+                <field name="date_to" invisible="0" string="საბოლოო თარიღი"/>
+                <button name="action_view_stock_moves"
+                        type="object"
+                        string="ისტორია"
+                        class="btn-link"
+                        icon="fa-history"/>
+            </list>
+        </field>
+    </record>
+
+    <record id="view_gza_stock_location_report_list_no_category" model="ir.ui.view">
+        <field name="name">gza.stock.location.report.list.no.category</field>
+        <field name="model">gza.stock.location.report</field>
+        <field name="arch" type="xml">
+            <list string="Stock Report by Location">
+                <field name="product_name" string="პროდუქცია"/>
+                <field name="stock_valuation_account_id" string="Stock Valuation Account"/>
+                <field name="internal_ref" string="პროდუქციის კოდი"/>
+                <field name="location_id" string="ლოკაცია"/>
+                <field name="unique_location_id" string="ლოკაციის კოდი"/>
+                <field name="uom_name" string="ერთეული"/>
+                <field name="initial_qty" string="საწყისი ნაშთი" sum="საწყისი რაოდენობა"/>
+                <field name="incoming_qty" string="შემოსავალი" sum="შემოსავალი"/>
+                <field name="outgoing_qty" string="გასავალი" sum="გასავალი"/>
+                <field name="final_qty" string="საბოლოო ნაშთი" sum="საბოლოო რაოდენობა"/>
+                <field name="date_from" invisible="0" string="საწყისი თარიღი"/>
+                <field name="date_to" invisible="0" string="საბოლოო თარიღი"/>
+                <button name="action_view_stock_moves"
+                        type="object"
+                        string="ისტორია"
+                        class="btn-link"
+                        icon="fa-history"/>
+            </list>
+        </field>
+    </record>
+
+    <record id="view_gza_stock_location_report_list_amount" model="ir.ui.view">
+        <field name="name">gza.stock.location.report.list.amount</field>
+        <field name="model">gza.stock.location.report</field>
+        <field name="arch" type="xml">
+            <list string="Stock Report by Location">
+                <field name="product_name" string="პროდუქცია"/>
+                <field name="stock_valuation_account_id" string="Stock Valuation Account"/>
+                <field name="internal_ref" string="პროდუქციის კოდი"/>
+                <field name="category_id" string="კატეგორია"/>
+                <field name="location_id" string="ლოკაცია"/>
+                <field name="unique_location_id" string="ლოკაციის კოდი"/>
+                <field name="uom_name" string="ერთეული"/>
+                <field name="initial_qty" string="საწყისი ნაშთი" sum="საწყისი რაოდენობა"/>
+                <field name="incoming_qty" string="შემოსავალი" sum="შემოსავალი"/>
+                <field name="outgoing_qty" string="გასავალი" sum="გასავალი"/>
+                <field name="final_qty" string="საბოლოო ნაშთი" sum="საბოლოო რაოდენობა"/>
+                <field name="initial_amount" string="საწყისი თანხა" sum="საწყისი თანხა"/>
+                <field name="incoming_amount" string="შემოსავალი თანხა" sum="შემოსავალი თანხა"/>
+                <field name="outgoing_amount" string="გასავალი თანხა" sum="გასავალი თანხა"/>
+                <field name="final_amount" string="საბოლოო ნაშთი თანხა" sum="საბოლოო ნაშთი თანხა"/>
+                <field name="date_from" invisible="0" string="საწყისი თარიღი"/>
+                <field name="date_to" invisible="0" string="საბოლოო თარიღი"/>
+                <button name="action_view_stock_moves"
+                        type="object"
+                        string="ისტორია"
+                        class="btn-link"
+                        icon="fa-history"/>
+            </list>
+        </field>
+    </record>
+
+    <record id="view_gza_stock_location_report_list_no_category_amount" model="ir.ui.view">
+        <field name="name">gza.stock.location.report.list.no.category.amount</field>
+        <field name="model">gza.stock.location.report</field>
+        <field name="arch" type="xml">
+            <list string="Stock Report by Location">
+                <field name="product_name" string="პროდუქცია"/>
+                <field name="stock_valuation_account_id" string="Stock Valuation Account"/>
+                <field name="internal_ref" string="პროდუქციის კოდი"/>
+                <field name="location_id" string="ლოკაცია"/>
+                <field name="unique_location_id" string="ლოკაციის კოდი"/>
+                <field name="uom_name" string="ერთეული"/>
+                <field name="initial_qty" string="საწყისი ნაშთი" sum="საწყისი რაოდენობა"/>
+                <field name="incoming_qty" string="შემოსავალი" sum="შემოსავალი"/>
+                <field name="outgoing_qty" string="გასავალი" sum="გასავალი"/>
+                <field name="final_qty" string="საბოლოო ნაშთი" sum="საბოლოო რაოდენობა"/>
+                <field name="unit_price" sum="Cost" column_invisible="1"/>
+                <field name="initial_amount" string="საწყისი თანხა" sum="საწყისი თანხა" digits="[16, 4]"/>
+                <field name="incoming_amount" string="შემოსავალი თანხა" sum="შემოსავალი თანხა" digits="[16, 4]"/>
+                <field name="outgoing_amount" string="გასავალი თანხა" sum="გასავალი თანხა" digits="[16, 4]"/>
+                <field name="final_amount" string="საბოლოო ნაშთი თანხა" sum="საბოლოო ნაშთი თანხა" digits="[16, 4]"/>
+                <field name="date_from" invisible="0" string="საწყისი თარიღი"/>
+                <field name="date_to" invisible="0" string="საბოლოო თარიღი"/>
+                <button name="action_view_stock_moves"
+                        type="object"
+                        string="ისტორია"
+                        class="btn-link"
+                        icon="fa-history"/>
+            </list>
+        </field>
+    </record>
+
+    <record id="view_gza_stock_location_report_search" model="ir.ui.view">
+        <field name="name">gza.stock.location.report.search</field>
+        <field name="model">gza.stock.location.report</field>
+        <field name="arch" type="xml">
+            <search string="Stock Report by Location">
+                <field name="product_id"/>
+                <field name="location_id"/>
+                <field name="uom_name"/>
+                <field name="initial_qty"/>
+                <field name="incoming_qty"/>
+                <field name="outgoing_qty"/>
+                <field name="final_qty"/>
+                <field name="date_from" invisible="0"/>
+                <field name="date_to" invisible="0"/>
+                <filter string="With Stock" name="with_stock" domain="[('final_qty', '&gt;', 0)]"/>
+                <filter string="Out of Stock" name="out_of_stock" domain="[('final_qty', '&lt;=', 0)]"/>
+                <filter string="With Movement" name="with_movement" domain="['|',('incoming_qty','>',0),('outgoing_qty','>',0)]"/>
+            </search>
+        </field>
+    </record>
+
+    <record id="view_gza_stock_location_report_wizard_form" model="ir.ui.view">
+        <field name="name">gza.stock.location.report.wizard.form</field>
+        <field name="model">gza.stock.location.report.wizard</field>
+        <field name="arch" type="xml">
+            <form string="რეპორტი ლოკაციების მიხედვით">
+                <group>
+                    <group>
+                        <field name="date_from" string="საწყისი თარიღი"/>
+                        <field name="date_to" string="საბოლოო თარიღი"/>
+                    </group>
+                    <group>
+                        <field name="location_ids" widget="many2many_tags" string="ლოკაციები"/>
+                        <field name="use_category_filter" string="კატეგორიებით გაფილტვრა"/>
+                        <field name="category_ids" widget="many2many_tags" string="კატეგორიები"
+                            invisible="not use_category_filter"/>
+                        <field name="include_internal_transfers"/>
+                        <field name="show_amount_columns"/>
+                    </group>
+                </group>
+                <footer>
+                    <button name="action_generate_report" string="რეპორტის გენერაცია" type="object" class="btn-primary"/>
+                    <button string="გაუქმება" class="btn-secondary" special="cancel"/>
+                </footer>
+            </form>
+        </field>
+    </record>
+
+    <record id="view_stock_move_line_history_list" model="ir.ui.view">
+        <field name="name">stock.move.line.history.list</field>
+        <field name="model">stock.move.line</field>
+        <field name="arch" type="xml">
+            <list string="Stock Move Lines (History)" create="false" edit="false">
+                <field name="date"/>
+                <field name="inventory_request_id" optional="show"/>
+                <field name="request_number" optional="show"/>
+                <!-- <field name="x_request_number_manual" optional="show"/> -->
+                <field name="move_id"/>
+                <field name="picking_id" optional="show"/>
+                <field name="comment_picking" string="საფუძველი" optional="show"/>
+                <field name="aqtis_nomeri" string="აქტის ნოემრი" optional="show"/>
+                <field name="product_id"/>
+                <field name="location_id" string="Source"/>
+                <field name="location_dest_id" string="Destination"/>
+                <field name="quantity"/>
+                <field name="value" string="Value"/>
+                <field name="product_uom_id" string="UoM" optional="hide"/>
+                <field name="state" optional="hide"/>
+            </list>
+        </field>
+    </record>
+
+    <record id="action_gza_stock_location_report" model="ir.actions.act_window">
+        <field name="name">სასაქონლო უწყისი ლოკაცია (საწყობი)</field>
+        <field name="res_model">gza.stock.location.report</field>
+        <field name="view_mode">list</field>
+        <field name="search_view_id" ref="view_gza_stock_location_report_search"/>
+        <field name="help" type="html">
+            <p class="o_view_nocontent_smiling_face">
+                No stock data available for selected locations.
+            </p>
+            <p>
+                Use the filters to select a date range and locations.
+            </p>
+        </field>
+    </record>
+
+    <record id="action_gza_stock_location_report_wizard" model="ir.actions.act_window">
+        <field name="name">სასაქონლო უწყისი ლოკაცია (საწყობი)</field>
+        <field name="res_model">gza.stock.location.report.wizard</field>
+        <field name="view_mode">form</field>
+        <field name="target">new</field>
+    </record>
+
+    <menuitem id="menu_gza_stock_location_report"
+              name="სასაქონლო უწყისი ლოკაცია (საწყობი)"
+              parent="stock.menu_warehouse_report"
+              action="action_gza_stock_location_report_wizard"
+              sequence="20"/>
+</odoo>
+

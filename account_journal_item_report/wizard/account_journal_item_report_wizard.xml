@@ -1,0 +1,76 @@
+<odoo>
+    <record id="view_account_journal_item_report_wizard_form" model="ir.ui.view">
+        <field name="name">account.journal.item.report.wizard.form</field>
+        <field name="model">account.journal.item.report.wizard</field>
+        <field name="arch" type="xml">
+            <form string="Journal Item Report Wizard">
+                <group>
+                    <field name="start_date"/>
+                    <field name="end_date"/>
+                    <field name="account_id"/>
+                </group>
+                <group>
+                    <field name="starting_balance" readonly="1"/>
+                    <field name="ending_balance" readonly="1"/>
+                </group>
+                <footer>
+                    <button name="action_generate_report" type="object" string="Generate Report" class="btn-primary"/>
+                    <button string="Cancel" class="btn-secondary" special="cancel"/>
+                </footer>
+            </form>
+        </field>
+    </record>
+
+    <record id="action_account_journal_item_report_wizard" model="ir.actions.act_window">
+        <field name="name">Journal Item Report</field>
+        <field name="res_model">account.journal.item.report.wizard</field>
+        <field name="view_mode">form</field>
+        <field name="target">new</field>
+    </record>
+
+    <!-- List (list) view for result model with opening/closing balance -->
+    <record id="view_account_journal_item_report_result_list" model="ir.ui.view">
+        <field name="name">account.journal.item.report.result.list</field>
+        <field name="model">account.journal.item.report.result</field>
+        <field name="arch" type="xml">
+            <list>
+                <field name="account_id"/>
+                <field name="date"/>
+                <field name="journal_id"/>
+                <field name="move_id"/>
+                <field name="partner_id"/>
+                <field name="name"/>
+                <field name="debit"/>
+                <field name="credit"/>
+                <field name="balance"/>
+                <field name="opening_balance" sum="false"/>
+                <field name="closing_balance" sum="false"/>
+                <field name="ref"/>
+            </list>
+        </field>
+    </record>
+
+    <!-- Form view for result model -->
+    <record id="view_account_journal_item_report_result_form" model="ir.ui.view">
+        <field name="name">account.journal.item.report.result.form</field>
+        <field name="model">account.journal.item.report.result</field>
+        <field name="arch" type="xml">
+            <form>
+                <group>
+                    <field name="account_id"/>
+                    <field name="date"/>
+                    <field name="journal_id"/>
+                    <field name="move_id"/>
+                    <field name="partner_id"/>
+                    <field name="name"/>
+                    <field name="debit"/>
+                    <field name="credit"/>
+                    <field name="balance"/>
+                    <field name="opening_balance"/>
+                    <field name="closing_balance"/>
+                    <field name="ref"/>
+                </group>
+            </form>
+        </field>
+    </record>
+</odoo> 

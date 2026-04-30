@@ -1,0 +1,9 @@
+id,name,model_id:id,group_id:id,perm_read,perm_write,perm_create,perm_unlink
+access_waybill_user,waybill user,model_waybill,base.group_user,1,1,1,1
+access_fetch_waybills_wizard_user,fetch waybills wizard user,model_fetch_waybills_wizard,base.group_user,1,1,1,1
+access_fetch_waybills_wizard1_user,fetch waybills wizard1 user,model_fetch_waybills_wizard1,base.group_user,1,1,1,1
+access_fetch_waybills_wizard3_user,fetch waybills wizard3 user,model_fetch_waybills_wizard3,base.group_user,1,1,1,1
+access_fetch_waybills_wizard4_user,fetch waybills wizard4 user,model_fetch_waybills_wizard4,base.group_user,1,1,1,1
+access_fetch_waybills_wizard5_user,fetch waybills wizard5 user,model_fetch_waybills_wizard5,base.group_user,1,1,1,1
+access_waybill_line_history_user,waybill line history user,model_waybill_line_history,base.group_user,1,1,1,1
+access_waybill_line_user,waybill line user,model_waybill_line,base.group_user,1,1,1,1

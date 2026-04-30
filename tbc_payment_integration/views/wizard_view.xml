@@ -1,0 +1,44 @@
+<odoo>
+    <record id="view_bog_payment_wizard_form" model="ir.ui.view">
+        <field name="name">bog.payment.wizard.form</field>
+        <field name="model">bog.payment.wizard</field>
+        <field name="arch" type="xml">
+            <form string="BOG Payment Integration">
+                <sheet>
+                    <group>
+                        <!-- API Credentials -->
+                        <group>
+                            <field name="start_date"/>
+                            <field name="end_date"/>
+                            <field name="company_id" invisible="1"/>
+                            <field name="selected_bank_account_id"/>
+                            <field name="currency"/>
+                        </group>
+                    </group>
+                    <footer>
+                        <button name="fetch_transactions" string="Fetch Transactions" type="object" class="btn-primary"/>
+                        <button name="cancel" string="Cancel" class="btn-secondary" special="cancel"/>
+                    </footer>
+                </sheet>
+            </form>
+        </field>
+    </record>
+    <record id="view_tbc_movements_wizard" model="ir.ui.view">
+        <field name="name">tbc.movements.wizard.form</field>
+        <field name="model">tbc.movements.wizard</field>
+        <field name="arch" type="xml">
+            <form string="Import Bank Statement">
+                <sheet>
+                    <group>
+                        <field name="pdf_file" />
+                    </group>
+                    <footer>
+                        <button string="Import" type="object" name="action_import_pdf" class="btn-primary"/>
+                        <button string="Cancel" class="btn-secondary" special="cancel"/>
+                    </footer>
+                </sheet>
+            </form>
+        </field>
+    </record>
+
+</odoo>

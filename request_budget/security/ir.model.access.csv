@@ -1,0 +1,9 @@
+id,name,model_id:id,group_id:id,perm_read,perm_write,perm_create,perm_unlink
+access_budgeting_request_user,budgeting.request.user,model_budgeting_request,base.group_user,1,1,1,1
+access_budgeting_line_user,budgeting.line.user,model_budgeting_line,base.group_user,1,1,1,1
+access_budgeting_request_stage_user,budgeting.request.stage.user,model_budgeting_request_stage,base.group_user,1,1,1,1
+access_budgeting_line_stage_user,budgeting.line.stage.user,model_budgeting_line_stage,base.group_user,1,1,1,1
+access_budgeting_request_tag_user,budgeting.request.tag.user,model_budgeting_request_tag,base.group_user,1,1,1,1
+access_budgeting_line_tag_user,budgeting.line.tag.user,model_budgeting_line_tag,base.group_user,1,1,1,1
+access_budget_sync_wizard_user,budget.sync.wizard.user,model_budget_sync_wizard,base.group_user,1,1,1,1
+access_budget_excel_import_wizard_user,budget.excel.import.wizard.user,model_budget_excel_import_wizard,base.group_user,1,1,1,1

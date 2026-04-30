@@ -1,0 +1,7 @@
+id,name,model_id:id,group_id:id,perm_read,perm_write,perm_create,perm_unlink
+access_inspektireba_user,inspektireba.user,model_inspektireba,base.group_user,1,1,1,1
+access_inspektireba_approver_line_user,inspektireba.approver.line.user,model_inspektireba_approver_line,base.group_user,1,1,1,1
+access_inspektireba_default_approver_user,inspektireba.default.approver.user,model_inspektireba_default_approver,base.group_user,1,1,1,1
+access_inspektireba_procurement_user,inspektireba.procurement.user,model_inspektireba_procurement_user,base.group_user,1,1,1,1
+access_inspektireba_finance_user,inspektireba.finance.user,model_inspektireba_finance_user,base.group_user,1,1,1,1
+access_inspektireba_service_line_user,inspektireba.service.line.user,model_inspektireba_service_line,base.group_user,1,1,1,1

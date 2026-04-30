@@ -1,0 +1,534 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <template id="purchase_plan_lines_report_template" name="Purchase Plan Lines Report">
+        <t t-call="website.layout">
+            <div class="container-fluid mt-4 mb-5">
+                <!-- Header -->
+                <div class="text-center mb-4">
+                    <h1 class="display-4 text-primary">შესყიდვების გეგმის ხაზები</h1>
+                    <p class="lead text-muted">ხაზების ჯამები და არჩევანით ჯამების ნახვა</p>
+                </div>
+
+                <!-- Filter Section -->
+                <div class="card shadow mb-4">
+                    <div class="card-header bg-primary text-white">
+                        <h4 class="mb-0">
+                            <i class="fa fa-filter mr-2"></i>
+                            ფილტრი
+                        </h4>
+                    </div>
+                    <div class="card-body">
+                        <div class="row align-items-end">
+                            <div class="col-md-6 mb-3">
+                                <label class="form-label font-weight-bold">შესყიდვების გეგმა:</label>
+                                <select id="plan_select" class="form-control form-control-lg">
+                                    <option value="">აირჩიეთ შესყიდვების გეგმა...</option>
+                                    <option value="all">ყველა ხაზი (ყველა გეგმა)</option>
+                                    <t t-foreach="purchase_plans" t-as="plan">
+                                        <option t-att-value="plan.id">
+                                            <t t-esc="plan.name"/>
+                                        </option>
+                                    </t>
+                                </select>
+                            </div>
+                            <div class="col-md-3 mb-3">
+                                <button id="load_btn" class="btn btn-primary btn-lg btn-block" disabled="disabled">
+                                    <i class="fa fa-download mr-2"></i>
+                                    ჩატვირთვა
+                                </button>
+                            </div>
+                            <div class="col-md-3 mb-3">
+                                <button id="export_btn" class="btn btn-success btn-lg btn-block" disabled="disabled">
+                                    <i class="fa fa-file-excel-o mr-2"></i>
+                                    ექსპორტი CSV
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Loading -->
+                <div id="loading" class="text-center py-5" style="display: none;">
+                    <div class="spinner-border text-primary" role="status" style="width: 3rem; height: 3rem;">
+                        <span class="sr-only">იტვირთება...</span>
+                    </div>
+                    <p class="mt-3 h5 text-muted">მონაცემების ჩატვირთვა...</p>
+                </div>
+
+                <!-- Selected Lines Summary Panel -->
+                <div id="selected_panel" class="card shadow mb-4" style="display: none;">
+                    <div class="card-header bg-warning text-dark d-flex justify-content-between align-items-center">
+                        <h5 class="mb-0">
+                            <i class="fa fa-check-square-o mr-2"></i>
+                            არჩეული ხაზების ჯამები (<span id="selected_count">0</span> ხაზი)
+                        </h5>
+                        <button id="clear_selection_btn" class="btn btn-sm btn-outline-dark">
+                            <i class="fa fa-times mr-1"></i>
+                            არჩევანის გასუფთავება
+                        </button>
+                    </div>
+                    <div class="card-body">
+                        <div class="row" id="selected_sums_row">
+                            <!-- Dynamically populated -->
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Results Section -->
+                <div id="results_section" style="display: none;">
+                    <!-- Total Summary Cards -->
+                    <div class="row mb-4" id="total_cards">
+                        <!-- Populated by JS -->
+                    </div>
+
+                    <!-- Data Table -->
+                    <div class="card shadow">
+                        <div class="card-header bg-secondary text-white d-flex justify-content-between align-items-center">
+                            <h5 class="mb-0">
+                                <i class="fa fa-table mr-2"></i>
+                                შესყიდვების გეგმის ხაზები
+                                <span id="lines_count_badge" class="badge badge-light ml-2"></span>
+                            </h5>
+                            <div>
+                                <button id="select_all_btn" class="btn btn-sm btn-light mr-2">
+                                    <i class="fa fa-check-square-o mr-1"></i>
+                                    ყველას მონიშვნა
+                                </button>
+                                <button id="deselect_all_btn" class="btn btn-sm btn-outline-light">
+                                    <i class="fa fa-square-o mr-1"></i>
+                                    მონიშვნის მოხსნა
+                                </button>
+                            </div>
+                        </div>
+                        <div class="card-body p-0">
+                            <div class="table-responsive">
+                                <table id="lines_table" class="table table-striped table-hover table-bordered mb-0" style="font-size: 0.82rem;">
+                                    <thead class="thead-dark">
+                                        <tr>
+                                            <th class="text-center" style="width: 40px;">
+                                                <input type="checkbox" id="header_checkbox" title="ყველას მონიშვნა/მოხსნა"/>
+                                            </th>
+                                            <th>#</th>
+                                            <th>გეგმა</th>
+                                            <th>CPV კოდი</th>
+                                            <th>CPV დასახელება</th>
+                                            <th>დაფინანსების წყარო</th>
+                                            <th>შესყიდვის საშუალება</th>
+                                            <th>შესყიდვის საფუძველი</th>
+                                            <th>ვადები</th>
+                                            <th class="text-right">პირვანდელი ღირებულება</th>
+                                            <th class="text-right">მიმდინარე ღირებულება</th>
+                                            <th class="text-right">სხვაობა</th>
+                                            <th class="text-right">ხელშეკრულების თანხა</th>
+                                            <th class="text-right">დარჩ. რეს. ხელშეკრ.</th>
+                                            <th class="text-right">გადახდილი თანხა</th>
+                                            <th class="text-right">დარჩენილი რესურსი</th>
+                                            <th class="text-right">გამოყოფილი</th>
+                                            <th class="text-right">დარჩენილი გასანაწილ.</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody id="lines_tbody">
+                                        <!-- Populated by JS -->
+                                    </tbody>
+                                    <tfoot id="lines_tfoot" class="font-weight-bold" style="background-color: #e9ecef;">
+                                        <!-- Populated by JS -->
+                                    </tfoot>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Error -->
+                <div id="error_message" class="alert alert-danger" style="display: none;" role="alert">
+                    <i class="fa fa-exclamation-triangle mr-2"></i>
+                    <span id="error_text"></span>
+                </div>
+            </div>
+
+            <style>
+                #lines_table tbody tr.row-selected {
+                    background-color: #fff3cd !important;
+                }
+                #lines_table tbody tr:hover {
+                    cursor: pointer;
+                }
+                #selected_panel .sum-card {
+                    text-align: center;
+                    padding: 10px;
+                    background: #f8f9fa;
+                    border-radius: 8px;
+                    margin-bottom: 8px;
+                }
+                #selected_panel .sum-card .sum-label {
+                    font-size: 0.75rem;
+                    color: #6c757d;
+                    font-weight: 600;
+                    text-transform: uppercase;
+                }
+                #selected_panel .sum-card .sum-value {
+                    font-size: 1.1rem;
+                    font-weight: 700;
+                    color: #856404;
+                }
+                #total_cards .total-card {
+                    text-align: center;
+                    padding: 15px;
+                    border-radius: 10px;
+                    color: white;
+                }
+                #total_cards .total-label {
+                    font-size: 0.7rem;
+                    font-weight: 600;
+                    text-transform: uppercase;
+                    opacity: 0.9;
+                }
+                #total_cards .total-value {
+                    font-size: 1.2rem;
+                    font-weight: 700;
+                }
+                #lines_tfoot td {
+                    font-size: 0.85rem;
+                    border-top: 3px solid #495057 !important;
+                }
+            </style>
+
+            <script>
+            //<![CDATA[
+            document.addEventListener('DOMContentLoaded', function() {
+                // State
+                let linesData = [];
+
+                // DOM
+                const planSelect = document.getElementById('plan_select');
+                const loadBtn = document.getElementById('load_btn');
+                const exportBtn = document.getElementById('export_btn');
+                const loadingDiv = document.getElementById('loading');
+                const resultsSection = document.getElementById('results_section');
+                const selectedPanel = document.getElementById('selected_panel');
+                const errorDiv = document.getElementById('error_message');
+                const errorText = document.getElementById('error_text');
+                const headerCheckbox = document.getElementById('header_checkbox');
+                const selectAllBtn = document.getElementById('select_all_btn');
+                const deselectAllBtn = document.getElementById('deselect_all_btn');
+                const clearSelectionBtn = document.getElementById('clear_selection_btn');
+
+                // Numeric field definitions
+                const numericFields = [
+                    {key: 'pu_st_am', label: 'პირვანდელი ღირებულება'},
+                    {key: 'pu_ac_am', label: 'მიმდინარე ღირებულება'},
+                    {key: 'pu_diff', label: 'სხვაობა'},
+                    {key: 'pcon_am', label: 'ხელშეკრულების თანხა'},
+                    {key: 'pc_re_am', label: 'დარჩ. რეს. ხელშეკრ.'},
+                    {key: 'paim_am', label: 'გადახდილი თანხა'},
+                    {key: 'pa_re_am', label: 'დარჩენილი რესურსი'},
+                    {key: 'budget_lines_allocated', label: 'გამოყოფილი'},
+                    {key: 'remaining_to_allocate', label: 'დარჩენილი გასანაწილ.'}
+                ];
+
+                // Events
+                planSelect.addEventListener('change', function() {
+                    loadBtn.disabled = !planSelect.value;
+                    hideResults();
+                    hideError();
+                });
+
+                loadBtn.addEventListener('click', loadLines);
+                exportBtn.addEventListener('click', exportCSV);
+
+                headerCheckbox.addEventListener('change', function() {
+                    toggleAll(headerCheckbox.checked);
+                });
+                selectAllBtn.addEventListener('click', function() {
+                    toggleAll(true);
+                    headerCheckbox.checked = true;
+                });
+                deselectAllBtn.addEventListener('click', function() {
+                    toggleAll(false);
+                    headerCheckbox.checked = false;
+                });
+                clearSelectionBtn.addEventListener('click', function() {
+                    toggleAll(false);
+                    headerCheckbox.checked = false;
+                });
+
+                function loadLines() {
+                    const planId = planSelect.value;
+                    if (!planId) return;
+
+                    loadingDiv.style.display = 'block';
+                    resultsSection.style.display = 'none';
+                    selectedPanel.style.display = 'none';
+                    hideError();
+
+                    fetch('/budget/get_plan_lines', {
+                        method: 'POST',
+                        headers: {'Content-Type': 'application/json'},
+                        body: JSON.stringify({
+                            jsonrpc: '2.0',
+                            method: 'call',
+                            params: {purchase_plan_id: planId}
+                        })
+                    })
+                    .then(function(r) { return r.json(); })
+                    .then(function(data) {
+                        loadingDiv.style.display = 'none';
+                        if (data.result && data.result.length > 0) {
+                            linesData = data.result;
+                            renderTable(linesData);
+                            renderTotalCards(linesData);
+                            resultsSection.style.display = 'block';
+                            exportBtn.disabled = false;
+                            headerCheckbox.checked = false;
+                            selectedPanel.style.display = 'none';
+                        } else if (data.result && data.result.length === 0) {
+                            showError('არჩეულ გეგმაში ხაზები არ მოიძებნა');
+                        } else {
+                            showError('შეცდომა მონაცემების ჩატვირთვისას');
+                        }
+                    })
+                    .catch(function(err) {
+                        loadingDiv.style.display = 'none';
+                        showError('შეცდომა: ' + err.message);
+                    });
+                }
+
+                function renderTable(lines) {
+                    var tbody = document.getElementById('lines_tbody');
+                    var tfoot = document.getElementById('lines_tfoot');
+                    tbody.innerHTML = '';
+                    tfoot.innerHTML = '';
+
+                    var badge = document.getElementById('lines_count_badge');
+                    badge.textContent = lines.length + ' ხაზი';
+
+                    // Compute totals
+                    var totals = {};
+                    numericFields.forEach(function(f) { totals[f.key] = 0; });
+
+                    lines.forEach(function(line, idx) {
+                        numericFields.forEach(function(f) {
+                            totals[f.key] += (line[f.key] || 0);
+                        });
+
+                        var tr = document.createElement('tr');
+                        tr.setAttribute('data-index', idx);
+
+                        var curr = line.currency_symbol || '';
+
+                        tr.innerHTML =
+                            '<td class="text-center"><input type="checkbox" class="row-checkbox" data-index="' + idx + '"/></td>' +
+                            '<td>' + (idx + 1) + '</td>' +
+                            '<td>' + escHtml(line.plan_name) + '</td>' +
+                            '<td>' + escHtml(line.cpv_code) + '</td>' +
+                            '<td>' + escHtml(line.cpv_name) + '</td>' +
+                            '<td>' + escHtml(line.funding_source) + '</td>' +
+                            '<td>' + escHtml(line.purchase_method) + '</td>' +
+                            '<td>' + escHtml(line.purchase_reason) + '</td>' +
+                            '<td>' + escHtml(line.vadebi) + '</td>' +
+                            '<td class="text-right">' + fmtNum(line.pu_st_am) + '</td>' +
+                            '<td class="text-right">' + fmtNum(line.pu_ac_am) + '</td>' +
+                            '<td class="text-right">' + fmtNum(line.pu_diff) + '</td>' +
+                            '<td class="text-right">' + fmtNum(line.pcon_am) + '</td>' +
+                            '<td class="text-right">' + fmtNum(line.pc_re_am) + '</td>' +
+                            '<td class="text-right">' + fmtNum(line.paim_am) + '</td>' +
+                            '<td class="text-right">' + fmtNum(line.pa_re_am) + '</td>' +
+                            '<td class="text-right">' + fmtNum(line.budget_lines_allocated) + '</td>' +
+                            '<td class="text-right">' + fmtNum(line.remaining_to_allocate) + '</td>';
+
+                        tbody.appendChild(tr);
+                    });
+
+                    // Footer totals row
+                    var tfootTr = document.createElement('tr');
+                    tfootTr.innerHTML =
+                        '<td colspan="9" class="text-right font-weight-bold" style="font-size: 0.9rem;">ჯამი:</td>' +
+                        '<td class="text-right">' + fmtNum(totals.pu_st_am) + '</td>' +
+                        '<td class="text-right">' + fmtNum(totals.pu_ac_am) + '</td>' +
+                        '<td class="text-right">' + fmtNum(totals.pu_diff) + '</td>' +
+                        '<td class="text-right">' + fmtNum(totals.pcon_am) + '</td>' +
+                        '<td class="text-right">' + fmtNum(totals.pc_re_am) + '</td>' +
+                        '<td class="text-right">' + fmtNum(totals.paim_am) + '</td>' +
+                        '<td class="text-right">' + fmtNum(totals.pa_re_am) + '</td>' +
+                        '<td class="text-right">' + fmtNum(totals.budget_lines_allocated) + '</td>' +
+                        '<td class="text-right">' + fmtNum(totals.remaining_to_allocate) + '</td>';
+                    tfoot.appendChild(tfootTr);
+
+                    // Bind checkbox events
+                    var checkboxes = tbody.querySelectorAll('.row-checkbox');
+                    checkboxes.forEach(function(cb) {
+                        cb.addEventListener('change', onRowSelectionChange);
+                    });
+
+                    // Also allow clicking the row (not the checkbox cell) to toggle
+                    var rows = tbody.querySelectorAll('tr');
+                    rows.forEach(function(row) {
+                        row.addEventListener('click', function(e) {
+                            if (e.target.type === 'checkbox') return;
+                            var cb = row.querySelector('.row-checkbox');
+                            if (cb) {
+                                cb.checked = !cb.checked;
+                                onRowSelectionChange();
+                            }
+                        });
+                    });
+                }
+
+                function renderTotalCards(lines) {
+                    var container = document.getElementById('total_cards');
+                    var totals = {};
+                    numericFields.forEach(function(f) { totals[f.key] = 0; });
+                    lines.forEach(function(line) {
+                        numericFields.forEach(function(f) {
+                            totals[f.key] += (line[f.key] || 0);
+                        });
+                    });
+
+                    var colors = ['#667eea', '#764ba2', '#f093fb', '#4BC0C0', '#36A2EB', '#FF6384', '#56ab2f', '#FF9F40', '#9966FF'];
+                    var html = '';
+                    numericFields.forEach(function(f, i) {
+                        html += '<div class="col-lg-3 col-md-4 col-sm-6 mb-3">' +
+                            '<div class="total-card shadow-sm" style="background: ' + colors[i % colors.length] + ';">' +
+                                '<div class="total-label">' + f.label + '</div>' +
+                                '<div class="total-value">' + fmtNum(totals[f.key]) + '</div>' +
+                            '</div>' +
+                        '</div>';
+                    });
+                    container.innerHTML = html;
+                }
+
+                function onRowSelectionChange() {
+                    var checkboxes = document.querySelectorAll('#lines_tbody .row-checkbox');
+                    var selectedIndices = [];
+                    checkboxes.forEach(function(cb) {
+                        if (cb.checked) {
+                            selectedIndices.push(parseInt(cb.getAttribute('data-index')));
+                            cb.closest('tr').classList.add('row-selected');
+                        } else {
+                            cb.closest('tr').classList.remove('row-selected');
+                        }
+                    });
+
+                    if (selectedIndices.length > 0) {
+                        renderSelectedSums(selectedIndices);
+                        selectedPanel.style.display = 'block';
+                    } else {
+                        selectedPanel.style.display = 'none';
+                    }
+
+                    // Update header checkbox state
+                    headerCheckbox.checked = selectedIndices.length === linesData.length;
+                    headerCheckbox.indeterminate = selectedIndices.length > 0 && selectedIndices.length < linesData.length;
+                }
+
+                function renderSelectedSums(selectedIndices) {
+                    var sums = {};
+                    numericFields.forEach(function(f) { sums[f.key] = 0; });
+
+                    selectedIndices.forEach(function(idx) {
+                        var line = linesData[idx];
+                        if (line) {
+                            numericFields.forEach(function(f) {
+                                sums[f.key] += (line[f.key] || 0);
+                            });
+                        }
+                    });
+
+                    document.getElementById('selected_count').textContent = selectedIndices.length;
+
+                    var container = document.getElementById('selected_sums_row');
+                    var html = '';
+                    numericFields.forEach(function(f) {
+                        html += '<div class="col-lg-3 col-md-4 col-sm-6">' +
+                            '<div class="sum-card">' +
+                                '<div class="sum-label">' + f.label + '</div>' +
+                                '<div class="sum-value">' + fmtNum(sums[f.key]) + '</div>' +
+                            '</div>' +
+                        '</div>';
+                    });
+                    container.innerHTML = html;
+                }
+
+                function toggleAll(checked) {
+                    var checkboxes = document.querySelectorAll('#lines_tbody .row-checkbox');
+                    checkboxes.forEach(function(cb) { cb.checked = checked; });
+                    onRowSelectionChange();
+                }
+
+                function exportCSV() {
+                    if (!linesData || linesData.length === 0) {
+                        showError('ექსპორტისთვის მონაცემები არ არის');
+                        return;
+                    }
+
+                    var headers = [
+                        '#', 'გეგმა', 'CPV კოდი', 'CPV დასახელება', 'დაფინანსების წყარო',
+                        'შესყიდვის საშუალება', 'შესყიდვის საფუძველი', 'ვადები',
+                        'პირვანდელი ღირებულება', 'მიმდინარე ღირებულება', 'სხვაობა',
+                        'ხელშეკრულების თანხა', 'დარჩ. რეს. ხელშეკრ.',
+                        'გადახდილი თანხა', 'დარჩენილი რესურსი',
+                        'გამოყოფილი', 'დარჩენილი გასანაწილ.'
+                    ];
+
+                    var csv = '\uFEFF' + headers.join(',') + '\n';
+
+                    linesData.forEach(function(line, idx) {
+                        csv += (idx + 1) + ',' +
+                            '"' + (line.plan_name || '') + '",' +
+                            '"' + (line.cpv_code || '') + '",' +
+                            '"' + (line.cpv_name || '') + '",' +
+                            '"' + (line.funding_source || '') + '",' +
+                            '"' + (line.purchase_method || '') + '",' +
+                            '"' + (line.purchase_reason || '') + '",' +
+                            '"' + (line.vadebi || '') + '",' +
+                            line.pu_st_am + ',' + line.pu_ac_am + ',' + line.pu_diff + ',' +
+                            line.pcon_am + ',' + line.pc_re_am + ',' +
+                            line.paim_am + ',' + line.pa_re_am + ',' +
+                            line.budget_lines_allocated + ',' + line.remaining_to_allocate + '\n';
+                    });
+
+                    var blob = new Blob([csv], {type: 'text/csv;charset=utf-8;'});
+                    var url = URL.createObjectURL(blob);
+                    var a = document.createElement('a');
+                    a.href = url;
+                    a.download = 'purchase_plan_lines_' + new Date().toISOString().split('T')[0] + '.csv';
+                    a.style.display = 'none';
+                    document.body.appendChild(a);
+                    a.click();
+                    document.body.removeChild(a);
+                    URL.revokeObjectURL(url);
+                }
+
+                function fmtNum(val) {
+                    if (val === 0) return '0.00';
+                    return parseFloat(val).toLocaleString('ka-GE', {minimumFractionDigits: 2, maximumFractionDigits: 2});
+                }
+
+                function escHtml(str) {
+                    if (!str) return '';
+                    var div = document.createElement('div');
+                    div.appendChild(document.createTextNode(str));
+                    return div.innerHTML;
+                }
+
+                function hideResults() {
+                    resultsSection.style.display = 'none';
+                    selectedPanel.style.display = 'none';
+                    exportBtn.disabled = true;
+                    linesData = [];
+                }
+
+                function showError(msg) {
+                    errorText.textContent = msg;
+                    errorDiv.style.display = 'block';
+                }
+
+                function hideError() {
+                    errorDiv.style.display = 'none';
+                }
+            });
+            //]]>
+            </script>
+        </t>
+    </template>
+</odoo>

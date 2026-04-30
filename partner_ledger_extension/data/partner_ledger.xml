@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <!--
+        Add "Move Comment" column (account.move.comment) before Partner VAT.
+        Visible on each move line when the partner line is expanded (dropdown).
+    -->
+    <record id="partner_ledger_report_move_comment_column" model="account.report.column">
+        <field name="name">Comment</field>
+        <field name="expression_label">move_comment</field>
+        <field name="figure_type">string</field>
+        <field name="sortable">False</field>
+        <field name="sequence">14</field>
+        <field name="report_id" ref="account_reports.partner_ledger_report"/>
+    </record>
+
+    <!--
+        Add a dedicated "Partner VAT" column to the Partner Ledger report,
+        positioned after the Comment column. The column itself will be
+        filled only on grouped partner lines by the custom handler.
+    -->
+    <record id="partner_ledger_report_partner_vat_column" model="account.report.column">
+        <field name="name">Partner VAT</field>
+        <field name="expression_label">partner_vat</field>
+        <!-- Use 'string' figure_type for plain text column -->
+        <field name="figure_type">string</field>
+        <field name="sortable">False</field>
+        <field name="sequence">15</field>
+        <field name="report_id" ref="account_reports.partner_ledger_report"/>
+    </record>
+
+    <!-- Attach the new columns to the existing Partner Ledger report -->
+    <record id="account_reports.partner_ledger_report" model="account.report">
+        <field name="column_ids" eval="[(4, ref('partner_ledger_extension.partner_ledger_report_move_comment_column')), (4, ref('partner_ledger_extension.partner_ledger_report_partner_vat_column'))]"/>
+    </record>
+
+</odoo>

@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="view_inventory_line_form_internal_transfers_inherit" model="ir.ui.view">
+        <field name="name">inventory.line.form.inherit</field>
+        <field name="model">inventory.line</field>
+        <field name="inherit_id" ref="inventory_requests.view_inventory_line_form"/>
+        <field name="arch" type="xml">
+            <xpath expr="//field[@name='notes']" position="after">
+                <field name="transfer_ids" readonly="1">
+                    <list>
+                        <field name="name"/>
+                        <field name="origin"/>
+                        <field name="state"/>
+                        <field name="location_id"/>
+                        <field name="location_dest_id"/>
+                    </list>
+                </field>
+            </xpath>
+        </field>
+    </record>
+</odoo>

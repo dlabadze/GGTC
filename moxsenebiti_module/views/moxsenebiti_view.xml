@@ -1,0 +1,543 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+    <!-- ===================== ACTIONS ===================== -->
+
+    <record id="action_moxsenebiti_dashboard" model="ir.actions.act_window">
+        <field name="name">მთავარი გვერდი</field>
+        <field name="res_model">moxsenebiti.category</field>
+        <field name="view_mode">kanban</field>
+        <field name="help" type="html">
+            <p class="o_view_nocontent_smiling_face">
+                Wow!
+            </p>
+        </field>
+    </record>
+
+    <record id="action_moxsenebiti" model="ir.actions.act_window">
+        <field name="name">მოხსენებები</field>
+        <field name="res_model">moxsenebiti</field>
+        <field name="view_mode">kanban,list,form</field>
+    </record>
+
+    <record id="action_moxsenebiti_my_approvals" model="ir.actions.act_window">
+        <field name="name">ჩემი ვიზირება</field>
+        <field name="res_model">moxsenebiti</field>
+        <field name="view_mode">kanban,list,form</field>
+        <field name="domain">[('approver_line_ids.user_id', '=', uid)]</field>
+    </record>
+
+    <record id="action_moxsenebiti_my_signatures" model="ir.actions.act_window">
+        <field name="name">ჩემი ხელმოწერა</field>
+        <field name="res_model">moxsenebiti</field>
+        <field name="view_mode">kanban,list,form</field>
+        <field name="domain">[('author_id', '=', uid)]</field>
+    </record>
+
+    <record id="action_moxsenebiti_my_initiated" model="ir.actions.act_window">
+        <field name="name">ჩემი ინიცირებული</field>
+        <field name="res_model">moxsenebiti</field>
+        <field name="view_mode">kanban,list,form</field>
+        <field name="domain">[('request_owner_id', '=', uid)]</field>
+    </record>
+
+    <record id="action_moxsenebiti_category" model="ir.actions.act_window">
+        <field name="name">Categories</field>
+        <field name="res_model">moxsenebiti.category</field>
+        <field name="view_mode">list,form</field>
+    </record>
+
+    <record id="action_moxsenebiti_approver_lines" model="ir.actions.act_window">
+        <field name="name">Approver Lines</field>
+        <field name="res_model">moxsenebiti.approver.line</field>
+        <field name="view_mode">list,form</field>
+    </record>
+
+    <record id="action_moxsenebiti_employee_lines" model="ir.actions.act_window">
+        <field name="name">Employee Lines</field>
+        <field name="res_model">moxsenebiti.employee.line</field>
+        <field name="view_mode">list,form</field>
+    </record>
+
+    <!-- ===================== MENUS ===================== -->
+
+    <menuitem id="menu_moxsenebiti_root"
+              name="მოხსენებითი"
+              sequence="10"
+              web_icon="moxsenebiti_module,static/description/icon.png"/>
+
+    <menuitem id="menu_moxsenebiti_dashboard"
+              name="მთავარი გვერდი"
+              parent="menu_moxsenebiti_root"
+              action="action_moxsenebiti_dashboard"
+              sequence="1"/>
+
+    <menuitem id="menu_moxsenebiti_list"
+              name="ყველა მოხსენება"
+              parent="menu_moxsenebiti_root"
+              action="action_moxsenebiti"
+              sequence="10"/>
+
+    <menuitem id="menu_moxsenebiti_my_approvals"
+              name="ჩემი ვიზირება"
+              parent="menu_moxsenebiti_root"
+              action="action_moxsenebiti_my_approvals"
+              sequence="11"/>
+
+    <menuitem id="menu_moxsenebiti_my_signatures"
+              name="ჩემი ხელმოწერა"
+              parent="menu_moxsenebiti_root"
+              action="action_moxsenebiti_my_signatures"
+              sequence="12"/>
+
+    <menuitem id="menu_moxsenebiti_my_initiated"
+              name="ჩემი ინიცირებული"
+              parent="menu_moxsenebiti_root"
+              action="action_moxsenebiti_my_initiated"
+              sequence="13"/>
+
+    <menuitem id="menu_moxsenebiti_config"
+              name="კონფიგურაცია"
+              parent="menu_moxsenebiti_root"
+              sequence="20"/>
+
+    <menuitem id="menu_moxsenebiti_categories"
+              name="კატეგორიები"
+              parent="menu_moxsenebiti_config"
+              action="action_moxsenebiti_category"
+              sequence="10"/>
+
+    <menuitem id="menu_moxsenebiti_lines"
+              name="დეტალიზაცია"
+              parent="menu_moxsenebiti_config"
+              sequence="20"/>
+
+    <menuitem id="menu_moxsenebiti_approver_lines"
+              name="დამდასტურებლები"
+              parent="menu_moxsenebiti_lines"
+              action="action_moxsenebiti_approver_lines"
+              sequence="10"/>
+
+    <menuitem id="menu_moxsenebiti_employee_lines"
+              name="დეტალიზაცია"
+              parent="menu_moxsenebiti_lines"
+              action="action_moxsenebiti_employee_lines"
+              sequence="20"/>
+
+    <!-- ===================== DOCUMENT KANBAN (Split by Status) ===================== -->
+
+    <record id="view_moxsenebiti_kanban" model="ir.ui.view">
+        <field name="name">moxsenebiti.kanban</field>
+        <field name="model">moxsenebiti</field>
+        <field name="arch" type="xml">
+            <kanban default_group_by="state" class="o_kanban_small_column" records_draggable="false">
+                <field name="id"/>
+                <field name="number"/>
+                <field name="category_id"/>
+                <field name="request_owner_id"/>
+                <field name="state"/>
+                <field name="start_date"/>
+                <field name="end_date"/>
+                <templates>
+                    <t t-name="kanban-box">
+                        <div class="oe_kanban_global_click">
+                            <div class="oe_kanban_details">
+                                <div class="o_kanban_record_top">
+                                    <div class="o_kanban_record_headings">
+                                        <strong class="o_kanban_record_title">
+                                            <field name="number"/>
+                                        </strong>
+                                    </div>
+                                </div>
+                                <div class="o_kanban_record_body">
+                                    <div><field name="category_id"/></div>
+                                    <div t-if="record.start_date.raw_value">
+                                        <field name="start_date"/> - <field name="end_date"/>
+                                    </div>
+                                </div>
+                                <div class="o_kanban_record_bottom">
+                                    <div class="oe_kanban_bottom_left">
+                                        <field name="state" widget="label_selection"
+                                               options="{'classes': {'draft': 'default', 'sent': 'warning', 'seen': 'info', 'signed': 'success', 'order_sent': 'info', 'rejected': 'danger'}}"/>
+                                    </div>
+                                    <div class="oe_kanban_bottom_right">
+                                        <field name="request_owner_id" widget="many2one_avatar_user"/>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </t>
+                </templates>
+            </kanban>
+        </field>
+    </record>
+
+    <!-- ===================== DOCUMENT LIST ===================== -->
+
+    <record id="view_moxsenebiti_list" model="ir.ui.view">
+        <field name="name">moxsenebiti.list</field>
+        <field name="model">moxsenebiti</field>
+        <field name="arch" type="xml">
+            <list>
+                <field name="number"/>
+                <field name="category_id"/>
+                <field name="request_owner_id"/>
+                <field name="author_id"/>
+                <field name="adresati_id"/>
+                <field name="start_date"/>
+                <field name="end_date"/>
+                <field name="state" widget="badge"
+                       decoration-success="state == 'signed'"
+                       decoration-warning="state == 'sent'"
+                       decoration-info="state in ('seen', 'order_sent')"
+                       decoration-danger="state == 'rejected'"/>
+            </list>
+        </field>
+    </record>
+
+    <!-- ===================== SEARCH ===================== -->
+
+    <record id="view_moxsenebiti_search" model="ir.ui.view">
+        <field name="name">moxsenebiti.search</field>
+        <field name="model">moxsenebiti</field>
+        <field name="arch" type="xml">
+            <search>
+                <field name="number"/>
+                <field name="category_id"/>
+                <field name="request_owner_id"/>
+                <field name="author_id"/>
+                <field name="adresati_id"/>
+
+                <filter name="my_requests" string="My Requests" domain="[('request_owner_id','=',uid)]"/>
+                <filter name="draft" string="Draft" domain="[('state','=','draft')]"/>
+                <filter name="sent" string="Sent" domain="[('state','=','sent')]"/>
+                <filter name="seen" string="Seen" domain="[('state','=','seen')]"/>
+                <filter name="signed" string="Signed" domain="[('state','=','signed')]"/>
+                <filter name="order_sent" string="Order Sent" domain="[('state','=','order_sent')]"/>
+                <filter name="rejected" string="Rejected" domain="[('state','=','rejected')]"/>
+
+                <group expand="0" string="Group By">
+                    <filter name="group_category" string="Category" context="{'group_by':'category_id'}"/>
+                    <filter name="group_state" string="State" context="{'group_by':'state'}"/>
+                    <filter name="group_owner" string="Request Owner" context="{'group_by':'request_owner_id'}"/>
+                </group>
+            </search>
+        </field>
+    </record>
+
+    <!-- ===================== DOCUMENT FORM ===================== -->
+
+    <record id="view_moxsenebiti_form" model="ir.ui.view">
+        <field name="name">moxsenebiti.form</field>
+        <field name="model">moxsenebiti</field>
+        <field name="arch" type="xml">
+            <form string="Moxsenebiti" class="o_form_view o_form_sheet_full">
+
+                <header>
+                    <button name="action_send" type="object" string="გადაგზავნა"
+                            class="btn-primary" invisible="not can_send"/>
+
+                    <button name="action_approve" type="object" string="დადასტურება"
+                            class="btn-primary" invisible="not can_approve"/>
+
+                    <button name="action_reject" type="object" string="უარყოფა"
+                            class="btn-secondary" invisible="not can_reject"/>
+
+                    <button name="action_open_change_owner" type="object" string="გადაწერა (ინიციატორის შეცვლა)"
+                            class="btn-primary" invisible="not can_change_owner"/>
+
+                    <button name="action_sign" type="object" string="ხელმოწერა"
+                            class="btn-primary" invisible="not can_sign"/>
+
+                    <button name="action_send_to_order" type="object" string="გადაწერა"
+                            class="btn-primary" invisible="not can_send_to_order"/>
+
+                    <button name="action_prepare_order" type="object" string="ბრძანების მომზადება"
+                            class="btn-primary" invisible="not is_order_receiver_user or state != 'order_sent' or generated_approval_id"/>
+
+                    <button name="action_open_forward_wizard" type="object" string="გადაწერა"
+                            class="btn-secondary" invisible="not is_order_receiver_user or state != 'order_sent' or generated_approval_id"/>
+
+                    <button name="action_reinitiate" type="object" string="თავიდან ინიცირება (დაბრუნება)"
+                            class="btn-danger" invisible="not can_reinitiate"/>
+
+                    <button name="action_open_add_approver" type="object" string="დამდასტურებლის დამატება"
+                            class="btn-secondary" invisible="not can_manage_approvers"/>
+
+                    <field name="state" widget="statusbar"
+                        statusbar_visible="draft,sent,signed,order_sent,rejected,seen"/>
+                </header>
+
+                <sheet>
+                    <field name="category_image" widget="image" class="oe_avatar"/>
+                    <!-- Big sequence like approvals -->
+                    <div class="oe_title">
+                        <label for="number" string=" "/>
+                        <h1 class="d-flex align-items-center">
+                            <field name="number" readonly="1" nolabel="1" class="me-3"/>
+                        </h1>
+                    </div>
+
+                    <!-- Top two-column area -->
+                    <div class="o_row mt16">
+                        <div class="o_col-6">
+                            <group col="2" class="mt8">
+                                <field name="request_owner_id" readonly="1"/>
+                                <field name="category_id" required="1"/>
+                                <field name="category_code" invisible="1"/>
+                                
+                                <field name="is_current_approver" invisible="1"/>
+                                <field name="is_author_user" invisible="1"/>
+                                <field name="is_adresati_user" invisible="1"/>
+                                <field name="is_order_receiver_user" invisible="1"/>
+                                <field name="is_transport_disp" invisible="1"/>
+                                <field name="can_reject" invisible="1"/>
+                                <field name="can_sign" invisible="1"/>
+                                <field name="can_send_to_order" invisible="1"/>
+                                <field name="can_dispatch" invisible="1"/>
+                                <field name="can_change_owner" invisible="1"/>
+                                <field name="can_reinitiate" invisible="1"/>
+                                <field name="signed_document" invisible="1"/>
+                                <field name="all_approved" invisible="1"/>
+                                <field name="generated_approval_id" invisible="1"/>
+                                <field name="transport_state" invisible="1"/>
+
+                                <field name="has_multiple_receivers" invisible="1"/>
+                                <field name="order_receiver_ids" widget="many2many_tags" readonly="1" invisible="not has_multiple_receivers"/>
+                                <field name="order_receiver_id" readonly="1" invisible="has_multiple_receivers or not order_receiver_id"/>
+
+                                <field name="author_id"/>
+                                <field name="adresati_id"/>
+
+                                <field name="start_date"/>
+                                <field name="end_date"/>
+                            </group>
+                        </div>
+
+                        <div class="o_col-6">
+                            <group>
+                                <field name="comment" placeholder="მივლინების მიზანი..." style="min-height: 140px;" invisible="category_code == 'shvebuleba'"/>
+                                <field name="word_filename" invisible="1"/>
+                                <field name="word_file" filename="word_filename"/>
+                            </group>
+                            
+                            <!-- Shvebuleba Specific Fields -->
+                            <group invisible="category_code not in ('shvebuleba', 'biul')">
+                                <field name="leave_employee_id"/>
+                                <field name="time_off_type_id"/>
+                                <field name="time_off_days"/>
+                                <field name="leaves_left"/>
+                            </group>
+                        </div>
+                    </div>
+
+                    <!-- Mivlineba fields (no separator/group title; just hide/show) -->
+                    <group col="3" invisible="category_code != 'mivlineba'">
+                        <field name="mivlineba_type"/>
+                        <field name="stay_type"/>
+                        <field name="mivlineba_days" readonly="1"/>
+                    </group>
+
+                    <notebook class="mt16">
+                        <page string="ვიზირება">
+                            <field name="approver_line_ids" readonly="state != 'draft'">
+                                <list editable="bottom">
+                                    <field name="user_id"/>
+                                    <field name="approver_type" readonly="1" widget="badge"
+                                           decoration-primary="approver_type == 'transport'"
+                                           decoration-muted="approver_type == 'regular'"/>
+                                    <field name="state" readonly="1" widget="badge"
+                                           decoration-warning="state in ('pending', 'waiting')"
+                                           decoration-success="state == 'approved'"
+                                           decoration-danger="state == 'cancelled'"/>
+                                    <field name="decision_date" readonly="1"/>
+                                    <field name="can_be_removed" column_invisible="1"/>
+                                    <button name="action_remove_approver_line" type="object"
+                                            icon="fa-trash" title="წაშლა"
+                                            invisible="not can_be_removed"
+                                            confirm="დარწმუნებული ხართ რომ გსურთ დამდასტურებლის წაშლა?"/>
+                                </list>
+                            </field>
+                        </page>
+
+                        <page string="თანამშრომლები" invisible="category_code != 'mivlineba'">
+                            <field name="employee_line_ids">
+                                <list editable="bottom">
+                                    <field name="employee_id"/>
+                                    <field name="car_id"/>
+                                    <field name="wvis_norma" readonly="1" optional="show"/>
+                                    <field name="moto_norma" readonly="1" optional="show"/>
+                                    <field name="km"/>
+                                    <field name="moto_hours"/>
+                                    <field name="fuel_amount_km" optional="show" readonly="1"/>
+                                    <field name="fuel_amount_moto" optional="show" readonly="1"/>
+                                    <field name="fuel_amount" readonly="1"/>
+                                </list>
+                            </field>
+                        </page>
+                    </notebook>
+
+                </sheet>
+
+                <chatter>
+                    <field name="message_follower_ids"/>
+                    <field name="activity_ids"/>
+                    <field name="message_ids"/>
+                </chatter>
+
+            </form>
+        </field>
+    </record>
+
+    <!-- ===================== CATEGORY VIEWS ===================== -->
+
+    <record id="view_moxsenebiti_category_kanban" model="ir.ui.view">
+        <field name="name">moxsenebiti.category.kanban</field>
+        <field name="model">moxsenebiti.category</field>
+        <field name="arch" type="xml">
+            <kanban class="o_kanban_dashboard o_moxsenebiti_kanban" create="false">
+                <field name="id"/>
+                <field name="name"/>
+                <field name="code"/>
+                <field name="image"/>
+                <field name="to_review_count"/>
+                <templates>
+                    <t t-name="kanban-box">
+                        <div class="oe_kanban_global_click">
+                            <div class="o_kanban_card_header">
+                                <div class="o_kanban_card_header_title">
+                                    <div class="o_primary">
+                                        <field name="name"/>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="container o_kanban_card_content">
+                                <div class="row">
+                                    <div class="col-4">
+                                        <field name="image" widget="image" class="oe_avatar" options="{'size': [60, 60]}"/>
+                                    </div>
+                                    <div class="col-8">
+                                        <button class="btn btn-primary btn-sm" name="action_create_request" type="object">
+                                            ახალი მოხსენება
+                                        </button>
+                                        <div t-if="record.to_review_count.raw_value > 0" class="mt8">
+                                            <a name="action_open_to_review" type="object" class="oe_kanban_action oe_kanban_action_a">
+                                                დასადასტურებელი: <field name="to_review_count"/>
+                                            </a>
+                                        </div>
+                                         <div t-else="" class="mt8 text-muted">
+                                            დასადასტურებელი: 0
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </t>
+                </templates>
+            </kanban>
+        </field>
+    </record>
+
+    <record id="view_moxsenebiti_category_list" model="ir.ui.view">
+        <field name="name">moxsenebiti.category.list</field>
+        <field name="model">moxsenebiti.category</field>
+        <field name="arch" type="xml">
+            <list>
+                <field name="name"/>
+                <field name="code"/>
+                <field name="sequence_id"/>
+                <field name="active"/>
+            </list>
+        </field>
+    </record>
+
+    <record id="view_moxsenebiti_category_form" model="ir.ui.view">
+        <field name="name">moxsenebiti.category.form</field>
+        <field name="model">moxsenebiti.category</field>
+        <field name="arch" type="xml">
+            <form string="Category">
+                <sheet>
+                    <field name="image" widget="image" class="oe_avatar"/>
+                    <group>
+                        <field name="name" required="1"/>
+                        <field name="code" required="1"/>
+                        <field name="sequence_id" required="1"/>
+                        <field name="approval_category_id"/>
+                        <field name="active"/>
+                    </group>
+                </sheet>
+            </form>
+        </field>
+    </record>
+
+    <!-- ===================== APPROVER LINE VIEWS ===================== -->
+
+    <record id="view_moxsenebiti_approver_line_list" model="ir.ui.view">
+        <field name="name">moxsenebiti.approver.line.list</field>
+        <field name="model">moxsenebiti.approver.line</field>
+        <field name="arch" type="xml">
+            <list>
+                <field name="moxsenebiti_id"/>
+                <field name="sequence"/>
+                <field name="user_id"/>
+                <field name="state"/>
+                <field name="decision_date"/>
+            </list>
+        </field>
+    </record>
+
+    <record id="view_moxsenebiti_approver_line_form" model="ir.ui.view">
+        <field name="name">moxsenebiti.approver.line.form</field>
+        <field name="model">moxsenebiti.approver.line</field>
+        <field name="arch" type="xml">
+            <form string="Approver Line">
+                <sheet>
+                    <group>
+                        <field name="moxsenebiti_id" required="1"/>
+                        <field name="sequence"/>
+                        <field name="user_id" required="1"/>
+                        <field name="state"/>
+                        <field name="decision_date" readonly="1"/>
+                    </group>
+                </sheet>
+            </form>
+        </field>
+    </record>
+
+    <!-- ===================== EMPLOYEE LINE VIEWS ===================== -->
+
+    <record id="view_moxsenebiti_employee_line_list" model="ir.ui.view">
+        <field name="name">moxsenebiti.employee.line.list</field>
+        <field name="model">moxsenebiti.employee.line</field>
+        <field name="arch" type="xml">
+            <list>
+                <field name="moxsenebiti_id"/>
+                <field name="employee_id"/>
+                <field name="car_id"/>
+                <field name="fuel_amount_km"/>
+                <field name="fuel_amount_moto"/>
+                <field name="fuel_amount"/>
+            </list>
+        </field>
+    </record>
+
+    <record id="view_moxsenebiti_employee_line_form" model="ir.ui.view">
+        <field name="name">moxsenebiti.employee.line.form</field>
+        <field name="model">moxsenebiti.employee.line</field>
+        <field name="arch" type="xml">
+            <form string="Employee Line">
+                <sheet>
+                    <group>
+                        <field name="moxsenebiti_id" required="1"/>
+                        <field name="employee_id" required="1"/>
+                        <field name="car_id"/>
+                        <field name="fuel_amount_km" readonly="1"/>
+                        <field name="fuel_amount_moto" readonly="1"/>
+                        <field name="fuel_amount" readonly="1"/>
+                    </group>
+                </sheet>
+            </form>
+        </field>
+    </record>
+
+</odoo>

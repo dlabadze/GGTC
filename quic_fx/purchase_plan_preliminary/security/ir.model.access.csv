@@ -1,0 +1,16 @@
+id,name,model_id:id,group_id:id,perm_read,perm_write,perm_create,perm_unlink
+access_purchase_plan_preliminary_user,purchase.plan.preliminary user,model_purchase_plan_preliminary,base.group_user,1,0,0,0
+access_purchase_plan_preliminary_manager,purchase.plan.preliminary manager,model_purchase_plan_preliminary,purchase.group_purchase_manager,1,1,1,1
+
+access_purchase_plan_preliminary_line_user,purchase.plan.preliminary.line user,model_purchase_plan_preliminary_line,base.group_user,1,0,0,0
+access_purchase_plan_preliminary_line_manager,purchase.plan.preliminary.line manager,model_purchase_plan_preliminary_line,purchase.group_purchase_manager,1,1,1,1
+
+
+
+
+
+
+
+
+
+

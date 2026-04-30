@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+<record id="action_server_change_scheduled_date" model="ir.actions.server">
+    <field name="name">Change Scheduled Date</field>
+    <field name="model_id" ref="stock.model_stock_picking"/>
+    <field name="binding_model_id" ref="stock.model_stock_picking"/>
+    <field name="binding_view_types">list</field>
+    <field name="state">code</field>
+    <field name="code">
+action = {
+    'name': 'Change Scheduled Date',
+    'type': 'ir.actions.act_window',
+    'res_model': 'change.scheduled.date.wizard',
+    'view_mode': 'form',
+    'target': 'new',
+}
+    </field>
+</record>
+<record id="server_action_change_production_date" model="ir.actions.server">
+        <field name="name">Change Start Date</field>
+        <field name="model_id" ref="mrp.model_mrp_production"/>
+        <field name="binding_model_id" ref="mrp.model_mrp_production"/>
+        <field name="binding_view_types">list,form</field>
+        <field name="state">code</field>
+        <field name="code">
+action = {
+    'type': 'ir.actions.act_window',
+    'name': 'Change Start Date',
+    'res_model': 'change.production.date.wizard',
+    'view_mode': 'form',
+    'target': 'new',
+    'context': {'active_ids': env.context.get('active_ids')},
+}
+        </field>
+</record>
+</odoo>

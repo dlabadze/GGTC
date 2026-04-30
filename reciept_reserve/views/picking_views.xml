@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="view_picking_form_receipt_reserve" model="ir.ui.view">
+        <field name="name">stock.picking.form.receipt.reserve</field>
+        <field name="model">stock.picking</field>
+        <field name="inherit_id" ref="stock.view_picking_form"/>
+        <field name="arch" type="xml">
+            <xpath expr="//header" position="inside">
+                <button
+                    name="action_receipt_reserve"
+                    type="object"
+                    string="რეზერვი"
+                    class="btn-primary"
+                    invisible="picking_type_code != 'incoming' or reserve_clicked or state != 'done'"
+                />
+            </xpath>
+            <xpath expr="//field[@name='move_ids_without_package']/list/field[@name='product_id']" position="after">
+                <field
+                    name="for_reserve"
+                    string="რეზერვისთვის"
+                    optional="show"
+                    column_invisible="parent.picking_type_code != 'incoming'"
+                    widget="boolean_toggle"
+                />
+            </xpath>
+            <xpath expr="//sheet//group" position="inside">
+                <field name="reserve_clicked" invisible="1"/>
+            </xpath>
+        </field>
+    </record>
+</odoo>

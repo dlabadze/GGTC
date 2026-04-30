@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data>
+
+<!--        <record id="view_hr_job_form_inherit" model="ir.ui.view">-->
+<!--            <field name="name">hr.job.form.inherit</field>-->
+<!--            <field name="model">hr.job</field>-->
+<!--            <field name="inherit_id" ref="hr.view_hr_job_form"/>-->
+<!--            <field name="arch" type="xml">-->
+<!--                <xpath expr="//field[@name='no_of_recruitment']" position="after">-->
+<!--                    <newline/>-->
+<!--                    <field name="vacancy_count"/>-->
+<!--                </xpath>-->
+<!--            </field>-->
+<!--        </record>-->
+
+        <record id="view_hr_job_list_inherit" model="ir.ui.view">
+            <field name="name">hr.job.tree.inherit</field>
+            <field name="model">hr.job</field>
+            <field name="inherit_id" ref="hr.view_hr_job_tree"/>
+            <field name="arch" type="xml">
+                <xpath expr="//field[@name='no_of_recruitment']" position="after">
+                    <field name="vacancy_count"/>
+                </xpath>
+            </field>
+        </record>
+
+        <record id="view_hr_employee_list_inherit" model="ir.ui.view">
+            <field name="name">hr.employee.tree.inherit</field>
+            <field name="model">hr.employee</field>
+            <field name="inherit_id" ref="hr.view_employee_tree"/>
+            <field name="arch" type="xml">
+                <xpath expr="//field[@name='work_phone']" position="after">
+                    <field name="vacancy_count"/>
+                </xpath>
+            </field>
+        </record>
+
+    </data>
+</odoo>
+
+
+
+

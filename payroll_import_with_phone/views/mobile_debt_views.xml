@@ -1,0 +1,67 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <!-- Mobile Debt List View -->
+    <record id="view_mobile_debt_list" model="ir.ui.view">
+        <field name="name">mobile.debt.list</field>
+        <field name="model">mobile.debt</field>
+        <field name="arch" type="xml">
+            <list string="Mobile Debt">
+                <field name="comment"/>
+                <field name="start_date"/>
+                <field name="end_date"/>
+            </list>
+        </field>
+    </record>
+
+    <!-- Mobile Debt Form View -->
+    <record id="view_mobile_debt_form" model="ir.ui.view">
+        <field name="name">mobile.debt.form</field>
+        <field name="model">mobile.debt</field>
+        <field name="arch" type="xml">
+            <form string="Mobile Debt">
+                <header>
+                    <button name="action_generate_excel"
+                            type="object"
+                            string="ექსელის გენერაცია"
+                            class="oe_highlight"/>
+                </header>
+                <sheet>
+                    <group>
+                        <group>
+                            <field name="comment" placeholder="კომენტარი"/>
+                            <field name="start_date" string="დაწყების თარიღი"/>
+                            <field name="end_date" string="დასრულების თარიღი"/>
+                        </group>
+                    </group>
+                    
+                    <notebook>
+                        <page string="დეტალები" name="details">
+                            <field name="mobile_details_ids" nolabel="1">
+                                <list string="Mobile Details" editable="bottom">
+                                    <field name="employee_id" string="თანამშრომელი"/>
+                                    <field name="identification_id" string="პირადი ნომერი"/>
+                                    <field name="private_phone" string="მობილურის ნომერი"/>
+                                    <field name="private_phone_from_excel" string="ატვირთული მობილურის ნომერი"/>
+                                    <field name="debt" sum="1" string="დაკავების ოდენობა"/>
+                                </list>
+                            </field>
+                        </page>
+                    </notebook>
+                </sheet>
+            </form>
+        </field>
+    </record>
+
+    <!-- Mobile Debt Action -->
+    <record id="action_mobile_debt" model="ir.actions.act_window">
+        <field name="name">Mobile Debt</field>
+        <field name="res_model">mobile.debt</field>
+        <field name="view_mode">list,form</field>
+        <field name="help" type="html">
+            <p class="o_view_nocontent_smiling_face">
+                Create a new mobile debt record
+            </p>
+        </field>
+    </record>
+</odoo>
+

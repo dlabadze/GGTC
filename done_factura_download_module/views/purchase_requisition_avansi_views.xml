@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="view_purchase_requisition_form_inherit_avansi_done_factura" model="ir.ui.view">
+        <field name="name">purchase.requisition.form.inherit.avansi.done.factura</field>
+        <field name="model">purchase.requisition</field>
+        <field name="inherit_id" ref="purchase_requisition.view_purchase_requisition_form"/>
+        <field name="arch" type="xml">
+            <xpath expr="//sheet/notebook" position="inside">
+                <page string="ავანსები">
+                    <field name="avansi_ids">
+                        <list editable="bottom">
+                            <field name="amount"/>
+                            <field name="date"/>
+                        </list>
+                    </field>
+                </page>
+            </xpath>
+        </field>
+    </record>
+</odoo>

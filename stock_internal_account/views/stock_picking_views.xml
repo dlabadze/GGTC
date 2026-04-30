@@ -1,0 +1,64 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <!-- Picking form view: add fields and button, plus move_account_ang in Operations list -->
+    <record id="view_picking_form_internal_account" model="ir.ui.view">
+        <field name="name">stock.picking.form.internal.account</field>
+        <field name="model">stock.picking</field>
+        <field name="inherit_id" ref="stock.view_picking_form"/>
+        <field name="arch" type="xml">
+            <!-- Add stock_account_ang field in the form view -->
+            <xpath expr="//field[@name='origin']" position="after">
+                <field name="stock_account_ang" 
+                       string="Reconciliation Account"
+                       invisible="picking_type_code != 'internal'"
+                       options="{'no_create': True}"/>
+                <field name="journal_id" 
+                       string="Reconciliation Journal"
+                       invisible="not stock_account_ang"
+                       required="stock_account_ang"/>
+                <field name="analytic_account_id" 
+                       string="Analytic Account"
+                       invisible="picking_type_code != 'internal' or not stock_account_ang"
+                       options="{'no_create': True}"/>
+                <field name="is_reconciled" 
+                       string="Reconciled"
+                       invisible="picking_type_code != 'internal' or state != 'done'"
+                       widget="boolean_toggle"/>
+            </xpath>
+            
+            <!-- Add button for reconciliation action -->
+            <xpath expr="//header" position="inside">
+                <button name="action_reconcile_account_entries" 
+                        string="Reconcile Account Entries" 
+                        type="object"
+                        class="btn-secondary"
+                        invisible="picking_type_code != 'internal' or state != 'done' or is_reconciled"
+                        groups="account.group_account_manager"/>
+            </xpath>
+            
+            <!-- Add move_account_ang field in Operations tab list view (Stock Moves editable="bottom") -->
+            <xpath expr="//field[@name='move_ids_without_package']/list[@editable='bottom']//field[@name='product_id']" position="after">
+                <field name="move_account_ang" 
+                       string="Reconciliation Account"
+                       optional="hide"
+                       options="{'no_create': True}"/>
+            </xpath>
+        </field>
+    </record>
+    
+    <!-- Add is_reconciled field to list view -->
+    <record id="view_picking_list_internal_account" model="ir.ui.view">
+        <field name="name">stock.picking.list.internal.account</field>
+        <field name="model">stock.picking</field>
+        <field name="inherit_id" ref="stock.vpicktree"/>
+        <field name="arch" type="xml">
+            <xpath expr="//field[@name='state']" position="after">
+                <field name="is_reconciled" 
+                       string="Reconciled"
+                       invisible="picking_type_code != 'internal' or state != 'done'"
+                       optional="hide"
+                       widget="boolean_toggle"/>
+            </xpath>
+        </field>
+    </record>
+</odoo>

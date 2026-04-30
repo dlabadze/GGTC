@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="view_inventory_line_form_inherit" model="ir.ui.view">
+        <field name="name">inventory.line.form.inherit</field>
+        <field name="model">inventory.line</field>
+        <field name="inherit_id" ref="studio_customization.odoo_studio_inventor_69257ff3-916d-452a-be03-7af55beaeec0"/>
+        <field name="arch" type="xml">
+            <xpath expr="//field[@name='x_studio_purchase_plan_line']" position="after">
+                    <field name="purchase_agreements"  options="{'no_create_edit': True, 'no_create': True}"/>
+            </xpath>
+        </field>
+    </record>
+</odoo>

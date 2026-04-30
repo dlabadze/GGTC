@@ -1,0 +1,162 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data>
+        <template id="report_inventory_request_transport">
+            <t t-call="web.html_container">
+            <t t-foreach="docs" t-as="doc"/>
+            <main>
+                <div class="page" style="font-family: 'DejaVu Sans', Arial, sans-serif;">
+                    <meta charset="UTF-8"/>
+                    <meta name="content-language" content="ka"/>
+
+                    <table style="width:100%; border:none; border-collapse:collapse;">
+                        <tr>
+                            <td style="width:50%; vertical-align:top; text-align:left;">
+                                <h3>
+                                    <span t-esc="doc.request_date"/>
+                                </h3>
+                                <p>
+                                    ფორმა №1<br/>
+                                    მიწოდების მოთხოვნა: ID: <t t-esc="doc.x_studio_request_number or ''"/><br/>
+                                    <t t-if="doc.tag_ids">
+                                    <span t-field="doc.tag_ids[0].name"/><br/><br/>
+                                    </t>
+                                </p>
+                            </td>
+
+                            <td style="width:50%; vertical-align:top; text-align:right;">
+                                <h3>მოთხოვნა</h3>
+                                <p> დამტკიცებულია შპს "საქართველოს გაზის ტრანსპორტირების"
+                                    კომპანიის "გენერალური დირექტორის" 2010 წლის №253 ბრძანებით
+                                </p>
+                            </td>
+                        </tr>
+                    </table>
+
+                    <table class="table table-bordered" style="width: 100%; border-collapse: collapse; border-color: black !important;" border="1">
+                        <thead style="background-color: #f0f0f0;">
+
+                            <tr style="height:40px;">
+                                <th colspan="9" style="text-align:center; border: 1px solid black !important;">მოთხოვნისა და სატრანსპორტო საშუალების შესახებ ინფორმაცია</th>
+                            </tr>
+
+                            <tr style="height:40px;">
+                                <th colspan="2" style="text-align:center; border: 1px solid black !important;">მოთხოვნის ტიპი</th>
+                                <td colspan="7" t-esc="doc.x_studio_type or ''" style="border: 1px solid black !important;"/>
+                            </tr>
+
+                            <tr style="height:40px;">
+                                <th colspan="2" style="text-align:center; border: 1px solid black !important;">ხელშეკრულების ნომერი და პრეისკურანტი</th>
+                                <td colspan="7" t-esc="doc.preiskuranti_id_new.name or ''" style="border: 1px solid black !important;"/>
+                            </tr>
+
+                            <tr style="height:40px;">
+                                <th colspan="2" style="text-align:center; border: 1px solid black !important;">მომწოდებელი</th>
+                                <td colspan="7" t-esc="doc.x_studio_price_kut_momw.display_name or ''" style="border: 1px solid black !important;"/>
+                            </tr>
+
+                            <tr style="height:40px;">
+                                <th colspan="2" style="text-align:center; border: 1px solid black !important;">ავტომობილის მარკა, მოდელი, სახ. ნომერი</th>
+                                <td colspan="7" t-esc="doc.x_studio_vehile.display_name or ''" style="border: 1px solid black !important;"/>
+                            </tr>
+
+                            <tr style="height:40px;">
+                                <th colspan="2" style="text-align:center; border: 1px solid black !important;">ოდომეტრის ჩვენება</th>
+                                <td colspan="7" t-esc="doc.x_studio_newodometer or ''" style="border: 1px solid black !important;"/>
+                            </tr>
+
+                            <tr style="height:40px;">
+                                <th colspan="2" style="text-align:center; border: 1px solid black !important;">საფუძველი დეტალურად</th>
+                                <td colspan="7" t-esc="doc.description or ''" style="border: 1px solid black !important;"/>
+                            </tr>
+
+                            <tr style="height:40px;">
+                                <th colspan="9" style="text-align:center; border: 1px solid black !important;">მოთხოვნილი მასალის, მომსახურების, სამუშაოს ჩამონათვალი</th>
+                            </tr>
+
+                            <tr style="height:40px;">
+                                <th style="border: 1px solid black !important; width: 30px;">№</th>
+                                <th style="border: 1px solid black !important; width: 25%;">დასახელება (დეტალური აღწერა)</th>
+
+                                <th style="width:80px; border: 1px solid black !important;">განზომილება</th>
+                                <th style="width:60px; border: 1px solid black !important;">რაოდენობა</th>
+                                <th style="width:80px; border: 1px solid black !important;">ერთ. ფასი (პრეისკურანტი)</th>
+                                <th style="width:80px; border: 1px solid black !important;">ერთ. შესაძენი ფასი</th>
+                                <th style="width:80px; border: 1px solid black !important;">ჯამი</th>
+
+                                <th colspan="2" style="border: 1px solid black !important; width: 35%;">შენიშვნა</th>
+                            </tr>
+                        </thead>
+                        <t t-set="sale" t-value="0"/>
+                        <tbody>
+                            <t t-set="num" t-value="1"/>
+                            <t t-set="pre_sum" t-value="0"/>
+                            <t t-set="just_sum" t-value="0"/>
+                            <t t-set="pre_discount_actual" t-value="0"/>
+                            <t t-foreach="doc.line_ids" t-as="line">
+                                <tr style="height:40px;">
+                                    <td t-esc="num" style="border: 1px solid black !important;"/>
+                                    <td t-esc="line.product_id.name or ''" style="border: 1px solid black !important;"/>
+                                    <td style="width:80px; border: 1px solid black !important;" t-esc="line.uom_id.name or ''"/>
+                                    <td style="width:80px; border: 1px solid black !important;" t-esc="line.quantity"/>
+                                    <td style="width:80px; border: 1px solid black !important;" t-esc="line.preiskurantifasi" t-options="{'widget': 'float', 'precision': 2}"/>
+                                    <td style="width:80px; border: 1px solid black !important;" t-esc="line.unit_price" t-options="{'widget': 'float', 'precision': 2}"/>
+                                    <td style="width:80px; border: 1px solid black !important;" t-esc="line.quantity * line.unit_price" t-options="{'widget': 'float', 'precision': 2}"/>
+
+                                    <td colspan="2" t-esc="line.x_studio_descr or ''" style="border: 1px solid black !important;"/>
+                                </tr>
+                                <t t-set="num" t-value="num + 1"/>
+                                <t t-if="line.preiskurantifasi &gt; 0">
+                                    <t t-set="pre_sum" t-value="pre_sum + (line.quantity * line.preiskurantifasi or 0)"/>
+                                    <t t-set="pre_discount_actual" t-value="pre_discount_actual + (line.quantity * line.unit_price or 0)"/>
+                                </t>
+                                <t t-set="just_sum" t-value="just_sum + (line.quantity * line.unit_price or 0)"/>
+                            </t>
+
+                            <t t-set="sale" t-value="pre_sum - just_sum"/>
+                            <tr style="height:40px;">
+                                <th colspan="7" style="text-align:center; border: 1px solid black !important;">ფასდაკლება</th>
+                                <td colspan="2" t-esc="pre_sum - pre_discount_actual" t-options="{'widget': 'float', 'precision': 2}" style="border: 1px solid black !important;"/>
+                            </tr>
+
+                            <tr style="height:40px;">
+                                <th colspan="7" style="text-align:center; border: 1px solid black !important;">სრული ღირებულება</th>
+                                <td colspan="2" t-esc="just_sum" t-options="{'widget': 'float', 'precision': 2}" style="border: 1px solid black !important;"/>
+                            </tr>
+
+                            <tr style="height:40px;">
+                                <th colspan="2" style="text-align:center;">თანამდებობა</th>
+                                <th colspan="4" style="text-align:center;">სახელი და გვარი</th>
+                                <th style="text-align:center;">თარიღი</th>
+                                <th style="text-align:center;">ხელმოწერა</th>
+                            </tr>
+
+                            <t t-foreach="doc.approver_users_ids" t-as="approver">
+                                <tr style="height:40px;">
+                                    <td colspan="2" style="text-align:center;">
+                                        <span t-if="approver.job_position" t-esc="approver.job_position.name or ''"/>
+                                    </td>
+                                    <td colspan="4" style="text-align:center;">
+                                        <span t-if="approver.user_id" t-esc="approver.user_id.name or ''"/>
+                                    </td>
+                                    <td style="text-align:center;">
+                                        <t t-if="approver.approve_datetime_plus_4h">
+                                            <span t-esc="approver.approve_datetime_plus_4h"/>
+                                        </t>
+                                    </td>
+                                    <td style="text-align:center;">
+                                        <t t-if="approver.user_signature">
+                                            <img t-attf-src="data:image/*;base64,{{approver.user_signature}}" style="max-height: 80px; max-width: 145px;"/>
+                                        </t>
+                                    </td>
+                                </tr>
+                            </t>
+
+                        </tbody>
+                    </table>
+                </div>
+            </main>
+        </t>
+        </template>
+    </data>
+</odoo>

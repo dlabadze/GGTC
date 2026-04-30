@@ -1,0 +1,6 @@
+<record id="action_waybill" model="ir.actions.act_window">
+    <field name="name">Waybills</field>
+    <field name="res_model">waybill.management</field> <!-- Ensure this matches your model -->
+    <field name="view_mode">tree,form</field>
+    <field name="view_id" ref="view_waybill_tree"/> <!-- Optional: reference to a specific view -->
+</record>

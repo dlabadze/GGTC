@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+    <record id="mox_cat_mivlineba" model="moxsenebiti.category">
+        <field name="name">მივლინება</field>
+        <field name="code">mivlineba</field>
+        <field name="sequence_id" ref="seq_moxsenebiti_mivlineba"/>
+        <field name="active">1</field>
+    </record>
+
+    <record id="mox_cat_shvebuleba" model="moxsenebiti.category">
+        <field name="name">შვებულება</field>
+        <field name="code">shvebuleba</field>
+        <field name="sequence_id" ref="seq_moxsenebiti_shvebuleba"/>
+        <field name="active">1</field>
+    </record>
+
+</odoo>

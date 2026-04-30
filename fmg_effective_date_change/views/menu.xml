@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <menuitem id="menu_configuration_journal_setup"
+      groups="account.group_account_invoice"
+      sequence="0"
+      name="Default Effective Date Journal"
+      action="action_configuration_default_stock_journal"
+      parent="account.menu_finance_configuration">
+    </menuitem>
+</odoo>
+

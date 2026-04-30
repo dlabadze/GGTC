@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data>
+        <record id="mrp_production_form_view_inherit_hours" model="ir.ui.view">
+            <field name="name">mrp.production.form.inherit.hours</field>
+            <field name="model">mrp.production</field>
+            <field name="inherit_id" ref="mrp.mrp_production_form_view"/>
+            <field name="arch" type="xml">
+                <xpath expr="//field[@name='user_id']" position="after">
+                    <field name="namushevari_saatebis_raodenoba"
+                           string="ნამუშევარი საათების რაოდენობა"
+                           widget="float"/>
+                    <field name="tanxa"
+                           string="თანხა (ხელით ჩასაწერი)"
+                           widget="float"/>
+                </xpath>
+            </field>
+        </record>
+    </data>
+</odoo>

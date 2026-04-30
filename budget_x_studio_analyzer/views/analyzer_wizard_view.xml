@@ -1,0 +1,81 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+    <!-- Wizard form view -->
+    <record id="view_budget_x_studio_analyzer_form" model="ir.ui.view">
+        <field name="name">budget.x_studio.analyzer.form</field>
+        <field name="model">budget.x_studio.analyzer</field>
+        <field name="arch" type="xml">
+            <form string="Budget x_studio_ Analyzer">
+                <header>
+                    <button name="action_run_analysis"
+                            string="▶  Run Analysis"
+                            type="object"
+                            class="btn-primary"/>
+                    <button name="action_apply_calculated_values"
+                            string="✔  Apply Calculated Values"
+                            type="object"
+                            class="btn-warning"
+                            invisible="has_result == False"
+                            confirm="This will overwrite x_studio_ on all mismatched budget.line records via the ORM. Are you sure?"/>
+                </header>
+                <sheet>
+                    <!-- Intro message -->
+                    <group invisible="has_result == True">
+                        <div class="alert alert-info">
+                            Click <b>▶ Run Analysis</b> to scan all posted invoices, journal entries,
+                            and validated scrap pickings and compare their expected contribution
+                            to <code>budget.line.x_studio_</code> against the values stored in the database.
+                            <br/>
+                            After analysis, use <b>✔ Apply Calculated Values</b> to write the correct
+                            values back via the ORM (no SQL).
+                        </div>
+                    </group>
+
+                    <!-- Analysis result -->
+                    <group invisible="has_result == False">
+                        <div class="alert alert-success">
+                            Analysis complete. Review the results below.
+                            If there are mismatches, click <b>✔ Apply Calculated Values</b> to fix them.
+                        </div>
+                        <field name="result"
+                               nolabel="1"
+                               style="font-family: monospace; font-size: 12px; white-space: pre; width: 100%; min-height: 400px;"/>
+                    </group>
+
+                    <!-- Apply result -->
+                    <group invisible="has_apply_result == False">
+                        <div class="alert alert-warning">
+                            <b>Apply log:</b>
+                        </div>
+                        <field name="apply_result"
+                               nolabel="1"
+                               style="font-family: monospace; font-size: 12px; white-space: pre; width: 100%; min-height: 200px;"/>
+                    </group>
+
+                    <!-- Hidden fields -->
+                    <field name="has_result" invisible="1"/>
+                    <field name="has_apply_result" invisible="1"/>
+                    <field name="_calculated_cache" invisible="1"/>
+                </sheet>
+            </form>
+        </field>
+    </record>
+
+    <!-- Menu action -->
+    <record id="action_budget_x_studio_analyzer" model="ir.actions.act_window">
+        <field name="name">x_studio_ Analyzer</field>
+        <field name="res_model">budget.x_studio.analyzer</field>
+        <field name="view_mode">form</field>
+        <field name="target">new</field>
+        <field name="context">{}</field>
+    </record>
+
+    <!-- Menu item under Accounting > Reporting -->
+    <menuitem id="menu_budget_x_studio_analyzer"
+              name="x_studio_ Budget Analyzer"
+              action="action_budget_x_studio_analyzer"
+              parent="account.menu_finance_reports"
+              sequence="99"/>
+
+</odoo>

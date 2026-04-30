@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="view_charicxvebi_excel_wizard_form" model="ir.ui.view">
+        <field name="name">charicxvebi.excel.wizard.form</field>
+        <field name="model">charicxvebi.excel.wizard</field>
+        <field name="arch" type="xml">
+            <form string="Download Excel">
+                <group invisible="not excel_file">
+                    <field name="file_name" invisible="1"/>
+                    <field name="excel_file" filename="file_name" readonly="1"/>
+                </group>
+                <div invisible="excel_file">
+                    <p>Click "Generate" to create the Excel file from selected Journal Entries.</p>
+                </div>
+                <footer>
+                    <button name="generate_excel" string="Generate" type="object" class="btn-primary" invisible="excel_file"/>
+                    <button string="Close" class="btn-secondary" special="cancel"/>
+                </footer>
+            </form>
+        </field>
+    </record>
+
+    <record id="action_charicxvebi_excel_server" model="ir.actions.server">
+        <field name="name">Generate Transfer Excel</field>
+        <field name="model_id" search="[('model','=','charicxvebi.excel.wizard')]"/>
+        <field name="binding_model_id" ref="account.model_account_move"/>
+        <field name="binding_view_types">list,form</field>
+        <field name="state">code</field>
+        <field name="code">
+            action = env['charicxvebi.excel.wizard'].create({}).generate_excel()
+        </field>
+    </record>
+</odoo>

@@ -1,0 +1,59 @@
+<form string="Inventory Request" width="100px">
+                <header>
+                    <field name="stage_id" widget="statusbar" options="{'clickable': '1'}"/>
+                </header>
+                <sheet>
+                    <div class="oe_button_box" name="button_box">
+                        <!-- Add custom buttons here if needed -->
+                    </div>
+                    <div class="oe_title">
+                        <h1>
+                            <field name="name" readonly="1"/>
+                        </h1>
+                        <field name="tag_ids" widget="many2many_tags" options="{'color_field': 'color'}" placeholder="Tags..." invisible="is_tag_ids_invisible"/>
+                    </div>
+                    <group>
+                    <group>
+                        <field name="request_date"/>
+                        <field name="requested_by"/>
+                        <field name="department_id"/>
+
+                    </group>
+                    <group>
+                        <field name="priority" widget="priority"/>
+                        <field name="total_lines"/>
+                    </group>
+                    </group>
+                    <group>
+                        <field name="description"/>
+                
+                    </group>
+                    <notebook>
+                        <page string="Inventory Lines">
+                            <field name="line_ids">
+                                <list editable="bottom">
+                                    <field name="sequence" widget="handle"/>
+                                    <field name="product_id" width="376"/>
+                                    <field name="request_date"/>
+                                    <field name="x_studio_purchase_plan"/>
+                                    <field name="x_studio_purchase_plan_line" domain="[('plan_id', '=', x_studio_purchase_plan)]"/>
+                                    <field name="budget_analytic"/>
+                                    <field name="budget_analytic_line" domain="[('budget_analytic_id', '=', budget_analytic)]"/>
+                                    <field name="budget_analytic_line_account"/>
+                                    <field name="name"/>
+                                    <field name="quantity" width="63"/>
+                                    <field name="uom_id" width="55"/>
+                                    <field name="unit_price" widget="monetary" width="55"/>
+                                    <field name="amount" widget="monetary" readonly="1" width="1px"/>
+                                    <field name="budget_name_main"/>
+                                    <field name="budget_main"/>
+                                    <field name="expected_date"/>
+                                    <field name="stage_id"/>
+                                    <field name="tag_ids" widget="many2many_tags" options="{'color_field': 'color'}"/>
+                                    <field name="notes"/>
+                                </list>
+                            </field>
+                        </page>
+                    </notebook>
+                </sheet>
+            </form>

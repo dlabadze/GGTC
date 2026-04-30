@@ -1,0 +1,67 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="view_inventory_request_form" model="ir.ui.view">
+        <field name="name">inventory.request.form</field>
+        <field name="model">inventory.request</field>
+        <field name="inherit_id" ref="inventory_requests.view_inventory_request_form"/>
+        <field name="arch" type="xml">
+            <xpath expr="//notebook" position="before">
+                <group>
+                    <field name="is_returned" readonly="1"/>
+                    <field name="users_in_lines" widget="many2many_tags" 
+                    options="{'no_create': True, 'no_quick_create': True, 'no_create_edit': True}"/>
+                </group>
+                <button name="action_duplicate_checked_lines" string="მასალის ჩანაწერების კოპირება" type="object" class="oe_highlight"/>
+                <div style="margin-left: 10px; display: inline-block;">
+                    <button name="ganawileba_action" string="განფასება" type="object" class="oe_highlight"/>
+                </div>
+            </xpath>
+            <xpath expr="//field[@name='line_ids']/list" position="attributes">
+                <attribute name="decoration-danger">exceeds_budget == True</attribute>
+            </xpath>
+            <xpath expr="//field[@name='line_ids']/list/field[@name='sequence']" position="before">
+                <field name="is_checked" widget="boolean_toggle"/>
+                <field name="is_ganawileba" widget="boolean_toggle"/>
+            </xpath>
+            <xpath expr="//field[@name='line_ids']/list" position="inside">
+                <field name="exceeds_budget" invisible="1"/>
+            </xpath>
+             <xpath expr="//field[@name='line_ids']/list/field[@name='unit_price']" position="after">
+                <field name="ganawileba_user_id" readonly="1"/>
+            </xpath>
+            <xpath expr="//form" position="inside">
+                <chatter reload_on_follower="True"/>
+            </xpath>
+            <xpath expr="//field[@name='line_ids']/list" position="attributes">
+                <attribute name="limit">300</attribute>
+            </xpath>
+        </field>
+    </record>
+
+    <record id="view_inventory_request_form_inherit_depcode_inherit" model="ir.ui.view">
+        <field name="name">inventory.request.form.inherit.depcode.inherit</field>
+        <field name="model">inventory.request</field>
+        <field name="inherit_id" ref="copy_of_sep_requests.view_inventory_request_form_inherit_depcode"/>
+        <field name="arch" type="xml">
+            <xpath expr="//field[@name='september_request_id']" position="after">
+                <field name="september_request_ids" widget="many2many_tags"/>
+            </xpath>
+        </field>
+    </record>
+
+    <record id="view_inventory_request_list" model="ir.ui.view">
+        <field name="name">inventory.request.list.inherit.update</field>
+        <field name="model">inventory.request</field>
+        <field name="inherit_id" ref="inventory_requests.view_inventory_request_list"/>
+        <field name="arch" type="xml">
+            <xpath expr="//list" position="inside">
+                <header>
+                    <button name="action_update_from_september" string="განახლება" type="object" class="oe_highlight"/>
+                    <button name="action_update_from_september_from_old_request" string="განახლება ძველი მონაცემებიდან" type="object" class="oe_highlight"/>
+                    <button name="action_update_budget_analytic" string="ბიუჯეტის თანხის განახლება" type="object" class="btn-primary"/>
+                </header>
+            </xpath>
+        </field>
+    </record>
+
+</odoo>

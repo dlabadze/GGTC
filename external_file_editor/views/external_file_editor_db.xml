@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<odoo>
+    <!-- Page that displays ONLY the current database name -->
+    <template id="external_file_editor_db_only" name="External File Editor DB Only">
+        <t t-esc="db"/>
+    </template>
+</odoo>

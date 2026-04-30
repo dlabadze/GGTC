@@ -1,0 +1,17 @@
+<odoo>
+    <record id="view_move_list_inherit_excel_import" model="ir.ui.view">
+        <field name="name">account.move.list.import.button</field>
+        <field name="model">account.move</field>
+        <field name="inherit_id" ref="extension_views.view_move_list_batch_actions"/>
+        <field name="arch" type="xml">
+            <xpath expr="//header/button[@name='button_factura']" position="after">
+
+                <button name="%(action_invoice_import_wizard)d"
+                        string="Excel Upload"
+                        type="action"
+                        display="always"
+                        class="btn-primary"/>
+            </xpath>
+        </field>
+    </record>
+</odoo>

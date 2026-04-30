@@ -1,0 +1,159 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data>
+
+        <!-- Paper Format -->
+        <record id="sabechdi_formebi_paperformat_sami_b" model="report.paperformat">
+            <field name="name">საბეჭდი ფორმები სამი Format</field>
+            <field name="format">A4</field>
+            <field name="orientation">Portrait</field>
+            <field name="margin_top">15</field>
+            <field name="margin_bottom">10</field>
+            <field name="margin_left">7</field>
+            <field name="margin_right">7</field>
+            <field name="header_spacing">0</field>
+            <field name="header_line" eval="False"/>
+        </record>
+
+        <!-- Report Action -->
+        <record id="action_report_nimushis_forma_sami_b" model="ir.actions.report">
+            <field name="name">ფორმა 3ბ</field>
+            <field name="model">stock.picking</field>
+            <field name="report_type">qweb-pdf</field>
+            <field name="report_name">sabechdi_formebi.nimushis_forma_sami_b_document</field>
+            <field name="report_file">sabechdi_formebi.nimushis_forma_sami_b_document</field>
+            <field name="binding_model_id" ref="stock.model_stock_picking"/>
+            <field name="binding_type">report</field>
+            <field name="paperformat_id" ref="sabechdi_formebi.sabechdi_formebi_paperformat_sami_b"/>
+        </record>
+
+        <!-- Report Template -->
+        <template id="nimushis_forma_sami_b_document">
+            <t t-call="web.basic_layout">
+                <t t-foreach="docs" t-as="doc">
+
+                    <div style="font-family: 'DejaVu Sans', sans-serif; font-size: 12px; padding: 20px;">
+
+                        <!-- Header -->
+                        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 25px;">
+                            <!-- Left: ფორმა #3 -->
+                            <div style="font-size: 12pt; font-weight: bold; text-align: left;">
+                                ფორმა 3ბ
+                            </div>
+
+                            <!-- Center: Title -->
+                            <div style="font-size: 12pt; font-weight: bold; text-align: center; flex-grow: 1;">
+                                შიდა ბრუნვის ზედდებული N <t t-esc="doc.x_studio_aqtis_nomeri or ''"/>
+                            </div>
+
+                            <!-- Right: empty for spacing -->
+                            <div style="width: 80px;"></div>
+                        </div>
+
+                        <!-- Document Info Section -->
+                        <div style="margin-bottom: 30px; line-height: 1.8;">
+
+                            <div style="margin-bottom: 15px;">
+                                <strong>გამცემი :</strong>
+                                <span style="margin-left: 40px;">
+                                    <t t-esc="doc.location_id.display_name or ''"/>
+                                </span>
+                            </div>
+
+                            <div style="margin-bottom: 15px;">
+                                <strong>მიმღები :</strong>
+                                <span style="margin-left: 40px;">
+                                    <t t-esc="doc.location_dest_id.display_name or ''"/>
+                                </span>
+                            </div>
+
+                            <div style="display: flex; justify-content: space-between; align-items: center;">
+                                <div>
+                                    <strong>საფუძველი :</strong>
+                                    <span style="margin-left: 30px;">
+                                        <t t-esc="doc.comment or ''"/>
+                                    </span>
+                                </div>
+
+                                <div style="margin-left: 50px;">
+                                    <strong>თარიღი</strong>
+                                    <span style="margin-left: 20px;">
+                                        <t t-esc="doc.date_of_transfer.strftime('%d/%m/%Y') if doc.date_of_transfer else ''"/>
+                                    </span>
+                                </div>
+                            </div>
+
+                        </div>
+
+                        <!-- Main Table -->
+                        <table style="width: 100%; border-collapse: collapse; margin-bottom: 30px; font-size: 10pt;">
+
+                            <tr>
+                                <td style="border: 1px solid #000; padding: 8px; text-align: center; font-weight: bold; background-color: #f0f0f0; width: 5%;">№</td>
+                                <td style="border: 1px solid #000; padding: 8px; text-align: center; font-weight: bold; background-color: #f0f0f0; width: 8%;">კოდი</td>
+                                <td style="border: 1px solid #000; padding: 8px; text-align: center; font-weight: bold; background-color: #f0f0f0; width: 35%;">დასახელება</td>
+                                <td style="border: 1px solid #000; padding: 8px; text-align: center; font-weight: bold; background-color: #f0f0f0; width: 12%;">რაოდენობა</td>
+                                <td style="border: 1px solid #000; padding: 8px; text-align: center; font-weight: bold; background-color: #f0f0f0; width: 8%;">ერთეული</td>
+                                <td style="border: 1px solid #000; padding: 8px; text-align: center; font-weight: bold; background-color: #f0f0f0; width: 16%;">მოთხოვნის წინასწარი N</td>
+                                <td style="border: 1px solid #000; padding: 8px; text-align: center; font-weight: bold; background-color: #f0f0f0; width: 16%;">მოთხოვნის რეგისტრაციის თარიღი</td>
+                            </tr>
+
+                            <t t-foreach="enumerate(doc.move_ids_without_package)" t-as="move_data">
+                                <t t-set="move_index" t-value="move_data[0]"/>
+                                <t t-set="move" t-value="move_data[1]"/>
+
+                                <tr>
+                                    <td style="border: 1px solid #000; padding: 8px; text-align: center;">
+                                        <t t-esc="move_index + 1"/>
+                                    </td>
+
+                                    <td style="border: 1px solid #000; padding: 8px; text-align: center;">
+                                        <t t-esc="move.product_id.default_code or ''"/>
+                                    </td>
+
+                                    <td style="border: 1px solid #000; padding: 8px;">
+                                        <t t-esc="move.product_id.name or ''"/>
+                                    </td>
+
+                                    <td style="border: 1px solid #000; padding: 8px; text-align: center;">
+                                        <t t-esc="'%.4f' % move.product_uom_qty"/>
+                                    </td>
+
+                                    <td style="border: 1px solid #000; padding: 8px; text-align: center;">
+                                        <t t-esc="move.product_uom.name or ''"/>
+                                    </td>
+
+                                    <td style="border: 1px solid #000; padding: 8px; text-align: center;">
+                                        მიღება ჩაბარების აქტი
+                                    </td>
+
+                                    <td style="border: 1px solid #000; padding: 8px; text-align: center;">
+                                        მიღება ჩაბარების აქტი
+                                    </td>
+                                </tr>
+                            </t>
+
+                        </table>
+
+                        <!-- Footer -->
+                        <div style="margin-top: 50px;">
+                            <table style="width: 100%; border-collapse: collapse; font-size: 11pt;">
+                                <tr>
+                                    <td style="width: 50%; vertical-align: top; padding-right: 20px;">
+                                        <strong>ჩააბარა:</strong> _________________________
+                                    </td>
+                                    <td style="width: 50%; vertical-align: top; padding-left: 20px;">
+                                        <strong>მიიღო:</strong> _________________________
+                                    </td>
+                                </tr>
+                            </table>
+                        </div>
+
+                    </div>
+
+                </t>
+            </t>
+        </template>
+
+    </data>
+</odoo>

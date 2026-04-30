@@ -1,0 +1,6 @@
+# Pure Python DOCX to PDF conversion - NO external programs needed!
+python-docx
+reportlab
+fpdf2
+docx2pdf 
+

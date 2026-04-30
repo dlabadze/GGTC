@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<templates id="template" xml:space="preserve">
+
+    <!-- Inherit the bank reconciliation widget to add doc_comment display -->
+    <t t-name="account_accountant.BankRecRecordFormLineIds" t-inherit="account_accountant.BankRecRecordFormLineIds" t-inherit-mode="extension">
+
+        <!-- Add doc_comment to the second row (o_bank_rec_second_line) after the name field -->
+        <xpath expr="//tr[hasclass('o_bank_rec_second_line')]/td[@field='name']/span[@class='text-muted fst-italic']" position="after">
+            <!-- Display doc_comment from transaction_details -->
+            <t t-if="line.data.flag === 'liquidity' and data.st_line_doc_comment">
+                <br/>
+                <span class="badge bg-info-subtle text-info-emphasis fst-normal"
+                      style="font-size: 0.85em;"
+                      title="Document Comment"
+                      t-esc="data.st_line_doc_comment"/>
+            </t>
+        </xpath>
+    </t>
+
+</templates>

@@ -1,0 +1,12 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(mkdir -p \"c:/Users/Gedes/OneDrive/Desktop/gazi 03.04.2026/approval_compare/models\")",
+      "Bash(mkdir -p \"c:/Users/Gedes/OneDrive/Desktop/gazi 03.04.2026/approval_compare/report\")",
+      "Bash(mkdir -p \"c:/Users/Gedes/OneDrive/Desktop/gazi 03.04.2026/approval_compare/security\")"
+    ],
+    "additionalDirectories": [
+      "c:\\Users\\Gedes\\OneDrive\\Desktop\\gazi 03.04.2026\\approval_compare"
+    ]
+  }
+}

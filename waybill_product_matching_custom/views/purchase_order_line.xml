@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<odoo>
+    <record id="purchase_order_form_inherited" model="ir.ui.view">
+        <field name="name">purchase.order.form.inherited</field>
+        <field name="model">purchase.order</field>
+        <field name="inherit_id" ref="purchase.purchase_order_form"/>
+        <field name="arch" type="xml">
+            <xpath expr="//field[@name='order_line']//field[@name='price_subtotal']" position="attributes">
+                <attribute name="string">Subtotal</attribute>
+            </xpath>
+            <xpath expr="//field[@name='order_line']//field[@name='price_subtotal']" position="after">
+                <field name="price_total"/>
+            </xpath>
+        </field>
+    </record>
+</odoo>

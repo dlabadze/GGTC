@@ -1,0 +1,87 @@
+<odoo>
+  <data>
+    <record id="view_account_asset_search_studio_filters" model="ir.ui.view">
+      <field name="name">account.asset.search.studio.filters</field>
+      <field name="model">account.asset</field>
+      <field name="inherit_id" ref="account_asset.view_account_asset_search"/>
+      <field name="priority">1000</field>
+      <field name="arch" type="xml">
+        <search position="replace">
+            <search string="Asset Account">
+
+                <field name="x_studio_fmg_mokle"/>
+                <field name="x_studio_inventori_nomeri"/>
+                <field name="x_studio_parametri"/>
+                <field name="x_studio_seriuli_nomeri"/>
+                <field name="x_studio_dzirmodel"/>
+                <field name="x_studio_gamoshvebis_weli"/>
+                <field name="x_studio_pasuxismgebeli_piri"/>
+                <field name="x_studio_areali"/>
+                <field name="x_studio_dzveli_inventori_nomeri"/>
+                <field name="x_studio_municipaliteti"/>
+                <field name="x_studio_obieqti_lokacia"/>
+                <field name="x_studio_lokacia_konk"/>
+                <field name="x_studio_depsam"/>
+                <field name="x_studio_klasipikacia"/>
+                <field name="x_studio_type_of_use"/>
+                <field name="x_studio_dzveli_angarishis_nom"/>
+                <field name="x_studio_statusiii"/>
+                <field name="x_studio_agricxvis_jgufi"/>
+                <field name="x_studio_selection_field_76f_1issub4rv"/>
+                <field name="vehicle_id"/>
+                <field name="asset_group_id"/>
+                <field name="account_asset_id"/>
+                <field name="account_depreciation_id"/>
+                <field name="account_depreciation_expense_id"/>
+
+                <filter string="FMG მოკლე" name="fmg_mokle" domain="[('x_studio_fmg_mokle', 'ilike', '')]"/>
+                <filter string="ინვენტ. ნომერი" name="inventori_nomeri" domain="[('x_studio_inventori_nomeri', 'ilike', '')]"/>
+                <filter string="პარამეტრი" name="parametri" domain="[('x_studio_parametri', 'ilike', '')]"/>
+                <filter string="სერიული №" name="seriuli_nomeri" domain="[('x_studio_seriuli_nomeri', 'ilike', '')]"/>
+                <filter string="მოდელი" name="dzirmodel" domain="[('x_studio_dzirmodel', 'ilike', '')]"/>
+                <filter string="გამოშვების წელი" name="gamoshvebis_weli" domain="[('x_studio_gamoshvebis_weli', 'ilike', '')]"/>
+                <filter string="პასუხისმგებელი პირი" name="pasuxismgebeli_piri" domain="[('x_studio_pasuxismgebeli_piri', 'ilike', '')]"/>
+                <filter string="სამოქმედო არეალი" name="areali" domain="[('x_studio_areali', 'ilike', '')]"/>
+                <filter string="ძველი ინვენტარის ნომერი" name="dzveli_inventori_nomeri" domain="[('x_studio_dzveli_inventori_nomeri', 'ilike', '')]"/>
+                <filter string="მუნიციპალიტეტი" name="municipaliteti" domain="[('x_studio_municipaliteti', 'ilike', '')]"/>
+                <filter string="ობიექტი - ლოკაცია" name="obieqti_lokacia" domain="[('x_studio_obieqti_lokacia', 'ilike', '')]"/>
+                <filter string="ლოკაცია კონკ" name="lokacia_konk" domain="[('x_studio_lokacia_konk', 'ilike', '')]"/>
+                <filter string="დეპ/სამ" name="depsam" domain="[('x_studio_depsam', 'ilike', '')]"/>
+                <filter string="კლასიფიკაცია" name="klasipikacia" domain="[('x_studio_klasipikacia', 'ilike', '')]"/>
+                <filter string="სარგებლობის ტიპი" name="type_of_use" domain="[('x_studio_type_of_use', 'ilike', '')]"/>
+                <filter string="ძველი ანგარიშის ნომერი" name="dzveli_angarishis_nom" domain="[('x_studio_dzveli_angarishis_nom', 'ilike', '')]"/>
+                <filter string="სტატუსი" name="statusiii" domain="[('x_studio_statusiii', 'ilike', '')]"/>
+                <filter string="აღრიცხვის ჯგუფი" name="agricxvis_jgufi" domain="[('x_studio_agricxvis_jgufi', 'ilike', '')]"/>
+                <filter string="რეგულირებადი" name="selection_field_76f_1issub4rv" domain="[('x_studio_selection_field_76f_1issub4rv', 'ilike', '')]"/>
+
+                <filter string="საატრანსპორტო საშუალება" name="vehicle_id" domain="[('vehicle_id.name', 'ilike', '')]"/>
+                <filter string="აქტივების ჯგუფი" name="asset_group_id" domain="[('asset_group_id.name', 'ilike', '')]"/>
+                <filter string="ძირითადი საშუალებების ანგარიში" name="account_asset_id" domain="[('account_asset_id.name', 'ilike', '')]"/>
+                <filter string="ამორტიზაციის ანგარიში" name="account_depreciation_id" domain="[('account_depreciation_id.name', 'ilike', '')]"/>
+                <filter string="ხარჯების ანგარიში" name="account_depreciation_expense_id" domain="[('account_depreciation_expense_id.name', 'ilike', '')]"/>
+
+                <!--   default filters             -->
+
+                <field name="name" string="Asset"/>
+                <field name="acquisition_date"/>
+                <filter string="Current" name="current" domain="[('state','in', ('draft','open'))]" help="Assets in draft and open states"/>
+                <filter string="Closed" name="closed" domain="[('state','=', 'close')]" help="Assets in closed state"/>
+                <field name="model_id" string="Asset Model"/>
+                <separator/>
+                <field name="asset_properties"/>
+                <filter invisible="1" string="Late Activities" name="activities_overdue" domain="[('my_activity_date_deadline', '&lt;', context_today().strftime('%Y-%m-%d'))]" help="Show all records which has next action date is before today"/>
+                <filter invisible="1" string="Today Activities" name="activities_today" domain="[('my_activity_date_deadline', '=', context_today().strftime('%Y-%m-%d'))]"/>
+                <filter invisible="1" string="Future Activities" name="activities_upcoming_all" domain="[('my_activity_date_deadline', '&gt;', context_today().strftime('%Y-%m-%d'))]"/>
+                <separator/>
+                <filter name="archived" string="Archived" domain="[('active', '=', False)]"/>
+                <group expand="0" string="Group By...">
+                        <filter string="Date" name="month" domain="[]" context="{'group_by':'acquisition_date'}"/>
+                        <filter string="Asset Model" name="model" domain="[]" context="{'group_by':'model_id'}"/>
+                        <filter string="Properties" name="group_by_properties" context="{'group_by': 'asset_properties'}"/>
+                </group>
+          </search>
+        </search>
+      </field>
+    </record>
+  </data>
+</odoo>

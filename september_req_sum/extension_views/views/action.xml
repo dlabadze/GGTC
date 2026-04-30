@@ -1,0 +1,10 @@
+<odoo>
+    <data>
+        <record model="ir.actions.act_window.view" id="sale_order_action_view_order_form">
+            <field name="act_window_id" ref="sale.action_orders"/>
+            <field name="view_mode">form</field>
+            <field name="view_id" ref="extend_views.view_order_form2"/>
+            <field name="sequence" eval="1"/>
+        </record>
+    </data>
+</odoo>

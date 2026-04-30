@@ -1,0 +1,65 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <!-- Main Menu -->
+    <menuitem id="menu_salary_management_root"
+        name="Salary Management"
+        web_icon="salary_management,static/description/icon.png"
+        sequence="100"/>
+    
+    <!-- Sub Menus -->
+    <menuitem id="menu_salary_management_operations"
+        name="დარიცხვა"
+        parent="menu_salary_management_root"
+        sequence="10"/>
+    
+    <menuitem id="menu_salary_payment"
+        name="გაცემა"
+        parent="menu_salary_management_root"
+        sequence="15"/>
+        
+    <menuitem id="menu_salary_management_reporting"
+        name="Reporting"
+        parent="menu_salary_management_root"
+        sequence="20"/>
+    
+    <!-- გაცემა Sub Menu -->
+    <menuitem id="menu_salary_payment_import"
+        name="ხელფასის გადახდის იმპორტი"
+        parent="menu_salary_payment"
+        action="action_salary_payment_import"
+        sequence="10"/>
+    
+    <!-- Action Menus for დარიცხვა -->
+    <menuitem id="menu_salary_import"
+        name="Salary Imports"
+        parent="menu_salary_management_operations"
+        action="action_salary_import"
+        sequence="10"/>
+    
+    <menuitem id="menu_salary_batch_import"
+        name="Salary Entries"
+        parent="menu_salary_management_operations"
+        action="action_salary_batch_import"
+        sequence="20"/>
+    
+    <!-- Insurance Import Menu (Third Position) -->
+    <menuitem id="menu_insurance_import"
+        name="Insurance Import"
+        parent="menu_salary_management_operations"
+        action="action_insurance_import"
+        sequence="30"/>
+    
+    <!-- Reporting Menus -->
+    <menuitem id="menu_salary_import_line"
+        name="Salary Lines"
+        parent="menu_salary_management_reporting"
+        action="action_salary_import_line"
+        sequence="10"/>
+    
+    <!-- NEW: Employee Report Views at same level as Salary Lines -->
+    <menuitem id="menu_employee_report"
+        name="Report Views"
+        parent="menu_salary_management_reporting"
+        action="action_employee_report"
+        sequence="20"/>
+</odoo>

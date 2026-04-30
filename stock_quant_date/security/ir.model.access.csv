@@ -1,0 +1,2 @@
+id,name,model_id:id,group_id:id,perm_read,perm_write,perm_create,perm_unlink
+access_stock_fix_date,stock.move.line.date.fix,model_stock_move_line_date_fix,stock.group_stock_user,1,1,1,1

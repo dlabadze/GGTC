@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <!-- Inherit Purchase Plan Line Search View -->
+    <record id="view_purchase_plan_line_search_inherit" model="ir.ui.view">
+        <field name="name">purchase.plan.line.search.inherit</field>
+        <field name="model">purchase.plan.line</field>
+        <field name="inherit_id" ref="budget.view_purchase_plan_line_search"/>
+        <field name="arch" type="xml">
+            <xpath expr="//field[@name='cpv_name']" position="after">
+                <field name="purchase_method_id"/>
+                <field name="purchase_reason_id"/>
+            </xpath>
+        </field>
+    </record>
+</odoo>

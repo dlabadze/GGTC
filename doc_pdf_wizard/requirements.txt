@@ -1,0 +1,7 @@
+# DOCX to PDF conversion libraries
+docx2pdf
+
+# Optional: Install LibreOffice for better conversion
+# Windows: Download from https://www.libreoffice.org/download/download/
+# Linux: sudo apt-get install libreoffice
+

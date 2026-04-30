@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="view_budget_excel_import_wizard_form" model="ir.ui.view">
+        <field name="name">budget.excel.import.wizard.form</field>
+        <field name="model">budget.excel.import.wizard</field>
+        <field name="arch" type="xml">
+            <form string="Import Budget Excel">
+                <group invisible="state == 'done'">
+                    <div class="alert alert-info" role="alert">
+                        This wizard imports data from the <strong>Working File</strong> sheet
+                        and updates budgeting lines for request <strong>#28</strong>.
+                        Columns B (კოდი) and F (ბიუჯეტის კოდი) are used for matching.
+                        Fields შესაძენი, გასაცემი, საწყობის ღირებულება, სულ შესაძენი,
+                        სულ საწყობი, and სულ საწყობი+შესაძენი will be overwritten.
+                    </div>
+                    <group>
+                        <field name="excel_file" filename="file_name" widget="binary"/>
+                        <field name="file_name" invisible="1"/>
+                    </group>
+                </group>
+                <group invisible="state == 'draft'">
+                    <field name="result_message" nolabel="1" readonly="1"/>
+                </group>
+                <field name="state" invisible="1"/>
+                <footer>
+                    <button name="action_import" type="object" string="Import"
+                            class="btn-primary" invisible="state == 'done'"/>
+                    <button string="Close" class="btn-secondary" special="cancel"/>
+                </footer>
+            </form>
+        </field>
+    </record>
+
+    <record id="action_budget_excel_import_wizard" model="ir.actions.act_window">
+        <field name="name">Import Budget Excel</field>
+        <field name="res_model">budget.excel.import.wizard</field>
+        <field name="view_mode">form</field>
+        <field name="target">new</field>
+        <field name="view_id" ref="view_budget_excel_import_wizard_form"/>
+    </record>
+
+
+</odoo>

@@ -1,0 +1,196 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="view_inventory_request_form" model="ir.ui.view">
+        <field name="name">inventory.request.form</field>
+        <field name="model">inventory.request</field>
+        <field name="inherit_id" ref="inventory_request_extension.view_inventory_request_form"/>
+        <field name="groups_id" eval="[(6, 0, [])]"/>
+        <field name="arch" type="xml">
+            <xpath expr="//button[@name='action_duplicate_checked_lines']" position="before">
+                <field name="is_duplicate_check_lines_invisible" invisible="1"/>
+                <field name="is_checked_invisible" invisible="1"/>
+                <field name="is_dasaxeleba_invisible" invisible="1"/>
+                <field name="is_line_code_invisible" invisible="1"/>
+                <field name="is_line_descr_invisible" invisible="1"/>
+                <field name="is_uom_id_invisible" invisible="1"/>
+                <field name="is_quantity_invisible" invisible="1"/>
+                <field name="is_request_date_invisible" invisible="1"/>
+                <field name="is_budget_analytic_invisible" invisible="1"/>
+                <field name="is_budget_analytic_line_account_invisible" invisible="1"/>
+                <field name="is_budget_analytic_line_invisible" invisible="1"/>
+                <field name="is_preiskurantidan_invisible" invisible="1"/>
+                <field name="is_preiskurantifasi_invisible" invisible="1"/>
+                <field name="is_unit_price_invisible" invisible="1"/>
+                <field name="is_amount_invisible" invisible="1"/>
+                <field name="is_on_hand_invisible" invisible="1"/>
+                <field name="is_warehouse_invisible" invisible="1"/>
+                <field name="is_purchase_invisible" invisible="1"/>
+                <field name="is_gatvaliswinebuli_invisible" invisible="1"/>
+                <field name="is_dasamzadebeli_invisible" invisible="1"/>
+                <field name="is_purchase_plan_invisible" invisible="1"/>
+                <field name="is_purchase_plan_line_invisible" invisible="1"/>
+                <field name="is_on_hand_button_invisible" invisible="1"/>
+                <field name="is_garantiavada_invisible" invisible="1"/>
+                <field name="is_ganawileba_invisible" invisible="1"/>
+                <field name="is_ganawileba_user_id_invisible" invisible="1"/>
+                <field name="is_kategoria_invisible" invisible="1"/>
+                <field name="is_dep_head_invisible" invisible="1"/>
+                <field name="is_shesyidvis_group_invisible" invisible="1"/>
+                <field name="is_user_in_lines_invisible" invisible="1"/>
+                <field name="is_ganawileba_button_invisible" invisible="1"/>
+                <field name="is_exceeds_budget_invisible" invisible="1"/>
+            </xpath>
+
+            <xpath expr="//button[@name='action_duplicate_checked_lines']" position="attributes">
+                <attribute name="invisible">is_duplicate_check_lines_invisible</attribute>
+            </xpath>
+
+            <xpath expr="//field[@name='is_checked']" position="attributes">
+                <attribute name="column_invisible">parent.is_checked_invisible == True</attribute>
+                <attribute name="width">10</attribute>
+            </xpath>
+
+            <xpath expr="//field[@name='is_ganawileba']" position="attributes">
+                <attribute name="column_invisible">parent.is_ganawileba_invisible == True</attribute>
+            </xpath>
+            <xpath expr="//field[@name='ganawileba_user_id']" position="attributes">
+                <attribute name="column_invisible">parent.is_ganawileba_user_id_invisible == True</attribute>
+            </xpath>
+            <xpath expr="//field[@name='users_in_lines']" position="attributes">
+                <attribute name="invisible">is_user_in_lines_invisible == True</attribute>
+            </xpath>
+            <xpath expr="//button[@name='ganawileba_action']" position="attributes">
+                <attribute name="invisible">is_ganawileba_button_invisible == True</attribute>
+            </xpath>
+            <xpath expr="//field[@name='line_ids']/list/field[@name='exceeds_budget']" position="attributes">
+                <attribute name="column_invisible">parent.is_exceeds_budget_invisible == True</attribute>
+            </xpath>
+        </field>
+    </record>
+
+    <record id="view_inventory_request_form_inherit_studio" model="ir.ui.view">
+        <field name="name">inventory.request.form.inherit.studio1</field>
+        <field name="model">inventory.request</field>
+        <field name="inherit_id" ref="studio_customization.odoo_studio_inventor_2b542e42-6193-438d-b6db-31c22c541287"/>
+        <field name="groups_id" eval="[(6, 0, [])]"/>
+        <field name="arch" type="xml">
+           <!--
+             Prevent Owl crash when Studio view contains a field that is not defined
+             in the model in this database/installation.
+           -->
+           <!-- <xpath expr="//field[@name='enable_auto_logic']" position="replace"/> -->
+            <xpath expr="//field[@name='x_studio_related_field_1k5_1jd36v2oo']" position="attributes">
+                    <attribute name="column_invisible">parent.is_dasaxeleba_invisible == True</attribute>
+            </xpath>
+            <xpath expr="//field[@name='x_studio_code']" position="attributes">
+                    <attribute name="column_invisible">parent.is_line_code_invisible == True</attribute>
+            </xpath>
+            <xpath expr="//field[@name='x_studio_descr']" position="attributes">
+                    <attribute name="column_invisible">parent.is_line_descr_invisible == True</attribute>
+            </xpath>
+            <xpath expr="//field[@name='x_studio_on_hand']" position="attributes">
+                    <attribute name="column_invisible">True</attribute>
+                    <!-- <attribute name="width">66</attribute> -->
+            </xpath>
+            <xpath expr="//field[@name='remainder_summed']" position="attributes">
+                    <attribute name="column_invisible">parent.is_on_hand_invisible == True</attribute>
+                    <attribute name="width">66</attribute>
+            </xpath>
+            <xpath expr="//field[@name='x_studio_warehouse']" position="attributes">
+                    <attribute name="column_invisible">parent.is_warehouse_invisible == True</attribute>
+                    <attribute name="width">165</attribute>
+            </xpath>
+            <xpath expr="//field[@name='x_studio_purchase']" position="attributes">
+                    <attribute name="column_invisible">parent.is_purchase_invisible == True</attribute>
+                    <attribute name="width">62</attribute>
+            </xpath>
+            <xpath expr="//field[@name='x_studio_boolean_field_2bu_1j82g13ub']" position="attributes">
+                    <attribute name="column_invisible">parent.is_gatvaliswinebuli_invisible == True</attribute>
+                    <attribute name="width">52</attribute>
+            </xpath>
+            <xpath expr="//field[@name='x_studio_boolean_field_3rt_1j82fv6ek']" position="attributes">
+                    <attribute name="column_invisible">parent.is_dasamzadebeli_invisible == True</attribute>
+                    <attribute name="width">69</attribute>
+                    
+            </xpath>
+            <xpath expr="//field[@name='x_studio_purchase_plan']" position="attributes">
+                    <attribute name="column_invisible">parent.is_purchase_plan_invisible == True</attribute>
+            </xpath>
+            <xpath expr="//field[@name='x_studio_purchase_plan_line']" position="attributes">
+                    <attribute name="column_invisible">parent.is_purchase_plan_line_invisible == True</attribute>
+            </xpath>
+            <xpath expr="//button[@name='action_view_stock_on_hand']" position="attributes">
+                    <attribute name="column_invisible">parent.is_on_hand_button_invisible == True</attribute>
+            </xpath>
+            <xpath expr="//field[@name='garantiavada']" position="attributes">
+                    <attribute name="column_invisible">parent.is_garantiavada_invisible == True</attribute>
+            </xpath>
+            <xpath expr="//field[@name='x_studio_related_field_2jg_1jbg3ok0f']" position="attributes">
+                    <attribute name="column_invisible">parent.is_kategoria_invisible == True</attribute>
+            </xpath>
+            <xpath expr="//field[@name='x_studio_']" position="attributes">
+                    <attribute name="invisible">is_shesyidvis_group_invisible == True</attribute>
+            </xpath>
+            <xpath expr="//field[@name='x_studio_many2one_field_es_1j76qfa82']" position="attributes">
+                    <attribute name="options">{'no_create': True, 'no_open': True}</attribute>
+            </xpath>
+        </field>
+    </record>
+
+    <record id="view_inventory_request_form_inherit" model="ir.ui.view">
+        <field name="name">inventory.request.form.inherit.studio3</field>
+        <field name="model">inventory.request</field>
+        <field name="inherit_id" ref="inventory_requests.view_inventory_request_form"/>
+        <field name="groups_id" eval="[(6, 0, [])]"/>
+        <field name="arch" type="xml">
+            <xpath expr="//field[@name='line_ids']/list/field[@name='uom_id']" position="attributes">
+                <attribute name="column_invisible">parent.is_uom_id_invisible == True</attribute>
+            </xpath>
+            <xpath expr="//field[@name='line_ids']/list/field[@name='quantity']" position="attributes">
+                <attribute name="column_invisible">parent.is_quantity_invisible == True</attribute>
+            </xpath>
+            <xpath expr="//field[@name='line_ids']/list/field[@name='request_date']" position="attributes">
+                <attribute name="column_invisible">parent.is_request_date_invisible == True</attribute>
+            </xpath>
+            <xpath expr="//field[@name='line_ids']/list/field[@name='budget_analytic']" position="attributes">
+                <attribute name="column_invisible">parent.is_budget_analytic_invisible == True</attribute>
+                <attribute name="width">150</attribute>
+            </xpath>
+            <xpath expr="//field[@name='line_ids']/list/field[@name='budget_analytic_line_account']" position="attributes">
+                <attribute name="column_invisible">parent.is_budget_analytic_line_account_invisible == True</attribute>
+                <attribute name="width">165</attribute>
+            </xpath>
+            <xpath expr="//field[@name='line_ids']/list/field[@name='budget_analytic_line']" position="attributes">
+                <attribute name="column_invisible">parent.is_budget_analytic_line_invisible == True</attribute>
+                <attribute name="width">165</attribute>
+            </xpath>
+            <xpath expr="//field[@name='line_ids']/list/field[@name='unit_price']" position="attributes">
+                <attribute name="column_invisible">parent.is_unit_price_invisible == True</attribute>
+            </xpath>
+            <xpath expr="//field[@name='line_ids']/list/field[@name='amount']" position="attributes">
+                <attribute name="column_invisible">parent.is_amount_invisible == True</attribute>
+            </xpath>
+            <xpath expr="//field[@name='line_ids']/list/field[@name='product_id']" position="attributes">
+                <attribute name="options">{'no_create': True, 'no_open': True}</attribute>
+            </xpath>
+            <xpath expr="//field[@name='tag_ids']" position="attributes">
+                <attribute name="invisible">is_tag_ids_invisible == True</attribute>
+            </xpath>
+        </field>
+    </record>
+
+    <record id="inventory_request_form_inherit_add_preiskuranti" model="ir.ui.view">
+        <field name="name">inventory.request.form.inherit.studio2</field>
+        <field name="model">inventory.request</field>
+        <field name="inherit_id" ref="preiskuranti.inventory_request_form_inherit_add_preiskuranti"/>
+        <field name="groups_id" eval="[(6, 0, [])]"/>
+        <field name="arch" type="xml">
+            <xpath expr="//field[@name='preiskurantidan']" position="attributes">
+                <attribute name="column_invisible">parent.is_preiskurantidan_invisible == True</attribute>
+            </xpath>
+            <xpath expr="//field[@name='preiskurantifasi']" position="attributes">
+                <attribute name="column_invisible">parent.is_preiskurantifasi_invisible == True</attribute>
+            </xpath>
+        </field>
+    </record>
+</odoo>

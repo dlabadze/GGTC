@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="view_picking_form_inherit_purchase_stock_custom" model="ir.ui.view">
+        <field name="name">stock.picking.form.inherit.custom</field>
+        <field name="model">stock.picking</field>
+        <field name="inherit_id" ref="stock.view_picking_form"/>
+        <field name="arch" type="xml">
+            <xpath expr="//field[@name='origin']" position="after">
+                <field name="custom_transfer_info" readonly="1"/>
+            </xpath>
+        </field>
+    </record>
+</odoo>

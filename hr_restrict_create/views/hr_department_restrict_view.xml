@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<odoo>
+    <data>
+        <!--
+            Restrict "Create" and "Create and Edit" on the Parent Department (parent_id)
+            field in the Department form view — for non-administrator users only.
+            The 'groups' attribute on the xpath element limits where this change applies.
+        -->
+        <record id="view_department_form_restrict_parent" model="ir.ui.view">
+            <field name="name">hr.department.form.restrict.parent</field>
+            <field name="model">hr.department</field>
+            <field name="inherit_id" ref="hr.view_department_form"/>
+            <field name="arch" type="xml">
+                <field name="parent_id" position="attributes" groups="!base.group_system">
+                    <attribute name="options">{'no_create': True, 'no_create_edit': True}</attribute>
+                </field>
+            </field>
+        </record>
+    </data>
+</odoo>

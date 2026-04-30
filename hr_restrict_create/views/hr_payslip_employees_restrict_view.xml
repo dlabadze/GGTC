@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<odoo>
+    <data>
+        <!--
+            Restrict "Create" and "Create and Edit" on the Department (department_id)
+            field in the Generate Payslips wizard — for non-administrator users only.
+        -->
+        <record id="view_hr_payslip_by_employees_restrict_dept" model="ir.ui.view">
+            <field name="name">hr.payslip.employees.form.restrict.dept</field>
+            <field name="model">hr.payslip.employees</field>
+            <field name="inherit_id" ref="hr_payroll.view_hr_payslip_by_employees"/>
+            <field name="arch" type="xml">
+                <field name="department_id" position="attributes" groups="!base.group_system">
+                    <attribute name="options">{'no_create': True, 'no_create_edit': True}</attribute>
+                </field>
+            </field>
+        </record>
+    </data>
+</odoo>

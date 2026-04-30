@@ -1,0 +1,14 @@
+<odoo>
+    <record id="view_bank_statement_line_kanban_inherit" model="ir.ui.view">
+        <field name="name">bank.statement.line.kanban.inherit.saidentifikacio_code</field>
+        <field name="model">account.bank.statement.line</field>
+        <field name="inherit_id" ref="account_accountant.view_bank_statement_line_kanban_bank_rec_widget"/>
+        <field name="arch" type="xml">
+            <xpath expr="//t[@t-name='card']/div[div[@class='d-flex']]" position="inside">
+                <div class="d-flex">
+                    <field name="saidentifikacio_code" class="flex-fill text-truncate ms-1 fst-italic ps-2"/>
+                </div>
+            </xpath>
+        </field>
+    </record>
+</odoo>

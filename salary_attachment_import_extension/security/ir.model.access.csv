@@ -1,0 +1,6 @@
+id,name,model_id:id,group_id:id,perm_read,perm_write,perm_create,perm_unlink
+access_salary_attachment_import_wizard,access.salary.attachment.import.wizard,model_salary_attachment_import_wizard,hr_payroll.group_hr_payroll_user,1,1,1,1
+access_salary_attachment_import_wizard_manager,access.salary.attachment.import.wizard.manager,model_salary_attachment_import_wizard,hr_payroll.group_hr_payroll_manager,1,1,1,1
+access_salary_attachment_import_phone,access.salary.attachment.import.phone,model_salary_attachment_import_phone,hr_payroll.group_hr_payroll_user,1,1,1,1
+access_salary_attachment_import_phone_manager,access.salary.attachment.import.phone.manager,model_salary_attachment_import_phone,hr_payroll.group_hr_payroll_manager,1,1,1,1
+

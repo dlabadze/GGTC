@@ -1,0 +1,22 @@
+<odoo>
+    <record id="view_country_code_import_form" model="ir.ui.view">
+    <field name="name">country.code.import.form</field>
+    <field name="model">country.code.import</field>
+    <field name="arch" type="xml">
+      <form string="Import Country Codes">
+        <group>
+          <field name="file" filename="filename"/>
+        </group>
+        <footer>
+          <button string="Import" type="object" name="action_import_country_codes" class="btn-primary"/>
+          <button string="Cancel" class="btn-secondary" special="cancel"/>
+        </footer>
+      </form>
+    </field>
+  </record>
+
+   <menuitem id="menu_country_codes_import" name="Import Country Codes"
+          parent="account.account_account_menu"
+          action="action_import_country_codes"/>
+
+</odoo>

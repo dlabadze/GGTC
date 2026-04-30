@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data>
+        <!-- Add edit file button to approval.request form view -->
+        <record id="approval_request_view_form_inherit" model="ir.ui.view">
+            <field name="name">approval.request.form.inherit.external.file.editor</field>
+            <field name="model">approval.request</field>
+            <field name="inherit_id" ref="approvals.approval_request_view_form"/>
+            <field name="arch" type="xml">
+                <!-- Add button in header -->
+                <xpath expr="//header" position="inside">
+                    <button name="action_edit_file" 
+                            string="ფაილის რედაქტირება" 
+                            type="object"
+                            class="oe_highlight"
+                            invisible="not x_studio_file"
+                            groups="base.group_user"/>
+                </xpath>
+            </field>
+        </record>
+    </data>
+</odoo>

@@ -1,0 +1,29 @@
+<odoo>
+    <data>
+        <record id="view_fix_accounting_date_wizard_form" model="ir.ui.view">
+            <field name="name">fix.accounting.date.wizard.form</field>
+            <field name="model">fix.accounting.date.wizard</field>
+            <field name="arch" type="xml">
+                <form string="Fix Accounting Dates">
+                    <p>
+                        This action will find all associated journal entries for the selected pickings 
+                        and update their accounting dates to match the Picking's Effective Date (Date Done).
+                    </p>
+                    <footer>
+                        <button name="action_fix_dates" string="Fix Dates" type="object" class="btn-primary"/>
+                        <button string="Cancel" class="btn-secondary" special="cancel"/>
+                    </footer>
+                </form>
+            </field>
+        </record>
+
+        <record id="action_fix_accounting_date_wizard" model="ir.actions.act_window">
+            <field name="name">Fix Accounting Dates</field>
+            <field name="res_model">fix.accounting.date.wizard</field>
+            <field name="view_mode">form</field>
+            <field name="target">new</field>
+            <field name="binding_model_id" ref="stock.model_stock_picking"/>
+            <field name="binding_view_types">list</field>
+        </record>
+    </data>
+</odoo>

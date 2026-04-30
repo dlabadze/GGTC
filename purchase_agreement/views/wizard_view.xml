@@ -1,0 +1,22 @@
+<odoo>
+    <record id="view_product_onhand_wizard_form" model="ir.ui.view">
+        <field name="name">product.onhand.wizard.form</field>
+        <field name="model">product.onhand.wizard</field>
+        <field name="arch" type="xml">
+            <form string="On Hand Quantities">
+                <field name="onhand_lines" nolabel="1">
+                    <list>
+                        <field name="x_studio_location_id"/>
+                        <field name="location_id"/>
+                        <field name="x_studio_product_reference"/>
+                        <field name="product_id"/>
+                        <field name="inventory_quantity_auto_apply"/>
+                        <field name="reserved_quantity"/>
+                        <field name="product_uom_id"/>
+                    </list>
+                </field>
+                    <button string="Close" class="btn-secondary" special="cancel"/>
+            </form>
+        </field>
+    </record>
+</odoo>

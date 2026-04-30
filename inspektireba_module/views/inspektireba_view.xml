@@ -1,0 +1,321 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+    <record id="action_inspektireba" model="ir.actions.act_window">
+        <field name="name">ინსპექტირება</field>
+        <field name="res_model">inspektireba</field>
+        <field name="view_mode">list,form</field>
+    </record>
+
+    <record id="action_inspektireba_my_approvals" model="ir.actions.act_window">
+        <field name="name">ჩემი დასტურები</field>
+        <field name="res_model">inspektireba</field>
+        <field name="view_mode">list,form</field>
+        <field name="domain">[('approver_line_ids.user_id', '=', uid)]</field>
+    </record>
+
+    <record id="action_inspektireba_my_initiated" model="ir.actions.act_window">
+        <field name="name">ჩემი ინიცირებული</field>
+        <field name="res_model">inspektireba</field>
+        <field name="view_mode">list,form</field>
+        <field name="domain">[('initiator_id', '=', uid)]</field>
+    </record>
+
+    <menuitem id="menu_inspektireba_root"
+              name="ინსპექტირება"
+              sequence="20"
+              web_icon="inspektireba_module,static/description/icon.png"/>
+
+    <menuitem id="menu_inspektireba_list"
+              name="ყველა ინსპექტირება"
+              parent="menu_inspektireba_root"
+              action="action_inspektireba"
+              sequence="10"/>
+
+    <menuitem id="menu_inspektireba_my_approvals"
+              name="ჩემი დადასტურებული"
+              parent="menu_inspektireba_root"
+              action="action_inspektireba_my_approvals"
+              sequence="20"/>
+
+    <menuitem id="menu_inspektireba_my_initiated"
+              name="ჩემი ინიცირებული"
+              parent="menu_inspektireba_root"
+              action="action_inspektireba_my_initiated"
+              sequence="30"/>
+
+    <menuitem id="menu_inspektireba_config"
+              name="კონფიგურაცია"
+              parent="menu_inspektireba_root"
+              sequence="100"/>
+
+    <record id="action_inspektireba_default_approver" model="ir.actions.act_window">
+        <field name="name">მუდმივი წევრები</field>
+        <field name="res_model">inspektireba.default.approver</field>
+        <field name="view_mode">list,form</field>
+    </record>
+
+    <menuitem id="menu_inspektireba_default_approvers"
+              name="მუდმივი წევრები"
+              parent="menu_inspektireba_config"
+              action="action_inspektireba_default_approver"
+              sequence="10"/>
+
+    <record id="view_inspektireba_default_approver_list" model="ir.ui.view">
+        <field name="name">inspektireba.default.approver.list</field>
+        <field name="model">inspektireba.default.approver</field>
+        <field name="arch" type="xml">
+            <list editable="bottom">
+                <field name="sequence" widget="handle"/>
+                <field name="user_id"/>
+            </list>
+        </field>
+    </record>
+
+    <record id="action_inspektireba_procurement_user" model="ir.actions.act_window">
+        <field name="name">შესყიდვების დეპარტამენტი</field>
+        <field name="res_model">inspektireba.procurement.user</field>
+        <field name="view_mode">list,form</field>
+    </record>
+
+    <menuitem id="menu_inspektireba_procurement_users"
+              name="შესყიდვების დეპარტამენტი"
+              parent="menu_inspektireba_config"
+              action="action_inspektireba_procurement_user"
+              sequence="20"/>
+
+    <record id="view_inspektireba_procurement_user_list" model="ir.ui.view">
+        <field name="name">inspektireba.procurement.user.list</field>
+        <field name="model">inspektireba.procurement.user</field>
+        <field name="arch" type="xml">
+            <list editable="bottom">
+                <field name="user_id"/>
+            </list>
+        </field>
+    </record>
+
+    <record id="action_inspektireba_finance_user" model="ir.actions.act_window">
+        <field name="name">ფინანსური დეპარტამენტი</field>
+        <field name="res_model">inspektireba.finance.user</field>
+        <field name="view_mode">list,form</field>
+    </record>
+
+    <menuitem id="menu_inspektireba_finance_users"
+              name="ფინანსური დეპარტამენტი"
+              parent="menu_inspektireba_config"
+              action="action_inspektireba_finance_user"
+              sequence="30"/>
+
+    <record id="view_inspektireba_finance_user_list" model="ir.ui.view">
+        <field name="name">inspektireba.finance.user.list</field>
+        <field name="model">inspektireba.finance.user</field>
+        <field name="arch" type="xml">
+            <list editable="bottom">
+                <field name="user_id"/>
+            </list>
+        </field>
+    </record>
+
+    <record id="view_inspektireba_service_line_form" model="ir.ui.view">
+        <field name="name">inspektireba.service.line.form</field>
+        <field name="model">inspektireba.service.line</field>
+        <field name="arch" type="xml">
+            <form string="სერვისის დეტალები">
+                <header>
+                    <button name="action_open_service_log" type="object"
+                            string="გახსნა სერვისებში" icon="fa-external-link"
+                            class="btn-primary"/>
+                </header>
+                <sheet>
+                    <group>
+                        <group>
+                            <field name="service_log_id" readonly="1" options="{'no_open': True}"/>
+                            <field name="date"/>
+                            <field name="vehicle_id"/>
+                            <field name="description"/>
+                        </group>
+                        <group>
+                            <field name="amount"/>
+                            <field name="currency_id" invisible="1"/>
+                        </group>
+                    </group>
+                </sheet>
+            </form>
+        </field>
+    </record>
+
+    <record id="view_inspektireba_list" model="ir.ui.view">
+        <field name="name">inspektireba.list</field>
+        <field name="model">inspektireba</field>
+        <field name="arch" type="xml">
+            <list>
+                <field name="number"/>
+                <field name="vendor_id"/>
+                <field name="requisition_id"/>
+                <field name="date_initiated" widget="date"/>
+                <field name="date_confirmed" widget="date"/>
+                <field name="date"/>
+                <field name="days_to_confirm"/>
+                <field name="days_to_migheba"/>
+                <field name="state" widget="badge"
+                       decoration-success="state == 'confirmed'"
+                       decoration-info="state == 'formed'"
+                       decoration-warning="state == 'finance_approval'"
+                       decoration-danger="state == 'rejected'"/>
+            </list>
+        </field>
+    </record>
+
+
+    <record id="view_inspektireba_search" model="ir.ui.view">
+        <field name="name">inspektireba.search</field>
+        <field name="model">inspektireba</field>
+        <field name="arch" type="xml">
+            <search>
+                <field name="number"/>
+                <field name="initiator_id"/>
+                <field name="date"/>
+
+                <filter name="my_initiated" string="My Initiated" domain="[('initiator_id','=',uid)]"/>
+                <filter name="initiated" string="Initiated" domain="[('state','=','initiated')]"/>
+                <filter name="formed" string="Formed" domain="[('state','=','formed')]"/>
+                <filter name="finance_approval" string="Finance Approval" domain="[('state','=','finance_approval')]"/>
+                <filter name="confirmed" string="Confirmed" domain="[('state','=','confirmed')]"/>
+                <filter name="rejected" string="Rejected" domain="[('state','=','rejected')]"/>
+
+                <group expand="0" string="Group By">
+                    <filter name="group_state" string="State" context="{'group_by':'state'}"/>
+                    <filter name="group_initiator" string="Initiator" context="{'group_by':'initiator_id'}"/>
+                    <filter name="group_date" string="Date" context="{'group_by':'date'}"/>
+                    <filter name="group_date_initiated" string="Initiation Date" context="{'group_by':'date_initiated'}"/>
+                </group>
+            </search>
+        </field>
+    </record>
+
+
+    <record id="view_inspektireba_form" model="ir.ui.view">
+        <field name="name">inspektireba.form</field>
+        <field name="model">inspektireba</field>
+        <field name="arch" type="xml">
+            <form string="Inspektireba" class="o_form_view o_form_sheet_full">
+                <header>
+                    <button name="action_send_to_approvers" type="object" string="გაგზავნა დასადასტურებლად"
+                            class="btn-primary" invisible="not can_send_to_approvers"/>
+
+                    <button name="action_approve" type="object" string="დადასტურება"
+                            class="btn-primary" invisible="not can_approve"/>
+
+                    <button name="action_return_to_initiated" type="object" string="დაბრუნება ინიციატორზე"
+                            class="btn-warning" invisible="not can_return_to_initiated"/>
+
+                    <button name="action_reject" type="object" string="უარყოფა"
+                            class="btn-secondary" invisible="not can_reject"/>
+
+                    <button name="%(action_report_inspektireba_daskvna)d" type="action"
+                            string="ბეჭდვა - ინსპექტირების დასკვნა PDF" class="btn-primary"
+                            invisible="state == 'initiated' or is_transport"/>
+
+                    <button name="%(action_report_inspektireba_daskvna_transport)d" type="action"
+                            string="ბეჭდვა - ინსპექტირების დასკვნა PDF" class="btn-primary"
+                            invisible="state == 'initiated' or not is_transport"/>
+
+                    <button name="%(action_report_inspektireba_migheba)d" type="action" 
+                            string="ბეჭდვა - მიღება ჩაბარება PDF" class="btn-secondary" 
+                            invisible="state == 'initiated'"/>
+
+                    <field name="state" widget="statusbar"
+                        statusbar_visible="initiated,formed,finance_approval,confirmed,rejected"/>
+                </header>
+
+                <sheet>
+                    <div class="oe_title">
+                        <h1>
+                            <field name="number" readonly="1" nolabel="1"/>
+                        </h1>
+                    </div>
+
+                    <group>
+                        <group>
+                            <field name="initiator_id" readonly="state != 'initiated'"/>
+                            <field name="date" readonly="state != 'initiated'"/>
+                            <field name="requisition_id" readonly="state != 'initiated'"/>
+                            <field name="other_director_name" readonly="state != 'initiated'"/>
+                            <field name="other_director_position" readonly="state != 'initiated'"/>
+                            <field name="service_date_from" readonly="state != 'initiated'"/>
+                            <field name="service_date_to" readonly="state != 'initiated'"/>
+                            <field name="total_amount"/>
+                        </group>
+                        <group>
+                            <field name="date_initiated" invisible="not date_initiated"/>
+                            <field name="date_formed" invisible="not date_formed"/>
+                            <field name="date_confirmed" invisible="not date_confirmed"/>
+                            <field name="date_rejected" invisible="not date_rejected"/>
+                            
+                            <field name="is_current_approver" invisible="1"/>
+                            <field name="can_send_to_approvers" invisible="1"/>
+                            <field name="can_approve" invisible="1"/>
+                            <field name="can_return_to_initiated" invisible="1"/>
+                            <field name="can_reject" invisible="1"/>
+                            <field name="all_approved" invisible="1"/>
+                            <field name="can_edit_paragraphs" invisible="1"/>
+                            <field name="is_procurement_user" invisible="1"/>
+                            <field name="is_transport" invisible="1"/>
+                            <field name="currency_id" invisible="1"/>
+                        </group>
+                    </group>
+
+                    <group string="ინსპექტირების დოკუმენტი">
+                        <field name="paragraph_1" readonly="not can_edit_paragraphs"/>
+                        <field name="paragraph_2" readonly="not can_edit_paragraphs"/>
+                        <field name="paragraph_3" readonly="not can_edit_paragraphs"/>
+                    </group>
+
+                    <group string="მიღება - ჩაბარება">
+                        <field name="migheba_paragraph_1" readonly="not can_edit_paragraphs"/>
+                        <field name="migheba_paragraph_2" readonly="not can_edit_paragraphs"/>
+                        <field name="migheba_paragraph_3" readonly="not can_edit_paragraphs"/>
+                    </group>
+
+                    <notebook>
+                        <page string="დამდასტურებლები">
+                            <field name="approver_line_ids" readonly="state != 'initiated'">
+                                <list editable="bottom">
+                                    <field name="sequence" widget="handle"/>
+                                    <field name="user_id"/>
+                                    <field name="state" readonly="1" widget="badge"
+                                           decoration-warning="state in ('pending', 'waiting')"
+                                           decoration-success="state == 'approved'"
+                                           decoration-danger="state == 'cancelled'"/>
+                                    <field name="decision_date" readonly="1"/>
+                                </list>
+                            </field>
+                        </page>
+                        <page string="სერვისები">
+                            <field name="service_line_ids">
+                                <list create="0" delete="1">
+                                    <field name="service_log_id" options="{'no_create': True}"/>
+                                    <field name="date"/>
+                                    <field name="vehicle_id"/>
+                                    <field name="description"/>
+                                    <field name="currency_id" invisible="1"/>
+                                    <field name="amount" sum="ჯამი"/>
+                                    <button name="action_open_service_log" type="object"
+                                            string="გახსნა" icon="fa-external-link"
+                                            class="btn-sm btn-secondary"/>
+                                </list>
+                            </field>
+                        </page>
+                    </notebook>
+                </sheet>
+
+                <chatter>
+                    <field name="message_follower_ids"/>
+                    <field name="activity_ids"/>
+                    <field name="message_ids"/>
+                </chatter>
+            </form>
+        </field>
+    </record>
+
+</odoo>

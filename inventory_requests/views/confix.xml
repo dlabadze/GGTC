@@ -1,0 +1,510 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <!-- Configuration Views -->
+
+    <!-- Inventory Request Stage Views -->
+    <record id="view_inventory_request_stage_list" model="ir.ui.view">
+        <field name="name">inventory.request.stage.list</field>
+        <field name="model">inventory.request.stage</field>
+        <field name="arch" type="xml">
+            <list string="Request Stages" editable="bottom">
+                <field name="sequence" widget="handle"/>
+                <field name="name"/>
+                <field name="description"/>
+                <field name="fold"/>
+                <field name="color" widget="color_picker"/>
+                <field name="active"/>
+            </list>
+        </field>
+    </record>
+
+    <record id="view_inventory_request_stage_form" model="ir.ui.view">
+        <field name="name">inventory.request.stage.form</field>
+        <field name="model">inventory.request.stage</field>
+        <field name="arch" type="xml">
+            <form string="Request Stage">
+                <sheet>
+                    <group>
+                        <group>
+                            <field name="name"/>
+                            <field name="sequence"/>
+                            <field name="active"/>
+                        </group>
+                        <group>
+                            <field name="color" widget="color_picker"/>
+                            <field name="fold"/>
+                        </group>
+                    </group>
+                    <group>
+                        <field name="description"/>
+                    </group>
+                </sheet>
+            </form>
+        </field>
+    </record>
+
+    <!-- Inventory Line Stage Views -->
+    <record id="view_inventory_line_stage_list" model="ir.ui.view">
+        <field name="name">inventory.line.stage.list</field>
+        <field name="model">inventory.line.stage</field>
+        <field name="arch" type="xml">
+            <list string="Line Stages" editable="bottom">
+                <field name="sequence" widget="handle"/>
+                <field name="name"/>
+                <field name="description"/>
+                <field name="fold"/>
+                <field name="color" widget="color_picker"/>
+                <field name="active"/>
+            </list>
+        </field>
+    </record>
+
+    <record id="view_inventory_line_stage_form" model="ir.ui.view">
+        <field name="name">inventory.line.stage.form</field>
+        <field name="model">inventory.line.stage</field>
+        <field name="arch" type="xml">
+            <form string="Line Stage">
+                <sheet>
+                    <group>
+                        <group>
+                            <field name="name"/>
+                            <field name="sequence"/>
+                            <field name="active"/>
+                        </group>
+                        <group>
+                            <field name="color" widget="color_picker"/>
+                            <field name="fold"/>
+                        </group>
+                    </group>
+                    <group>
+                        <field name="description"/>
+                    </group>
+                </sheet>
+            </form>
+        </field>
+    </record>
+
+    <!-- Inventory Request Tag Views -->
+    <record id="view_inventory_request_tag_list" model="ir.ui.view">
+        <field name="name">inventory.request.tag.list</field>
+        <field name="model">inventory.request.tag</field>
+        <field name="arch" type="xml">
+            <list string="Request Tags" editable="bottom">
+                <field name="name"/>
+                <field name="color" widget="color_picker"/>
+                <field name="active"/>
+            </list>
+        </field>
+    </record>
+
+    <record id="view_inventory_request_tag_form" model="ir.ui.view">
+        <field name="name">inventory.request.tag.form</field>
+        <field name="model">inventory.request.tag</field>
+        <field name="arch" type="xml">
+            <form string="Request Tag">
+                <sheet>
+                    <group>
+                        <field name="name"/>
+                        <field name="color" widget="color_picker"/>
+                        <field name="active"/>
+                    </group>
+                </sheet>
+            </form>
+        </field>
+    </record>
+
+    <!-- Inventory Line Tag Views -->
+    <record id="view_inventory_line_tag_list" model="ir.ui.view">
+        <field name="name">inventory.line.tag.list</field>
+        <field name="model">inventory.line.tag</field>
+        <field name="arch" type="xml">
+            <list string="Line Tags" editable="bottom">
+                <field name="name"/>
+                <field name="color" widget="color_picker"/>
+                <field name="active"/>
+            </list>
+        </field>
+    </record>
+
+    <record id="view_inventory_line_tag_form" model="ir.ui.view">
+        <field name="name">inventory.line.tag.form</field>
+        <field name="model">inventory.line.tag</field>
+        <field name="arch" type="xml">
+            <form string="Line Tag">
+                <sheet>
+                    <group>
+                        <field name="name"/>
+                        <field name="color" widget="color_picker"/>
+                        <field name="active"/>
+                    </group>
+                </sheet>
+            </form>
+        </field>
+    </record>
+
+    <!-- Updated Inventory Request Views -->
+    <record id="view_inventory_request_list" model="ir.ui.view">
+        <field name="name">inventory.request.list</field>
+        <field name="model">inventory.request</field>
+        <field name="arch" type="xml">
+            <list string="Inventory Requests">
+                <field name="name"/>
+                <field name="request_date"/>
+                <field name="requested_by"/>
+                <field name="department_id"/>
+                <field name="stage_id"/>
+                <field name="priority" widget="priority"/>
+                <field name="tag_ids" widget="many2many_tags" options="{'color_field': 'color'}"/>
+                <field name="total_lines"/>
+            </list>
+        </field>
+    </record>
+
+    <record id="view_inventory_request_form" model="ir.ui.view">
+        <field name="name">inventory.request.form</field>
+        <field name="model">inventory.request</field>
+        <field name="arch" type="xml">
+            <form string="Inventory Request">
+                <header>
+                    <field name="stage_id" widget="statusbar" options="{'clickable': '1'}"/>
+                </header>
+                <sheet>
+                    <div class="oe_button_box" name="button_box">
+                        <!-- Add custom buttons here if needed -->
+                    </div>
+                    <div class="oe_title">
+                        <h1>
+                            <field name="name" readonly="1"/>
+                        </h1>
+                        <field name="tag_ids" widget="many2many_tags" options="{'color_field': 'color'}" placeholder="Tags..."/>
+                    </div>
+                    <group>
+                    <group>
+                        <field name="request_date"/>
+                        <field name="requested_by"/>
+                        <field name="department_id"/>
+
+                    </group>
+                    <group>
+                        <field name="priority" widget="priority"/>
+                        <field name="total_lines"/>
+                    </group>
+                    </group>
+                    <group>
+                        <field name="description"/>
+                
+                    </group>
+                    <notebook>
+                        <page string="Inventory Lines">
+                            <field name="line_ids">
+                                <list editable="bottom">
+                                    <field name="sequence" widget="handle"/>
+                                    <field name="product_id"/>
+                                    <field name="request_date"/>
+                                    <field name="x_studio_purchase_plan"/>
+                                    <field name="x_studio_purchase_plan_line" 
+                                        domain="[('plan_id', '=', x_studio_purchase_plan)]"/>
+                                    <field name="budget_analytic"/>
+                                    <field name="budget_analytic_line" 
+                                    domain="[('budget_analytic_id', '=', budget_analytic)]"/>
+                                    <field name="budget_analytic_line_account"/>
+                                    <field name="name"/>
+                                    <field name="quantity"/>
+                                    <field name="uom_id"/>
+                                    <field name="unit_price" widget="monetary"/>
+                                    <field name="amount" widget="monetary" readonly="1"/>
+                                    <field name="budget_name_main"/>
+                                    <field name="budget_main"/>
+                                    <field name="expected_date"/>
+                                    <field name="stage_id"/>
+                                    <field name="tag_ids" widget="many2many_tags" options="{'color_field': 'color'}"/>
+                                    <field name="notes"/>
+                                </list>
+                            </field>
+                        </page>
+                    </notebook>
+                </sheet>
+            </form>
+        </field>
+    </record>
+
+    <record id="view_inventory_request_kanban" model="ir.ui.view">
+        <field name="name">inventory.request.kanban</field>
+        <field name="model">inventory.request</field>
+        <field name="arch" type="xml">
+            <kanban default_group_by="stage_id" class="o_kanban_small_column">
+                <field name="stage_id"/>
+                <field name="priority"/>
+                <field name="tag_ids"/>
+                <field name="requested_by"/>
+                <field name="total_lines"/>
+                <templates>
+                    <t t-name="kanban-box">
+                        <div class="oe_kanban_global_click">
+                            <div class="oe_kanban_content">
+                                <div class="o_kanban_record_top">
+                                    <div class="o_kanban_record_headings">
+                                        <strong class="o_kanban_record_title">
+                                            <field name="name"/>
+                                        </strong>
+                                    </div>
+                                    <div class="o_kanban_record_badges">
+                                        <field name="priority" widget="priority"/>
+                                    </div>
+                                </div>
+                                <div class="o_kanban_record_body">
+                                    <field name="tag_ids" widget="many2many_tags" options="{'color_field': 'color'}"/>
+                                    <div>
+                                        <i class="fa fa-user"/> <field name="requested_by"/>
+                                    </div>
+                                    <div>
+                                        <i class="fa fa-list"/> <field name="total_lines"/> lines
+                                    </div>
+                                </div>
+                                <div class="o_kanban_record_bottom">
+                                    <div class="oe_kanban_bottom_left">
+                                        <field name="request_date"/>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </t>
+                </templates>
+            </kanban>
+        </field>
+    </record>
+
+    <!-- Updated Inventory Line Views with Create RFQ Button -->
+    <record id="view_inventory_line_list" model="ir.ui.view">
+        <field name="name">inventory.line.list</field>
+        <field name="model">inventory.line</field>
+        <field name="arch" type="xml">
+            <list string="Inventory Lines" multi_edit="1">
+                <header>
+                    <button name="action_create_rfq_from_lines"
+                            string="Create Tender"
+                            type="object"
+                            class="btn-primary"
+                            icon="fa-shopping-cart"/>
+                    <button name="action_create_purchase_agreement_direct"
+                            string="Create Agreement"
+                            type="object"
+                            class="btn-primary"
+                            icon="fa-shopping-cart"/>
+                </header>
+                <field name="sequence" widget="handle"/>
+                <field name="request_id"/>
+                <field name="product_id"/>
+                <field name="name"/>
+                <field name="quantity"/>
+                <field name="uom_id"/>
+                <field name="unit_price" widget="monetary"/>
+                <field name="amount" widget="monetary"/>
+                <field name="budget_name_main"/>
+                <field name="budget_main"/>
+                <field name="expected_date"/>
+                <field name="stage_id"/>
+                <field name="tag_ids" widget="many2many_tags" options="{'color_field': 'color'}"/>
+            </list>
+        </field>
+    </record>
+
+    <record id="view_inventory_line_form" model="ir.ui.view">
+        <field name="name">inventory.line.form</field>
+        <field name="model">inventory.line</field>
+        <field name="arch" type="xml">
+            <form string="Inventory Line">
+                <header>
+                    <field name="stage_id" widget="statusbar" options="{'clickable': '1'}"/>
+                </header>
+                <sheet>
+                    <div class="oe_title">
+                        <h1>
+                            <field name="name"/>
+                        </h1>
+                        <field name="tag_ids" widget="many2many_tags" options="{'color_field': 'color'}" placeholder="Tags..."/>
+                    </div>
+                    <group>
+                        <group>
+                            <field name="request_id"/>
+                            <field name="product_id"/>
+                            <field name="quantity"/>
+                            <field name="uom_id"/>
+                        </group>
+                        <group>
+                            <field name="sequence"/>
+                            <field name="expected_date"/>
+                            <field name="request_stage_id"/>
+                        </group>
+                    </group>
+                    <group>
+                        <group string="Pricing">
+                            <field name="unit_price" widget="monetary"/>
+                            <field name="amount" widget="monetary" readonly="1"/>
+                        </group>
+                        <group string="Budget">
+                            <field name="budget_name_main"/>
+                            <field name="budget_main"/>
+                        </group>
+                    </group>
+                    <group>
+                        <field name="notes"/>
+                    </group>
+                </sheet>
+            </form>
+        </field>
+    </record>
+
+    <record id="view_inventory_line_kanban" model="ir.ui.view">
+        <field name="name">inventory.line.kanban</field>
+        <field name="model">inventory.line</field>
+        <field name="arch" type="xml">
+            <kanban default_group_by="stage_id" class="o_kanban_small_column">
+                <field name="stage_id"/>
+                <field name="tag_ids"/>
+                <field name="product_id"/>
+                <field name="quantity"/>
+                <field name="uom_id"/>
+                <field name="unit_price"/>
+                <field name="amount"/>
+                <field name="budget_name_main"/>
+                <field name="budget_main"/>
+                <templates>
+                    <t t-name="kanban-box">
+                        <div class="oe_kanban_global_click">
+                            <div class="oe_kanban_content">
+                                <div class="o_kanban_record_top">
+                                    <div class="o_kanban_record_headings">
+                                        <strong class="o_kanban_record_title">
+                                            <field name="name"/>
+                                        </strong>
+                                    </div>
+                                </div>
+                                <div class="o_kanban_record_body">
+                                    <field name="tag_ids" widget="many2many_tags" options="{'color_field': 'color'}"/>
+                                    <div>
+                                        <i class="fa fa-cube"/> <field name="product_id"/>
+                                    </div>
+                                    <div>
+                                        <i class="fa fa-calculator"/> <field name="quantity"/> <field name="uom_id"/>
+                                    </div>
+                                    <div>
+                                        <i class="fa fa-money"/> <field name="unit_price" widget="monetary"/>
+                                    </div>
+                                    <div t-if="record.budget_name_main.raw_value">
+                                        <i class="fa fa-bank"/> <field name="budget_name_main"/>
+                                    </div>
+                                </div>
+                                <div class="o_kanban_record_bottom">
+                                    <div class="oe_kanban_bottom_left">
+                                        <field name="expected_date"/>
+                                    </div>
+                                    <div class="oe_kanban_bottom_right">
+                                        <strong>
+                                            <field name="amount" widget="monetary"/>
+                                        </strong>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </t>
+                </templates>
+            </kanban>
+        </field>
+    </record>
+        <record id="view_purchase_order_form_inherit_agreements" model="ir.ui.view">
+        <field name="name">purchase.order.form.inherit.agreements</field>
+        <field name="model">purchase.order</field>
+        <field name="inherit_id" ref="purchase.purchase_order_form"/>
+        <field name="arch" type="xml">
+            <!-- Add button in the header next to other action buttons -->
+            <xpath expr="//header" position="inside">
+                <button name="action_create_purchase_agreements" 
+                        string="Create Purchase Agreement" 
+                        type="object"
+                        class="btn-secondary"
+                        icon="fa-file-contract"/>
+            </xpath>
+        </field>
+    </record>
+        <!-- Add fields to purchase order lines after product_id -->
+    <record id="view_purchase_order_form_inherit_fields" model="ir.ui.view">
+        <field name="name">purchase.order.form.inherit.fields</field>
+        <field name="model">purchase.order</field>
+        <field name="inherit_id" ref="purchase.purchase_order_form"/>
+        <field name="arch" type="xml">
+            <xpath expr="//field[@name='order_line']//field[@name='product_id']" position="after">
+                <field name="purchase_plan_id"/>
+                <field name="purchase_plan_line_id"/>
+                <field name="budget_analytic_id"/>
+                <field name="budget_line_id"/>
+            </xpath>
+        </field>
+    </record>
+
+    <record id="view_purchase_requisition_form_inherit" model="ir.ui.view">
+    <field name="name">purchase.requisition.form.inherit</field>
+    <field name="model">purchase.requisition</field>
+    <field name="inherit_id" ref="purchase_requisition.view_purchase_requisition_form"/>
+    <field name="arch" type="xml">
+        <xpath expr="//header" position="inside">
+            <button name="action_create_new_quotation" 
+                    type="object" 
+                    string="New Quotation Custom" 
+                    class="oe_highlight"/>
+        </xpath>
+    </field>
+    </record>
+            <record id="view_vendor_selection_wizard_form" model="ir.ui.view">
+            <field name="name">vendor.selection.wizard.form</field>
+            <field name="model">vendor.selection.wizard</field>
+            <field name="arch" type="xml">
+                <form string="Select Vendor for RFQ">
+                    <group>
+                        <field name="vendor_id" options="{'no_create': True, 'no_create_edit': True}"/>
+                        <field name="inventory_line_ids" invisible="1"/>
+                    </group>
+                    <footer>
+                        <button name="action_create_rfq_with_selected_vendor" 
+                                string="Create RFQ" 
+                                type="object" 
+                                class="btn-primary"/>
+                        <button string="Cancel" class="btn-secondary" special="cancel"/>
+                    </footer>
+                </form>
+            </field>
+        </record>
+
+        <!-- Action for the wizard -->
+        <record id="action_vendor_selection_wizard" model="ir.actions.act_window">
+            <field name="name">Select Vendor for RFQ</field>
+            <field name="res_model">vendor.selection.wizard</field>
+            <field name="view_mode">form</field>
+            <field name="target">new</field>
+        </record>
+
+    <record id="view_agreement_vendor_selection_wizard_form" model="ir.ui.view">
+        <field name="name">agreement.vendor.selection.wizard.form</field>
+        <field name="model">agreement.vendor.selection.wizard</field>
+        <field name="arch" type="xml">
+            <form string="Select Vendor for Purchase Agreement">
+                <group>
+                    <group>
+                        <field name="vendor_id" 
+                               options="{'no_create': True, 'no_open': True}"/>
+                    </group>
+                </group>
+                
+                <footer>
+                    <button string="Create Purchase Agreement" 
+                            name="action_create_purchase_agreement" 
+                            type="object" 
+                            class="btn-primary"/>
+                    <button string="Cancel" 
+                            class="btn-secondary" 
+                            special="cancel"/>
+                </footer>
+            </form>
+        </field>
+    </record>
+</odoo>

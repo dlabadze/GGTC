@@ -1,0 +1,7 @@
+id,name,model_id:id,group_id:id,perm_read,perm_write,perm_create,perm_unlink
+access_preiskuranti_user,preiskuranti user,model_preiskuranti,base.group_user,1,1,1,1
+access_preiskuranti_manager,preiskuranti manager,model_preiskuranti,base.group_system,1,1,1,1
+access_preiskuranti_det_user,preiskuranti_det user,model_preiskuranti_det,base.group_user,1,1,1,1
+access_preiskuranti_det_manager,preiskuranti_det manager,model_preiskuranti_det,base.group_system,1,1,1,1
+access_preiskuranti_candidate_user,preiskuranti_candidate user,model_preiskuranti_candidate,base.group_user,1,1,1,1
+access_preiskuranti_candidate_manager,preiskuranti_candidate manager,model_preiskuranti_candidate,base.group_system,1,1,1,1

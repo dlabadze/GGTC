@@ -1,0 +1,42 @@
+<odoo>
+    <!-- FORM VIEW: Add location ID after name -->
+    <record id="view_location_form_inherit_unique_id" model="ir.ui.view">
+        <field name="name">stock.location.form.unique.id</field>
+        <field name="model">stock.location</field>
+        <field name="inherit_id" ref="stock.view_location_form"/>
+        <field name="arch" type="xml">
+            <field name="name" position="after">
+                <group>
+                    <field name="x_unique_location_id" string="ლოკაციის ID" readonly="0"/>
+                </group>
+            </field>
+        </field>
+    </record>
+
+    <!-- LIST VIEW (Odoo 18): Add location ID column after complete_name -->
+    <record id="view_location_list_inherit_unique_id" model="ir.ui.view">
+        <field name="name">stock.location.list.unique.id</field>
+        <field name="model">stock.location</field>
+        <field name="inherit_id" ref="stock.view_location_tree2"/>
+        <field name="arch" type="xml">
+            <field name="complete_name" position="after">
+                <field name="x_unique_location_id" string="Location ID"/>
+            </field>
+        </field>
+    </record>
+
+    <!-- SEARCH VIEW: Allow searching by x_unique_location_id -->
+    <record id="view_location_search_inherit_unique_id" model="ir.ui.view">
+        <field name="name">stock.location.search.unique.id</field>
+        <field name="model">stock.location</field>
+        <field name="inherit_id" ref="stock.view_location_search"/>
+        <field name="arch" type="xml">
+            <xpath expr="//search" position="inside">
+                <field name="x_unique_location_id" string="Location ID"/>
+            </xpath>
+        </field>
+    </record>
+</odoo>
+
+
+

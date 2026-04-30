@@ -1,0 +1,144 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data>
+        <!-- Paper Format -->
+        <record id="sabechdi_formebi_paperformat_otxib" model="report.paperformat">
+            <field name="name">საბეჭდი ფორმები 4ბ Format</field>
+            <field name="format">A4</field>
+            <field name="orientation">Portrait</field>
+            <field name="margin_top">15</field>
+            <field name="margin_bottom">10</field>
+            <field name="margin_left">7</field>
+            <field name="margin_right">7</field>
+            <field name="header_spacing">0</field>
+            <field name="header_line" eval="False"/>
+        </record>
+
+        <!-- Report Action -->
+        <record id="action_report_nimushis_forma_otxib_xelit" model="ir.actions.report">
+            <field name="name">ფორმა 4ბ+</field>
+            <field name="model">stock.picking</field>
+            <field name="report_type">qweb-pdf</field>
+            <field name="report_name">sabechdi_formebi.nimushis_forma_otxib_xelit_document</field>
+            <field name="report_file">sabechdi_formebi.nimushis_forma_otxib_xelit_document</field>
+            <field name="binding_model_id" ref="stock.model_stock_picking"/>
+            <field name="binding_type">report</field>
+            <field name="paperformat_id" ref="sabechdi_formebi.sabechdi_formebi_paperformat_otxib"/>
+        </record>
+
+        <!-- TEMPLATE -->
+        <template id="nimushis_forma_otxib_xelit_document">
+            <t t-call="web.basic_layout">
+                <t t-foreach="docs" t-as="doc">
+                    <t t-set="related_picking" t-value="doc.env['stock.picking'].search([('x_studio_request_ref', '=', doc.x_studio_request_ref.id), ('location_dest_id', '=', doc.location_id.id)], limit=1)"/>
+                    <div style="font-family:'DejaVu Sans', sans-serif; font-size:11px; padding:10px;">
+
+                        <!-- HEADER -->
+                        <div style="display:flex; justify-content:space-between; align-items: center; margin-bottom:55px;">
+                            <div style="font-size: 15px; white-space: nowrap;">
+                                ფორმა 4ბ+
+                            </div>
+                            <div style="text-align:center; font-size:large; flex-grow: 1;">
+                                ანგარიშვალდებული პირის მიერ საწყობში ფასეულობის დაბრუნების<br/>
+                                აქტი N <t t-esc="doc.x_studio_aqtis_nomeri"/>
+                            </div>
+                        </div>
+
+                        <!-- საფუძველი + თარიღი -->
+                        <div style="display:flex; justify-content:space-between; margin-bottom:50px; font-size: 15px;">
+                            <div>
+                                საფუძველი:
+                                <t t-if="doc.comment">
+                                    <t t-esc="doc.comment"/>
+                                </t>
+                            </div>
+                            <div>
+                                თარიღი:
+                                <t t-if="doc.date_of_transfer">
+                                    <t t-esc="doc.date_of_transfer.strftime('%d/%m/%Y')"/>
+                                </t>
+                            </div>
+                        </div>
+
+                        <!-- MAIN TABLE -->
+                        <table style="width:100%; border-collapse:collapse; font-size:10pt; text-align:center; border:1px solid black;">
+
+                            <!-- ROW 1: მომწოდებელი / მიმღები -->
+                            <tr>
+                                <td colspan="3" style="border:1px solid black; padding:5px; font-weight:bold;">მომწოდებელი</td>
+                                <td colspan="2" style="border:1px solid black; padding:5px;"></td>
+                                <td style="border:1px solid black; padding:5px; font-weight:bold;">მიმღები</td>
+                                <td colspan="2" style="border:1px solid black; padding:5px;"></td>
+                            </tr>
+
+                            <!-- ROW 2: HEADERS -->
+                            <tr>
+                                <td style="border:1px solid black; padding:4px; font-weight:bold;">აქტის N</td>
+                                <td style="border:1px solid black; padding:4px; font-weight:bold;">თარიღი</td>
+                                <td style="border:1px solid black; padding:4px; font-weight:bold;">მოთხ. წინასწ. N</td>
+                                <td style="border:1px solid black; padding:4px; font-weight:bold;">მოთხ. რეგ. თარიღი</td>
+                                <td style="border:1px solid black; padding:4px; font-weight:bold;">სასაქ. კოდი</td>
+                                <td style="border:1px solid black; padding:4px; font-weight:bold;">დასახელება, ტიპი, მარკა, სხვა მახასიათებელი</td>
+                                <td style="border:1px solid black; padding:4px; font-weight:bold;">განზ. ერთ</td>
+                                <td style="border:1px solid black; padding:4px; font-weight:bold;">რაოდენობა</td>
+                            </tr>
+
+                            <!-- DATA ROWS -->
+                            <t t-foreach="doc.move_ids_without_package" t-as="line">
+                                <tr>
+                                    <td style="border:1px solid black; padding:4px;">
+                                        <t t-if="related_picking">
+                                            <t t-esc="related_picking.x_studio_aqtis_nomeri"/>
+                                        </t>
+                                    </td>
+                                    <td style="border:1px solid black; padding:4px;">
+                                        <t t-if="doc.x_studio_request_ref and doc.x_studio_request_ref.request_date">
+                                            <t t-esc="doc.x_studio_request_ref.request_date.strftime('%d/%m/%Y')"/>
+                                        </t>
+                                    </td>
+                                    <td style="border:1px solid black; padding:4px;">
+                                        <t t-if="doc.x_studio_related_field_2sg_1j7espk8g">
+                                            <t t-esc="doc.x_request_number_manual or ''"/>
+                                        </t>
+                                    </td>
+                                    <td style="border:1px solid black; padding:4px;">
+                                        <t t-esc="doc.scheduled_date.strftime('%d/%m/%Y') if doc.scheduled_date else ''"/>
+                                    </td>
+                                    <td style="border:1px solid black; padding:4px;">
+                                        <t t-esc="line.product_id.default_code"/>
+                                    </td>
+                                    <td style="border:1px solid black; padding:4px;">
+                                        <t t-esc="line.product_id.name"/>
+                                    </td>
+                                    <td style="border:1px solid black; padding:4px;">
+                                        <t t-esc="line.product_uom.name"/>
+                                    </td>
+                                    <td style="border:1px solid black; padding:4px;">
+                                        <t t-esc="line.quantity"
+                                           t-options='{"widget": "float", "precision": 4}'/>
+                                    </td>
+                                </tr>
+                            </t>
+
+                            <!-- SIGNATURE ROW -->
+                            <tr>
+                                <td colspan="3" style="border:1px solid black; padding:10px; font-weight:bold;">გავეცი</td>
+                                <td colspan="2" style="border:1px solid black; padding:10px;"></td>
+                                <td style="border:1px solid black; padding:10px; font-weight:bold;">მივიღე</td>
+                                <td colspan="2" style="border:1px solid black; padding:10px;"></td>
+                            </tr>
+                        </table>
+
+                        <!-- SIGNATURE TEXTS BELOW -->
+                        <div style="margin-top:50px; font-size:15px;">
+                            <div style="margin-bottom:50px;">გავეცი</div>
+                            <div style="margin-top:40px;">მივიღე</div>
+                        </div>
+
+                    </div>
+                </t>
+            </t>
+        </template>
+
+    </data>
+</odoo>

@@ -1,0 +1,7 @@
+id,name,model_id:id,group_id:id,perm_read,perm_write,perm_create,perm_unlink
+access_september_request_user,september.request.user,model_september_request,base.group_user,1,1,1,1
+access_september_line_user,september.line.user,model_september_line,base.group_user,1,1,1,1
+access_september_request_stage_user,september.request.stage.user,model_september_request_stage,base.group_user,1,1,1,1
+access_september_line_stage_user,september.line.stage.user,model_september_line_stage,base.group_user,1,1,1,1
+access_september_request_tag_user,september.request.tag.user,model_september_request_tag,base.group_user,1,1,1,1
+access_september_line_tag_user,september.line.tag.user,model_september_line_tag,base.group_user,1,1,1,1

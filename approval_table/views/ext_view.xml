@@ -1,0 +1,13 @@
+<odoo>
+    <record id="view_approval_table_line_ext_tree" model="ir.ui.view">
+        <field name="name">approval.table.line.ext.tree</field>
+        <field name="model">approval.table.line.ext</field>
+        <field name="arch" type="xml">
+            <list string="Approval Table Line Extensions">
+                <field name="line_id"/>
+                <field name="employee_id"/>
+                <field name="request_id"/>
+            </list>
+        </field>
+    </record>
+</odoo>

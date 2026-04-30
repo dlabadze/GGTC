@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data>
+        <record id="server_action_purchase_agreement" model="ir.actions.server">
+            <field name="name">Create Purchase Agreement</field>
+            <field name="model_id" ref="inventory_requests.model_inventory_line"/>
+            <field name="binding_model_id" ref="inventory_requests.model_inventory_line"/>
+            <field name="binding_type">action</field>
+            <field name="binding_view_types">list</field>
+            <field name="state">code</field>
+            <field name="code">result = records.create_purchase_agreement()
+if result and result.get('type') == 'ir.actions.client':
+    action = result
+            </field>
+        </record>
+    </data>
+</odoo>

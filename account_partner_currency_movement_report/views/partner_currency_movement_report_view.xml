@@ -1,0 +1,143 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <!-- List view for Partner Currency Movement Report Lines -->
+    <record id="view_partner_currency_movement_report_line_list" model="ir.ui.view">
+        <field name="name">partner.currency.movement.report.line.list</field>
+        <field name="model">partner.currency.movement.report.line</field>
+        <field name="arch" type="xml">
+            <list string="Partner Currency Movements" create="false" edit="false" delete="false">
+                <field name="partner_name" string="Partner"/>
+                <field name="currency_name" string="Currency"/>
+                <field name="currency_symbol" optional="hide"/>
+                <field name="account_code" string="Account Code"/>
+                <field name="account_name" string="Account Name"/>
+                <field name="opening_balance" string="Opening Balance" sum="Total Opening"/>
+                <field name="total_debit" string="Total Debit" sum="Total Debit"/>
+                <field name="total_credit" string="Total Credit" sum="Total Credit"/>
+                <field name="net_movement" string="Net Movement" sum="Total Net"/>
+                <field name="closing_balance" string="Closing Balance" sum="Total Closing"/>
+                <field name="move_line_count" string="# Moves"/>
+            </list>
+        </field>
+    </record>
+
+    <!-- Form view for Partner Currency Movement Report Lines -->
+    <record id="view_partner_currency_movement_report_line_form" model="ir.ui.view">
+        <field name="name">partner.currency.movement.report.line.form</field>
+        <field name="model">partner.currency.movement.report.line</field>
+        <field name="arch" type="xml">
+            <form string="Partner Currency Movement Detail" create="false" edit="false" delete="false">
+                <header>
+                    <button name="action_view_move_lines" string="View Journal Items" type="object" class="btn-primary"/>
+                </header>
+                <sheet>
+                    <div class="oe_title">
+                        <h1><field name="display_name"/></h1>
+                    </div>
+                    
+                    <group>
+                        <group name="partner_info" string="Partner Information">
+                            <field name="partner_id" readonly="1"/>
+                        </group>
+                        
+                        <group name="account_currency_info" string="Account &amp; Currency">
+                            <field name="account_id" readonly="1"/>
+                            <field name="currency_id" readonly="1"/>
+                        </group>
+                    </group>
+                    
+                    <group>
+                        <group name="balances" string="Balances">
+                            <field name="opening_balance" readonly="1"/>
+                            <field name="closing_balance" readonly="1"/>
+                        </group>
+                        
+                        <group name="movements" string="Period Movements">
+                            <field name="total_debit" readonly="1"/>
+                            <field name="total_credit" readonly="1"/>
+                            <field name="net_movement" readonly="1"/>
+                            <field name="move_line_count" readonly="1"/>
+                        </group>
+                    </group>
+                </sheet>
+            </form>
+        </field>
+    </record>
+
+    <!-- Pivot view for Partner Currency Movement Report Lines -->
+    <record id="view_partner_currency_movement_report_line_pivot" model="ir.ui.view">
+        <field name="name">partner.currency.movement.report.line.pivot</field>
+        <field name="model">partner.currency.movement.report.line</field>
+        <field name="arch" type="xml">
+            <pivot string="Partner Currency Movement Analysis">
+                <field name="partner_name" type="row"/>
+                <field name="currency_name" type="row"/>
+                <field name="account_code" type="row"/>
+
+                <field name="opening_balance" type="measure"/>
+                <field name="total_debit" type="measure"/>
+                <field name="total_credit" type="measure"/>
+                <field name="net_movement" type="measure"/>
+                <field name="closing_balance" type="measure"/>
+                <field name="move_line_count" type="measure"/>
+            </pivot>
+        </field>
+    </record>
+
+    <!-- Graph view for Partner Currency Movement Report Lines -->
+    <record id="view_partner_currency_movement_report_line_graph" model="ir.ui.view">
+        <field name="name">partner.currency.movement.report.line.graph</field>
+        <field name="model">partner.currency.movement.report.line</field>
+        <field name="arch" type="xml">
+            <graph string="Partner Currency Movement Analysis" type="bar">
+                <field name="partner_name"/>
+                <field name="net_movement" type="measure"/>
+                <field name="closing_balance" type="measure"/>
+            </graph>
+        </field>
+    </record>
+
+    <!-- Search view for Partner Currency Movement Report Lines -->
+    <record id="view_partner_currency_movement_report_line_search" model="ir.ui.view">
+        <field name="name">partner.currency.movement.report.line.search</field>
+        <field name="model">partner.currency.movement.report.line</field>
+        <field name="arch" type="xml">
+            <search string="Search Partner Currency Movements">
+                <field name="partner_name" string="Partner" filter_domain="[('partner_name', 'ilike', self)]"/>
+                <field name="account_code" string="Account" filter_domain="[('account_code', 'ilike', self)]"/>
+                <field name="currency_name" string="Currency" filter_domain="[('currency_name', 'ilike', self)]"/>
+                
+                <filter name="positive_balance" string="Positive Balance" domain="[('closing_balance', '>', 0)]"/>
+                <filter name="negative_balance" string="Negative Balance" domain="[('closing_balance', '&lt;', 0)]"/>
+                <filter name="zero_balance" string="Zero Balance" domain="[('closing_balance', '=', 0)]"/>
+                
+                <separator/>
+                <filter name="has_movements" string="Has Movements" domain="['|', ('total_debit', '!=', 0), ('total_credit', '!=', 0)]"/>
+                <filter name="no_movements" string="No Movements" domain="[('total_debit', '=', 0), ('total_credit', '=', 0)]"/>
+                
+                <group expand="0" string="Group By">
+                    <filter name="group_by_partner" string="Partner" context="{'group_by': 'partner_name'}"/>
+                    <filter name="group_by_currency" string="Currency" context="{'group_by': 'currency_name'}"/>
+                    <filter name="group_by_account" string="Account" context="{'group_by': 'account_code'}"/>
+
+                </group>
+            </search>
+        </field>
+    </record>
+
+    <!-- Action for Partner Currency Movement Report Lines -->
+    <record id="action_partner_currency_movement_report_line" model="ir.actions.act_window">
+        <field name="name">Partner Currency Movement Report</field>
+        <field name="res_model">partner.currency.movement.report.line</field>
+        <field name="view_mode">list,form,pivot,graph</field>
+        <field name="search_view_id" ref="view_partner_currency_movement_report_line_search"/>
+        <field name="help" type="html">
+            <p class="o_view_nocontent_smiling_face">
+                No partner currency movements found!
+            </p>
+            <p>
+                Generate a partner currency movement report to see partner balances and movements by currency and account.
+            </p>
+        </field>
+    </record>
+</odoo> 

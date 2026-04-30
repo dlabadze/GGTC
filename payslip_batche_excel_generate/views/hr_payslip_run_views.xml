@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="view_hr_payslip_run_form_inherit" model="ir.ui.view">
+        <field name="name">hr.payslip.run.form.inherit.excel</field>
+        <field name="model">hr.payslip.run</field>
+        <field name="inherit_id" ref="hr_payroll.hr_payslip_run_form"/>
+        <field name="arch" type="xml">
+            <xpath expr="//header" position="inside">
+                <button name="action_generate_excel" 
+                        string="Generate Excel" 
+                        type="object"
+                        class="btn-primary"
+                        icon="fa-file-excel-o"/>
+            </xpath>
+        </field>
+    </record>
+</odoo>
+

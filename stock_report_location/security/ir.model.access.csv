@@ -1,0 +1,4 @@
+id,name,model_id:id,group_id:id,perm_read,perm_write,perm_create,perm_unlink
+access_gza_stock_location_report,gza.stock.location.report,model_gza_stock_location_report,base.group_user,1,0,0,0
+access_gza_stock_location_report_wizard,gza.stock.location.report.wizard,model_gza_stock_location_report_wizard,base.group_user,1,1,1,0
+

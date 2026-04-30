@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+    <record id="view_hr_payslip_by_employees_inherit_children" model="ir.ui.view">
+        <field name="name">hr.payslip.by.employees.inherit.children</field>
+        <field name="model">hr.payslip.employees</field>
+
+        <!-- 👇 THIS is the correct base view -->
+        <field name="inherit_id" ref="hr_payroll.view_hr_payslip_by_employees"/>
+
+        <field name="arch" type="xml">
+
+            <!-- Insert child department selector right after parent department -->
+            <xpath expr="//field[@name='department_id']" position="after">
+
+                <field name="department_ids"
+                       widget="many2many_tags"
+                       options="{'no_create': True}"/>
+
+            </xpath>
+
+        </field>
+    </record>
+
+</odoo>

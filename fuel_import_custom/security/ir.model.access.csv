@@ -1,0 +1,7 @@
+id,name,model_id:id,group_id:id,perm_read,perm_write,perm_create,perm_unlink
+access_fuel_import_wizard_user,fuel.import.wizard.user,model_fuel_import_wizard,fleet.fleet_group_user,1,1,1,1
+access_fuel_import_wizard_manager,fuel.import.wizard.manager,model_fuel_import_wizard,fleet.fleet_group_manager,1,1,1,1
+access_fuel_import_helper_user,fuel.import.helper.user,model_fuel_import_helper,fleet.fleet_group_user,1,1,1,1
+access_fuel_import_helper_manager,fuel.import.helper.manager,model_fuel_import_helper,fleet.fleet_group_manager,1,1,1,1
+access_fleet_branch_user,fleet.branch.user,model_fleet_branch,fleet.fleet_group_user,1,1,1,1
+access_fleet_branch_manager,fleet.branch.manager,model_fleet_branch,fleet.fleet_group_manager,1,1,1,1

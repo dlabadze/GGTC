@@ -1,0 +1,29 @@
+<odoo>
+    <record id="view_hr_payslip_tree_inherit_lines" model="ir.ui.view">
+    <field name="name">hr.payslip.tree.inherit.lines</field>
+    <field name="model">hr.payslip</field>
+    <field name="inherit_id" ref="hr_payroll.view_hr_payslip_tree"/>
+    <field name="arch" type="xml">
+        <xpath expr="//field[@name='gross_wage']" position="after">
+            <field name="line_basic"/>
+            <field name="line_sap"/>
+            <field name="line_sapcomp"/>
+            <field name="line_pension_4"/>
+            <field name="line_gross"/>
+            <field name="line_income"/>
+            <field name="line_ins"/>
+            <field name="line_fondi"/>
+            <field name="line_iveria"/>
+            <field name="line_agsr"/>
+            <field name="line_mob"/>
+            <field name="line_trip"/>
+            <field name="line_fitpass"/>
+            <field name="line_avansi"/>
+            <field name="line_net"/>
+            <field name="line_prem"/>
+            <field name="line_premiapr"/>
+            <field name="line_compdazg"/>
+            </xpath>
+    </field>
+    </record>
+</odoo>

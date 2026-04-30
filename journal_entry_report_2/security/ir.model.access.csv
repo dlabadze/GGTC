@@ -1,0 +1,5 @@
+id,name,model_id:id,group_id:id,perm_read,perm_write,perm_create,perm_unlink
+access_journal_entry_report_wizard_2,journal.entry.report.wizard.2,model_journal_entry_report_wizard_2,base.group_user,1,0,1,0
+access_country_code_import_2,country.code.import.2,model_country_code_import_2,base.group_user,1,1,1,0
+access_res_country_code_map_user_2,res.country.code.map.2,model_res_country_code_map_2,base.group_user,1,1,1,1
+

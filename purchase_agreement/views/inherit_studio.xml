@@ -1,0 +1,21 @@
+<odoo>
+    <record id="inventory_request_form_purchase_inherit" model="ir.ui.view">
+        <field name="name">inventory.request.form.purchase.inherit</field>
+        <field name="model">inventory.request</field>
+        <field name="inherit_id" ref="studio_customization.odoo_studio_inventor_2b542e42-6193-438d-b6db-31c22c541287"/>
+        <field name="arch" type="xml">
+          <xpath expr="//field[@name='x_studio_on_hand']" position="after">
+                <button name="action_view_stock_on_hand"
+                        string="On Hand"
+                        type="object"
+                        icon="fa-cubes"
+                        class="btn-primary"/>
+                <button name="action_view_stock_warehouse_on_hand"
+                        string="Warehouse On Hand"
+                        type="object"
+                        icon="fa-building"
+                        class="btn-primary"/>
+          </xpath>
+        </field>
+    </record>
+</odoo>

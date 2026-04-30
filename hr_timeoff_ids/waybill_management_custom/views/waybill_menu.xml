@@ -1,0 +1,13 @@
+<odoo>
+    <data>
+        <!-- Action Definition for Waybill -->
+        <record id="action_waybill" model="ir.actions.act_window">
+            <field name="name">Waybill</field>
+            <field name="res_model">waybill.management</field>
+            <field name="view_mode">tree,form</field>
+        </record>
+
+        <!-- Menu Items -->
+        <menuitem id="menu_waybill" name="Waybills" parent="menu_waybill_management" action="action_waybill"/>
+    </data>
+</odoo>

@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data>
+        <template id="sep_inspect_rep">
+            <t t-call="web.html_container">
+                <t t-foreach="docs" t-as="doc">
+                    <meta charset="UTF-8"/>
+                    <meta name="content-language" content="ka"/>
+                    <main style="text-align: center; font-family: DejaVu Sans, sans-serif; line-height: 1.6; margin: 50px auto; width: 80%;">
+                        <h3 style="margin-bottom: 20px;">
+                            შპს „საქართველოს გაზის ტრანსპორტირების კომპანია“
+                        </h3>
+                            <strong style="text-align: center; display: inline-block; text-align-last: center;">ინსპექტირების დასკვნა</strong> <br/><br/>
+                        <p style="text-align: justify; display: inline-block; text-align-last: center;">
+                            შპს საქართველოს გაზის ტრანსპორტირების კომპანიის გენერალური დირექტორის 2025 წლის 01 ოქტომბრის №96 ბრძანების საფუძველზე განვახორციელეთ ინსპექტირება შპს „საქართველოს გაზის ტრანსპორტირების კომპანიასა“ და შპს „ავტო მასტერ სერვისს“ შორის 2025 წლის 25 თებერვალს გაფორმებული N 28.05.25 ხელშეკრულებაზე.
+                            აღნიშნული ხელშეკრულების საფუძველზე 2025 წლის 01 სექტემბრიდან 30 სექტემბრის ჩათვლით მოწოდებული საქონლისა და მომსახურების ღირებულება შეადგენს 17 344.37 (ჩვიდმეტი ათას სამას ორმოცდაოთხი ლარი და ოცდაჩვიდმეტი თეთრი) ლარს, საქართველოს კანონმდებლობით გათვალისწინებული გადასახადების ჩათვლით.
+                        </p>
+                            <br/><br/>
+                            <strong style="text-align: center; display: inline-block; text-align-last: center;">დასკვნა</strong> <br/>
+                        <p style="text-align: justify; display: inline-block; text-align-last: center;">
+                            1. „მომწოდებელმა“ შეასრულა ხელშეკრულებით გათვალისწინებული ვალდებულება, საქონელი და მომსახურება მიწოდებულ იქნა ხელშეკრულებით გათვალისწინებული ვადის დაცვით.<br/>
+                            2. მოწოდებული საქონელი და გაწეული მომსახურება შეესაბამება ზემოაღნიშნული ხელშეკრულებით გათვალისწინებულ პირობებს.
+                        </p>
+                    </main>
+                </t>
+            </t>
+        </template>
+    </data>
+</odoo>

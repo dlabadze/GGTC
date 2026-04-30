@@ -1,0 +1,26 @@
+<odoo>
+    <record id="view_change_production_date_wizard_form" model="ir.ui.view">
+        <field name="name">change.production.date.wizard.form</field>
+        <field name="model">change.production.date.wizard</field>
+        <field name="arch" type="xml">
+            <form string="Change Production Start Date">
+                <group>
+                    <field name="new_date_start"/>
+                </group>
+                <footer>
+                    <button name="action_update_date" string="Update Date" type="object" class="btn-primary"/>
+                    <button string="Cancel" class="btn-secondary" special="cancel"/>
+                </footer>
+            </form>
+        </field>
+    </record>
+
+    <record id="action_change_production_date_wizard" model="ir.actions.act_window">
+        <field name="name">Change Start Date</field>
+        <field name="res_model">change.production.date.wizard</field>
+        <field name="view_mode">form</field>
+        <field name="target">new</field>
+        <field name="binding_model_id" ref="mrp.model_mrp_production"/>
+        <field name="binding_view_types">list,form</field>
+    </record>
+</odoo>

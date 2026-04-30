@@ -1,0 +1,6 @@
+id,name,model_id:id,group_id:id,perm_read,perm_write,perm_create,perm_unlink
+access_work_trip_import_user,access.work.trip.import.user,model_work_trip_import,base.group_user,1,1,1,0
+access_work_trip_import_manager,access.work.trip.import.manager,model_work_trip_import,base.group_system,1,1,1,1
+
+access_work_trip_import_line_user,access.work.trip.import.line.user,model_work_trip_import_line,base.group_user,1,0,0,0
+access_work_trip_import_line_manager,access.work.trip.import.line.manager,model_work_trip_import_line,base.group_system,1,1,1,1

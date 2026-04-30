@@ -1,0 +1,17 @@
+<odoo>
+    <record id="view_account_asset_form_inherit_history" model="ir.ui.view">
+        <field name="name">account.asset.form.inherit.history</field>
+        <field name="model">account.asset</field>
+        <field name="inherit_id" ref="account_asset.view_account_asset_form"/>
+        <field name="priority">1000</field>
+        <field name="arch" type="xml">
+            <xpath expr="//form/sheet/notebook" position="inside">
+                <page string="მოძრაობის ისტორია" name="studio_page_5h1_1j04b6miq">
+                    <group name="studio_group_5h1">
+                    <field name="asset_movement_log_ids"/>
+                    </group>
+                </page>
+            </xpath>
+        </field>
+    </record>
+</odoo>

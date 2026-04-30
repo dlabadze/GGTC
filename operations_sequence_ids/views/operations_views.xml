@@ -1,0 +1,23 @@
+<odoo>
+<record id="operations_form_inherit_sequences" model="ir.ui.view">
+        <field name="name">operations.form.inherit.sequences</field>
+        <field name="model">x_operations</field>
+        <field name="inherit_id" ref="studio_customization.default_form_view_fo_7a9214ec-5fc6-4754-99ce-a18371849852"/>
+        <field name="arch" type="xml">
+            <xpath expr="//sheet//group[last()]" position="after">
+                <group string="Sequences">
+                    <field name="command_seq"/>
+                    <field name="operation_type_seq"/>
+                </group>
+            </xpath>
+        </field>
+    </record>
+
+    <record id="seq_operations_command" model="ir.sequence">
+        <field name="name">Operations Command Sequence</field>
+        <field name="code">x.operations.command.seq</field>
+        <field name="prefix"></field>
+        <field name="padding">1</field>
+        <field name="number_increment">1</field>
+    </record>
+</odoo>

@@ -1,0 +1,16 @@
+<odoo>
+    <record id="view_inventory_requests_form_inherit" model="ir.ui.view">
+        <field name="name">inventory.request.form.inherit.internal.transfers</field>
+        <field name="model">inventory.request</field>
+        <field name="inherit_id" ref="inventory_requests.view_inventory_request_form"/>
+        <field name="arch" type="xml">
+            <header position="inside">
+                <button name="internal_transfer_from_requests.server_action_generate_internal_transfers"
+                        string="Generate Internal Transfers"
+                        type="action"
+                        class="btn-primary"/>
+
+            </header>
+        </field>
+    </record>
+</odoo>

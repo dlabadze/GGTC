@@ -1,0 +1,149 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <!-- Insurance Import Form View -->
+    <record id="view_insurance_import_form" model="ir.ui.view">
+        <field name="name">insurance.import.form</field>
+        <field name="model">insurance.import</field>
+        <field name="arch" type="xml">
+            <form string="Insurance Import">
+                <header>
+                    <button name="action_import_excel" string="Import Excel" type="object" class="oe_highlight" invisible="state != 'draft'"/>
+                    <button name="action_generate_journal_entries" string="Generate Journal Entries" type="object" class="oe_highlight" invisible="state != 'imported'"/>
+                    <field name="state" widget="statusbar" statusbar_visible="draft,imported,posted"/>
+                </header>
+                <sheet>
+                    <div class="oe_button_box" name="button_box">
+                        <button name="action_view_journal_entries" type="object" class="oe_stat_button" icon="fa-pencil-square-o" invisible="journal_entry_count == 0">
+                            <field name="journal_entry_count" widget="statinfo" string="Journal Entries"/>
+                        </button>
+                    </div>
+                    <div class="oe_title">
+                        <h1><field name="name" readonly="1"/></h1>
+                    </div>
+                    <group>
+                        <group>
+                            <field name="date"/>
+                            <field name="company_id" groups="base.group_multi_company"/>
+                        </group>
+                        <group>
+                            <field name="excel_file" filename="excel_filename" required="state == 'draft'" readonly="state != 'draft'"/>
+                            <field name="excel_filename" invisible="1"/>
+                        </group>
+                    </group>
+                    <notebook>
+                        <page string="Insurance Lines">
+                            <field name="line_ids" readonly="1"/>
+                        </page>
+                    </notebook>
+                </sheet>
+            </form>
+        </field>
+    </record>
+
+    <!-- Insurance Import Tree View -->
+    <record id="view_insurance_import_tree" model="ir.ui.view">
+        <field name="name">insurance.import.tree</field>
+        <field name="model">insurance.import</field>
+        <field name="arch" type="xml">
+            <list string="Insurance Imports" decoration-success="state=='posted'" decoration-info="state=='imported'" decoration-muted="state=='draft'">
+                <field name="name"/>
+                <field name="date"/>
+                <field name="create_date"/>
+                <field name="journal_entry_count"/>
+                <field name="state"/>
+            </list>
+        </field>
+    </record>
+
+    <!-- Insurance Import Search View -->
+    <record id="view_insurance_import_search" model="ir.ui.view">
+        <field name="name">insurance.import.search</field>
+        <field name="model">insurance.import</field>
+        <field name="arch" type="xml">
+            <search string="Insurance Imports">
+                <field name="name"/>
+                <field name="date"/>
+                <filter string="Draft" name="draft" domain="[('state', '=', 'draft')]"/>
+                <filter string="Imported" name="imported" domain="[('state', '=', 'imported')]"/>
+                <filter string="Posted" name="posted" domain="[('state', '=', 'posted')]"/>
+                <group expand="0" string="Group By">
+                    <filter string="Status" name="group_by_state" domain="[]" context="{'group_by': 'state'}"/>
+                    <filter string="Date" name="group_by_date" domain="[]" context="{'group_by': 'date'}"/>
+                </group>
+            </search>
+        </field>
+    </record>
+
+    <!-- Insurance Import Line Tree View -->
+    <record id="view_insurance_import_line_tree" model="ir.ui.view">
+        <field name="name">insurance.import.line.tree</field>
+        <field name="model">insurance.import.line</field>
+        <field name="arch" type="xml">
+            <list string="Insurance Lines">
+                <field name="import_id"/>
+                <field name="partner_id"/>
+                <field name="partner_vat"/>
+                <field name="full_name"/>
+                <field name="base_salary" sum="Total"/>
+                <field name="total_salary" sum="Total"/>
+                <field name="pension" sum="Total"/>
+                <field name="company_tax" sum="Total"/>
+                <field name="income_tax" sum="Total"/>
+                <field name="net_amount" sum="Total"/>
+                <field name="state"/>
+            </list>
+        </field>
+    </record>
+
+    <!-- Insurance Import Line Search View -->
+    <record id="view_insurance_import_line_search" model="ir.ui.view">
+        <field name="name">insurance.import.line.search</field>
+        <field name="model">insurance.import.line</field>
+        <field name="arch" type="xml">
+            <search string="Insurance Lines">
+                <field name="partner_id"/>
+                <field name="partner_vat"/>
+                <field name="full_name"/>
+                <filter string="Draft" name="draft" domain="[('state', '=', 'draft')]"/>
+                <filter string="Imported" name="imported" domain="[('state', '=', 'imported')]"/>
+                <filter string="Posted" name="posted" domain="[('state', '=', 'posted')]"/>
+                <group expand="0" string="Group By">
+                    <filter string="Import" name="group_by_import" domain="[]" context="{'group_by': 'import_id'}"/>
+                    <filter string="Employee" name="group_by_partner" domain="[]" context="{'group_by': 'partner_id'}"/>
+                    <filter string="Status" name="group_by_state" domain="[]" context="{'group_by': 'state'}"/>
+                </group>
+            </search>
+        </field>
+    </record>
+
+    <!-- Insurance Import Actions -->
+    <record id="action_insurance_import" model="ir.actions.act_window">
+        <field name="name">Insurance Imports</field>
+        <field name="res_model">insurance.import</field>
+        <field name="view_mode">list,form</field>
+        <field name="search_view_id" ref="view_insurance_import_search"/>
+        <field name="help" type="html">
+            <p class="o_view_nocontent_smiling_face">
+                Create a new insurance import
+            </p>
+            <p>
+                Upload an Excel file with insurance data to create journal entries.
+            </p>
+        </field>
+    </record>
+
+    <record id="action_insurance_import_line" model="ir.actions.act_window">
+        <field name="name">Insurance Lines</field>
+        <field name="res_model">insurance.import.line</field>
+        <field name="view_mode">list</field>
+        <field name="search_view_id" ref="view_insurance_import_line_search"/>
+        <field name="help" type="html">
+            <p class="o_view_nocontent_smiling_face">
+                No insurance lines found
+            </p>
+            <p>
+                Import insurance data to see lines here.
+            </p>
+        </field>
+    </record>
+</odoo>

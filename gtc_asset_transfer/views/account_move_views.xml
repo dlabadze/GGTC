@@ -1,0 +1,263 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data>
+        <template id="gtc_asset_transfer_document">
+            <t t-call="web.basic_layout">
+                <t t-foreach="docs" t-as="doc">
+                    <div style="font-family: 'DejaVu Sans', 'Noto Sans Georgian', 'BPG InfoCaps', sans-serif; font-size: 12px; padding: 20px;">
+
+                        <meta charset="utf-8"/>
+
+                        <img src="/gtc_asset_transfer/static/src/img/ggtc-logo.png" style="height: 60px; margin-bottom: 20px;"/>
+
+                        <table style="width: 100%; border-collapse: collapse; margin-bottom: 20px;">
+                            <tr>
+                                <td class="georgian-text" style="border: 1px solid #000; padding: 8px; background: #f0f0f0; text-align: center; padding-top: 3px; font-weight: bold; font-size: 18px;" colspan="2">
+                                    მიღება-ჩაბარების აქტი<br/>ძირითადი საშუალებების<br/>პირადი სარგებლობა (განპიროვნება)
+                                </td>
+                                <td class="georgian-text" style="border: 1px solid #000; padding: 8px; text-align: right; width: 250px;">
+                                    <strong>თარიღი:</strong>
+                                    <t t-if="doc.x_studio_date">
+                                        <span t-field="doc.x_studio_date" t-options="{'format': 'dd/MM/yyyy'}"/>
+                                    </t>
+                                    <br/><br/>
+
+                                    <small>(კომპანიის სტრუქტურული ერთეული ფუნქციონირებისათვის)</small><br/><br/>
+
+                                    <strong>აქტის ნომერი:</strong>
+                                    <t t-if="doc.x_studio_aqtis_nomeri == 'Q4-'">Q4-</t>
+                                    <t t-elif="doc.x_studio_aqtis_nomeri == 'Q4a-'">Q4a-</t>
+                                    <t t-elif="doc.x_studio_aqtis_nomeri == 'Q3a-'">Q3a-</t>
+                                    <t t-elif="doc.x_studio_aqtis_nomeri == 'Q3-'">Q3-</t>
+                                    <t t-else="">Q4b-</t>
+                                    <t t-if="doc.x_name">
+                                        <t t-out="doc.x_name"/>
+                                    </t>
+
+                                    <br/>
+                                    <br/>
+
+                                    <!-- NEW: EXTERNAL ID -->
+                                    <strong>ID:</strong>
+                                    <t t-if="doc.get_external_id().get(doc.id)">
+                                        <t t-set="ext_id_parts" t-value="doc.get_external_id()[doc.id].split('_')"/>
+                                        <t t-esc="'_'.join(ext_id_parts[-2:])"/>
+                                    </t>
+
+                                    <br/>
+
+                                    <strong>საფუძველი:</strong>
+                                </td>
+                            </tr>
+                        </table>
+
+                        <div class="georgian-text" style="margin: 15px 0; font-size: 12px; text-align: justify;">
+                            <p>წინამდებარე მიღება-ჩაბარების აქტით ხელისმომწერნი (ქონების მიმღები, ქონების მომთხოვნი და ქონების გადამცემი) ვადასტურებთ, რომ ქონების გადამცემა ჩააბარა, ხოლო ქონების მიმღებმა ჩაიბარა შპს "საქართველოს გაზის ტრანსპორტირების კომპანიის" შემდეგი დასახელების ქონება:</p>
+                        </div>
+
+                        <table style="width: 100%; border-collapse: collapse; margin: 20px 0; font-size: 11px;">
+                            <thead>
+                                <tr style="background: #d0d0d0;" class="georgian-text">
+                                    <th style="border: 1px solid #000; padding: 5px;">#</th>
+                                    <th style="border: 1px solid #000; padding: 5px;">FMG კოდი</th>
+                                    <th style="border: 1px solid #000; padding: 5px;">დასახელება</th>
+                                    <th style="border: 1px solid #000; padding: 5px;">მოდელი</th>
+                                    <th style="border: 1px solid #000; padding: 5px;">სერ. ნომერი</th>
+                                    <th style="border: 1px solid #000; padding: 5px;">საინ. ნომერი</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <t t-set="row_num" t-value="0"/>
+                                <t t-if="doc.x_studio_many2many_field_lk_1iujl28b9">
+                                    <t t-foreach="doc.x_studio_many2many_field_lk_1iujl28b9" t-as="asset">
+                                        <t t-set="row_num" t-value="row_num + 1"/>
+                                        <tr>
+                                            <td style="border: 1px solid #000; padding: 5px; text-align: center;">
+                                                <t t-out="row_num"/>
+                                            </td>
+                                            <td style="border: 1px solid #000; padding: 5px;">
+                                                <t t-if="asset.x_studio_fmg_mokle">
+                                                    <t t-out="asset.x_studio_fmg_mokle"/>
+                                                </t>
+                                            </td>
+                                            <td style="border: 1px solid #000; padding: 5px;">
+                                                <t t-if="asset.name">
+                                                    <t t-out="asset.name"/>
+                                                </t>
+                                            </td>
+                                            <td style="border: 1px solid #000; padding: 5px;">
+                                                <t t-if="asset.model_id">
+                                                    <t t-out="asset.model_id.display_name"/>
+                                                </t>
+                                            </td>
+                                            <td style="border: 1px solid #000; padding: 5px;">
+                                                <t t-if="asset.x_studio_related_field_2h7_1j0c379j5">
+                                                    <t t-out="asset.x_studio_related_field_2h7_1j0c379j5"/>
+                                                </t>
+                                            </td>
+                                            <td style="border: 1px solid #000; padding: 5px;">
+                                                <t t-if="asset.x_studio_inventori_nomeri">
+                                                    <t t-out="asset.x_studio_inventori_nomeri"/>
+                                                </t>
+                                            </td>
+                                        </tr>
+                                    </t>
+                                </t>
+                            </tbody>
+                        </table>
+
+                        <t t-set="asset" t-value="doc.x_studio_many2many_field_lk_1iujl28b9[0] if doc.x_studio_many2many_field_lk_1iujl28b9 else False"/>
+
+                        <table style="width: 100%; border-collapse: collapse; margin-top: 30px;">
+                            <tr>
+                                <td style="width: 50%; vertical-align: top; padding-right: 20px;">
+                                    <div class="georgian-text" style="text-align: center; font-weight: bold; margin-bottom: 15px;">გადამცემი მხარე</div>
+
+                                    <div class="georgian-text" style="margin-bottom: 8px;">
+                                        <strong>ფილიალი/სამმ/უბანი</strong><br/>
+                                        <div style="border: 1px solid #333; padding: 4px; background: #e8e8e8; font-size: 10px;">
+                                            <t t-if="asset.x_studio_areali">
+                                                <t t-out="asset.x_studio_areali.display_name"/>
+                                            </t>
+                                            <t t-else="">---</t>
+                                        </div>
+                                    </div>
+
+                                    <div class="georgian-text" style="margin-bottom: 8px;">
+                                        <strong>დეპარტამენტი/სამმართველო/სამსახური</strong><br/>
+                                        <div style="border: 1px solid #333; padding: 4px; background: #e8e8e8; font-size: 10px;">
+                                            <t t-if="asset.x_studio_depsam">
+                                                <t t-out="asset.x_studio_depsam.display_name"/>
+                                            </t>
+                                            <t t-else="">---</t>
+                                        </div>
+                                    </div>
+
+                                    <div class="georgian-text" style="margin-bottom: 8px;">
+                                        <strong>ლოკაცია</strong><br/>
+                                        <div style="border: 1px solid #333; padding: 4px; background: #e8e8e8; font-size: 10px;">
+                                            <t t-if="asset.x_studio_obieqti_lokacia">
+                                                <t t-out="asset.x_studio_obieqti_lokacia.display_name"/>
+                                            </t>
+                                            <t t-else="">---</t>
+                                        </div>
+                                    </div>
+
+                                    <div class="georgian-text" style="margin-bottom: 8px;">
+                                        <strong>ლოკაცია კონკრეტული</strong><br/>
+                                        <div style="border: 1px solid #333; padding: 4px; background: #e8e8e8; font-size: 10px;">
+                                            <t t-if="asset.x_studio_lokacia_konk">
+                                                <t t-out="asset.x_studio_lokacia_konk.display_name"/>
+                                            </t>
+                                            <t t-else="">---</t>
+                                        </div>
+                                    </div>
+
+                                    <div class="georgian-text" style="margin-bottom: 8px;">
+                                        <strong>გადამცემი პირი</strong><br/>
+                                        <div style="border: 1px solid #333; padding: 4px; background: #e8e8e8; font-size: 10px;">
+                                            <t t-if="asset.x_studio_pasuxismgebeli_piri">
+                                                <t t-out="asset.x_studio_pasuxismgebeli_piri.display_name"/>
+                                            </t>
+                                            <t t-else="">---</t>
+                                        </div>
+                                        <small style="color: #666;">მატერიალურად პასუხისმგებელი პირი</small>
+                                    </div>
+                                </td>
+
+                                <td style="width: 50%; vertical-align: top; padding-left: 20px;">
+                                    <div class="georgian-text" style="text-align: center; font-weight: bold; margin-bottom: 15px;">მიმღები მხარე</div>
+
+                                    <div class="georgian-text" style="margin-bottom: 8px;">
+                                        <strong>ფილიალი/სამმ/უბანი</strong><br/>
+                                        <div style="border: 1px solid #333; padding: 4px; background: #e8e8e8; font-size: 10px;">
+                                            <t t-if="doc.x_studio_samoqmedo_areal">
+                                                <t t-out="doc.x_studio_samoqmedo_areal.display_name or doc.x_studio_samoqmedo_areal.name"/>
+                                            </t>
+                                            <t t-else="">---</t>
+                                        </div>
+                                    </div>
+
+                                    <div class="georgian-text" style="margin-bottom: 8px;">
+                                        <strong>დეპარტამენტი/სამმართველო/სამსახური</strong><br/>
+                                        <div style="border: 1px solid #333; padding: 4px; background: #e8e8e8; font-size: 10px;">
+                                            <t t-if="doc.x_studio_departmentministry_1">
+                                                <t t-out="doc.x_studio_departmentministry_1.display_name or doc.x_studio_departmentministry_1.name"/>
+                                            </t>
+                                            <t t-else="">---</t>
+                                        </div>
+                                    </div>
+
+                                    <div class="georgian-text" style="margin-bottom: 8px;">
+                                        <strong>ლოკაცია</strong><br/>
+                                        <div style="border: 1px solid #333; padding: 4px; background: #e8e8e8; font-size: 10px;">
+                                            <t t-if="doc.x_studio_object_location_1">
+                                                <t t-out="doc.x_studio_object_location_1.display_name or doc.x_studio_object_location_1.name"/>
+                                            </t>
+                                            <t t-else="">---</t>
+                                        </div>
+                                    </div>
+
+                                    <div class="georgian-text" style="margin-bottom: 8px;">
+                                        <strong>ლოკაცია კონკრეტული</strong><br/>
+                                        <div style="border: 1px solid #333; padding: 4px; background: #e8e8e8; font-size: 10px;">
+                                            <t t-if="doc.x_studio_location_specific_1">
+                                                <t t-out="doc.x_studio_location_specific_1.display_name or doc.x_studio_location_specific_1.name"/>
+                                            </t>
+                                            <t t-else="">---</t>
+                                        </div>
+                                    </div>
+
+                                    <div class="georgian-text" style="margin-bottom: 8px;">
+                                        <strong>მიმღები პირი</strong><br/>
+                                        <div style="border: 1px solid #333; padding: 4px; background: #e8e8e8; font-size: 10px;">
+                                            <t t-if="doc.x_studio_many2one_field_37d_1iulgqh70">
+                                                <t t-out="doc.x_studio_many2one_field_37d_1iulgqh70.display_name or doc.x_studio_many2one_field_37d_1iulgqh70.name"/>
+                                            </t>
+                                            <t t-else="">---</t>
+                                        </div>
+                                        <small style="color: #666;">მატერიალურად პასუხისმგებელი პირი</small>
+                                    </div>
+                                </td>
+                            </tr>
+                        </table>
+
+                        <table style="width: 100%; margin-top: 40px;">
+                            <tr>
+                                <td style="width: 50%; text-align: center;">
+                                    <div style="font-weight: bold; margin-bottom: 30px;">ხელმოწერა</div>
+                                    <div style="border-bottom: 1px solid #333; height: 30px; margin-bottom: 15px;"></div>
+                                    <div style="font-weight: bold; margin: 10px 0;">ქონების მართვის სამსახური</div>
+                                    <div style="width: 70%; border: 1px solid #333; padding: 4px; background: #e8e8e8; text-align: center; margin: 0 auto; font-size: 10px;">
+                                        არსენ კაჭარავა
+                                    </div>
+                                    <small style="color: #666;">ქონების მართვის სამსახურის უფროსი</small>
+                                </td>
+                                <td style="width: 50%; text-align: center;">
+                                    <div style="font-weight: bold; margin-bottom: 30px;">ხელმოწერა</div>
+                                    <div style="border-bottom: 1px solid #333; height: 30px; margin-bottom: 50px;"></div>
+                                </td>
+                            </tr>
+                        </table>
+
+                        <div style="margin-top: 30px; font-size: 10px; color: #666; text-align: center;">
+                            საქართველოს გაზის ტრანსპორტირების კომპანია. ქონების მართვის სამსახური. ელ. ფოსტა: qoneba@ggtc.ge ტელ.: 2 24 40 48 (506)
+                        </div>
+                    </div>
+                </t>
+            </t>
+        </template>
+
+        <record id="action_report_gtc_asset_transfer" model="ir.actions.report">
+            <field name="name">GTC Asset Transfer 1</field>
+            <field name="model">x_asset_movement_log</field>
+            <field name="report_type">qweb-pdf</field>
+            <field name="report_name">gtc_asset_transfer.gtc_asset_transfer_document</field>
+            <field name="report_file">gtc_asset_transfer.gtc_asset_transfer_document</field>
+            <field name="print_report_name">'GTC Asset Transfer - %s' % (object.id)</field>
+            <field name="binding_model_id" search="[('model', '=', 'x_asset_movement_log')]"/>
+            <field name="binding_type">report</field>
+        </record>
+
+    </data>
+</odoo>

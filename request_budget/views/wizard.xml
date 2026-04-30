@@ -1,0 +1,51 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <!-- Budget Sync Wizard Form View -->
+    <record id="view_budget_sync_wizard_form" model="ir.ui.view">
+        <field name="name">budget.sync.wizard.form</field>
+        <field name="model">budget.sync.wizard</field>
+        <field name="arch" type="xml">
+            <form string="Sync Budget Amounts">
+                <div class="alert alert-info" role="alert">
+                    <strong>Budget Sync</strong><br/>
+                    This wizard will sync budget amounts from the current budgeting request lines to the selected budget analytic.
+                    It will group amounts by analytic account and update the corresponding budget lines.
+                </div>
+                <group>
+                    <field name="budget_analytic_id" 
+                           options="{'no_create': True, 'no_create_edit': True}"
+                           placeholder="Select a budget analytic..."/>
+                </group>
+                <footer>
+                    <button name="action_sync_budget" string="Sync Budget" type="object" class="btn-primary"/>
+                    <button string="Cancel" class="btn-secondary" special="cancel"/>
+                </footer>
+            </form>
+        </field>
+    </record>
+
+    <!-- Wizard Action -->
+    <record id="action_budget_sync_wizard" model="ir.actions.act_window">
+        <field name="name">Sync Budget Amounts</field>
+        <field name="res_model">budget.sync.wizard</field>
+        <field name="view_mode">form</field>
+        <field name="target">new</field>
+        <field name="view_id" ref="view_budget_sync_wizard_form"/>
+    </record>
+
+    <!-- Add button to budgeting request form view -->
+    <record id="view_budgeting_request_form_inherit" model="ir.ui.view">
+        <field name="name">budgeting.request.form.inherit</field>
+        <field name="model">budgeting.request</field>
+        <field name="inherit_id" ref="view_budgeting_request_form"/>
+        <field name="arch" type="xml">
+            <xpath expr="//header" position="inside">
+                <button name="%(action_budget_sync_wizard)d" 
+                        string="Sync to Budget" 
+                        type="action" 
+                        class="oe_highlight"
+                        icon="fa-refresh"/>
+            </xpath>
+        </field>
+    </record>
+</odoo>

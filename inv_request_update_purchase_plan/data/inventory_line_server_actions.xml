@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="action_server_inventory_line_update_purchase_plan" model="ir.actions.server">
+        <field name="name">Update Purchase Plan</field>
+        <field name="model_id" ref="inventory_requests.model_inventory_line"/>
+        <field name="binding_model_id" ref="inventory_requests.model_inventory_line"/>
+        <field name="binding_type">action</field>
+        <field name="binding_view_types">list,form</field>
+        <field name="state">code</field>
+        <field name="code"><![CDATA[
+lines = records or record
+if not lines:
+    raise UserError("Please select at least one inventory line.")
+action = lines.action_update_purchase_plan()
+]]></field>
+    </record>
+</odoo>

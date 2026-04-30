@@ -1,0 +1,251 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <!-- ინსპექტირების დასკვნა (Daskvna) Report -->
+    <record id="action_report_inspektireba_daskvna" model="ir.actions.report">
+        <field name="name">ინსპექტირების დასკვნა</field>
+        <field name="model">inspektireba</field>
+        <field name="report_type">qweb-pdf</field>
+        <field name="report_name">inspektireba_module.report_inspektireba_daskvna</field>
+        <field name="report_file">inspektireba_module.report_inspektireba_daskvna</field>
+        <field name="print_report_name">'ინსპექტირების დასკვნა - %s' % (object.name)</field>
+        <field name="binding_model_id" ref="model_inspektireba"/>
+        <field name="binding_type">report</field>
+    </record>
+
+    <template id="report_inspektireba_daskvna">
+        <t t-call="web.html_container">
+            <t t-foreach="docs" t-as="doc">
+                <t t-call="web.basic_layout">
+                    <div class="page" style="font-family: 'Sylfaen', sans-serif; font-size: 14px; margin-top: 50px;">
+                        
+                        <div style="text-align: center; font-weight: bold; margin-bottom: 20px; font-size: 16px;">
+                            ინსპექტირების ჯგუფის დასკვნა № <t t-esc="doc.name"/>
+                        </div>
+
+                        <div style="text-align: right; font-weight: bold; margin-bottom: 30px;">
+                            <t t-if="doc.date">
+                                <t t-esc="doc.date.strftime('%d.%m.%Y')"/>
+                            </t>
+                        </div>
+
+                        <div style="text-align: justify; margin-bottom: 20px;">
+                            <t t-if="doc.paragraph_1">
+                                <t t-foreach="doc.paragraph_1.split('\n')" t-as="line">
+                                    <t t-esc="line"/><br/>
+                                </t>
+                            </t>
+                        </div>
+
+                        <div style="text-align: justify; margin-bottom: 20px;">
+                            <t t-if="doc.paragraph_2">
+                                <t t-foreach="doc.paragraph_2.split('\n')" t-as="line">
+                                    <t t-esc="line"/><br/>
+                                </t>
+                            </t>
+                        </div>
+
+                        <div style="text-align: justify; margin-bottom: 10px; font-weight: bold;" t-if="doc.paragraph_3">
+                            დასკვნა :
+                        </div>
+
+                        <div style="text-align: justify; margin-bottom: 40px;">
+                            <t t-if="doc.paragraph_3">
+                                <t t-foreach="doc.paragraph_3.split('\n')" t-as="line">
+                                    <t t-esc="line"/><br/>
+                                </t>
+                            </t>
+                        </div>
+
+                        <div style="margin-bottom: 20px; font-weight: bold; margin-top: 40px;">
+                            ინსპექტირების ჯგუფის წევრები:
+                        </div>
+
+                        <table style="width: 100%; text-align: left; margin-top: 20px; page-break-inside: avoid;">
+                            <t t-foreach="doc.approver_line_ids" t-as="line">
+                                <tr>
+                                    <td style="padding-bottom: 30px; width: 60%;">
+                                        <t t-esc="line.user_id.name"/>
+                                    </td>
+                                    <td style="padding-bottom: 30px; width: 40%;">
+                                        <div style="border-bottom: 1px solid black; width: 100%; height: 15px;"></div>
+                                    </td>
+                                </tr>
+                            </t>
+                        </table>
+
+                    </div>
+                </t>
+            </t>
+        </t>
+    </template>
+
+    <!-- ინსპექტირების დასკვნა – ტრანსპორტი (Transport Daskvna) Report -->
+    <record id="action_report_inspektireba_daskvna_transport" model="ir.actions.report">
+        <field name="name">ინსპექტირების დასკვნა (ტრანსპორტი)</field>
+        <field name="model">inspektireba</field>
+        <field name="report_type">qweb-pdf</field>
+        <field name="report_name">inspektireba_module.report_inspektireba_daskvna_transport</field>
+        <field name="report_file">inspektireba_module.report_inspektireba_daskvna_transport</field>
+        <field name="print_report_name">'ინსპექტირების დასკვნა - %s' % (object.name)</field>
+        <field name="binding_model_id" ref="model_inspektireba"/>
+        <field name="binding_type">report</field>
+    </record>
+
+    <template id="report_inspektireba_daskvna_transport">
+        <t t-call="web.html_container">
+            <t t-foreach="docs" t-as="doc">
+                <t t-call="web.basic_layout">
+                    <div class="page" style="font-family: 'Sylfaen', sans-serif; font-size: 14px; margin-top: 50px;">
+
+                        <div style="text-align: center; font-weight: bold; margin-bottom: 20px; font-size: 16px;">
+                            ინსპექტირების დასკვნა № <t t-esc="doc.name"/>
+                        </div>
+
+                        <div style="text-align: right; font-weight: bold; margin-bottom: 30px;">
+                            <t t-if="doc.date">
+                                <t t-esc="doc.date.strftime('%d.%m.%Y')"/>
+                            </t>
+                        </div>
+
+                        <div style="text-align: justify; margin-bottom: 20px;">
+                            <t t-if="doc.paragraph_1">
+                                <t t-foreach="doc.paragraph_1.split('\n')" t-as="line">
+                                    <t t-esc="line"/><br/>
+                                </t>
+                            </t>
+                        </div>
+
+                        <div style="text-align: justify; margin-bottom: 20px;">
+                            <t t-if="doc.paragraph_2">
+                                <t t-foreach="doc.paragraph_2.split('\n')" t-as="line">
+                                    <t t-esc="line"/><br/>
+                                </t>
+                            </t>
+                        </div>
+
+                        <div style="text-align: justify; margin-bottom: 10px; font-weight: bold;" t-if="doc.paragraph_3">
+                            დასკვნა :
+                        </div>
+
+                        <div style="text-align: justify; margin-bottom: 40px;">
+                            <t t-if="doc.paragraph_3">
+                                <t t-foreach="doc.paragraph_3.split('\n')" t-as="line">
+                                    <t t-esc="line"/><br/>
+                                </t>
+                            </t>
+                        </div>
+
+                        <table style="width: 100%; text-align: left; margin-top: 40px; page-break-inside: avoid;">
+                            <t t-foreach="doc.approver_line_ids" t-as="line">
+                                <tr>
+                                    <td style="padding-bottom: 30px; width: 60%;">
+                                        <t t-esc="line.user_id.name"/>
+                                    </td>
+                                    <td style="padding-bottom: 30px; width: 40%;">
+                                        <div style="border-bottom: 1px solid black; width: 100%; height: 15px;"></div>
+                                    </td>
+                                </tr>
+                            </t>
+                        </table>
+
+                    </div>
+                </t>
+            </t>
+        </t>
+    </template>
+
+    <!-- მიღება-ჩაბარება (Migheba) Report -->
+    <record id="action_report_inspektireba_migheba" model="ir.actions.report">
+        <field name="name">მიღება - ჩაბარება</field>
+        <field name="model">inspektireba</field>
+        <field name="report_type">qweb-pdf</field>
+        <field name="report_name">inspektireba_module.report_inspektireba_migheba</field>
+        <field name="report_file">inspektireba_module.report_inspektireba_migheba</field>
+        <field name="print_report_name">'მიღება-ჩაბარება - %s' % (object.name)</field>
+        <field name="binding_model_id" ref="model_inspektireba"/>
+        <field name="binding_type">report</field>
+    </record>
+
+    <template id="report_inspektireba_migheba">
+        <t t-call="web.html_container">
+            <t t-foreach="docs" t-as="doc">
+                <t t-call="web.basic_layout">
+                    <div class="page" style="font-family: 'Sylfaen', sans-serif; font-size: 14px; margin-top: 50px;">
+
+                        <div style="text-align: center; font-weight: bold; margin-bottom: 20px; font-size: 16px;">
+                            მიღება-ჩაბარების აქტი № <t t-esc="doc.name"/>
+                        </div>
+
+                        <div style="text-align: right; font-weight: bold; margin-bottom: 30px;">
+                            <t t-if="doc.date">
+                                <t t-set="geo_months" t-value="['იანვარი','თებერვალი','მარტი','აპრილი','მაისი','ივნისი','ივლისი','აგვისტო','სექტემბერი','ოქტომბერი','ნოემბერი','დეკემბერი']"/>
+                                <t t-esc="geo_months[doc.date.month - 1]"/> <t t-esc="doc.date.year"/> წელი
+                            </t>
+                        </div>
+
+                        <div style="text-align: justify; margin-bottom: 20px;">
+                            <t t-if="doc.migheba_paragraph_1">
+                                <t t-foreach="doc.migheba_paragraph_1.split('\n')" t-as="line">
+                                    <t t-esc="line"/><br/>
+                                </t>
+                            </t>
+                        </div>
+
+                        <div style="text-align: justify; margin-bottom: 20px;">
+                            <t t-if="doc.migheba_paragraph_2">
+                                <t t-foreach="doc.migheba_paragraph_2.split('\n')" t-as="line">
+                                    <t t-esc="line"/><br/>
+                                </t>
+                            </t>
+                        </div>
+
+                        <div style="text-align: justify; margin-bottom: 40px;">
+                            <t t-if="doc.migheba_paragraph_3">
+                                <t t-foreach="doc.migheba_paragraph_3.split('\n')" t-as="line">
+                                    <t t-esc="line"/><br/>
+                                </t>
+                            </t>
+                        </div>
+
+                        <table style="width: 100%; text-align: center; margin-top: 60px; font-weight: bold; page-break-inside: avoid;">
+                            <tr>
+                                <td style="width: 50%; padding-bottom: 15px;">
+                                    „შემსყიდველი"
+                                </td>
+                                <td style="width: 50%; padding-bottom: 15px;">
+                                    „მიმწოდებელი"
+                                </td>
+                            </tr>
+                            <tr>
+                                <td style="padding-bottom: 60px;">
+                                    შპს საქართველოს გაზის ტრანსპორტირების<br/>კომპანია
+                                </td>
+                                <td style="padding-bottom: 60px;">
+                                    <t t-if="doc.requisition_id and 'vendor_id' in doc.requisition_id and doc.requisition_id.vendor_id">
+                                        „<t t-esc="doc.requisition_id.vendor_id.name"/>"
+                                    </t>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>
+                                    <div style="border-top: 1px solid black; width: 60%; margin: 0 auto; margin-bottom: 10px;"></div>
+                                    ირაკლი კანდელაკი<br/><br/>
+                                    გენერალური დირექტორის მოადგილე
+                                </td>
+                                <td>
+                                    <div style="border-top: 1px solid black; width: 60%; margin: 0 auto; margin-bottom: 10px;"></div>
+                                    <t t-if="doc.other_director_name">
+                                        <t t-esc="doc.other_director_name"/><br/><br/>
+                                    </t>
+                                    <t t-if="doc.other_director_position">
+                                        <t t-esc="doc.other_director_position"/>
+                                    </t>
+                                </td>
+                            </tr>
+                        </table>
+                    </div>
+                </t>
+            </t>
+        </t>
+    </template>
+</odoo>

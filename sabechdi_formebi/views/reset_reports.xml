@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data>
+        <!-- Delete existing report actions to force re-creation in correct order -->
+        <delete model="ir.actions.report" search="[('report_name','=','sabechdi_formebi.nimushis_forma_ori_document')]"/>
+        <delete model="ir.actions.report" search="[('report_name','=','sabechdi_formebi.nimushis_forma_ori_plus_document')]"/>
+        <delete model="ir.actions.report" search="[('report_name','=','sabechdi_formebi.nimushis_forma_sami_document')]"/>
+        <delete model="ir.actions.report" search="[('report_name','=','sabechdi_formebi.nimushis_forma_sami_xelit_document')]"/>
+        <delete model="ir.actions.report" search="[('report_name','=','sabechdi_formebi.nimushis_forma_sami_a_document')]"/>
+        <delete model="ir.actions.report" search="[('report_name','=','sabechdi_formebi.nimushis_forma_sami_b_document')]"/>
+        <delete model="ir.actions.report" search="[('report_name','=','sabechdi_formebi.nimushis_forma_otxi_document')]"/>
+        <delete model="ir.actions.report" search="[('report_name','=','sabechdi_formebi.nimushis_forma_otxi_xelit_document')]"/>
+        <delete model="ir.actions.report" search="[('report_name','=','sabechdi_formebi.nimushis_forma_otxia_document')]"/>
+        <delete model="ir.actions.report" search="[('report_name','=','sabechdi_formebi.nimushis_forma_otxia_xelit_document')]"/>
+        <delete model="ir.actions.report" search="[('report_name','=','sabechdi_formebi.nimushis_forma_otxib_document')]"/>
+        <delete model="ir.actions.report" search="[('report_name','=','sabechdi_formebi.nimushis_forma_otxib_xelit_document')]"/>
+        <delete model="ir.actions.report" search="[('report_name','=','sabechdi_formebi.chamoceris_akti_document')]"/>
+        <delete model="ir.actions.report" search="[('report_name','=','sabechdi_formebi.chamoceris_akti_document_plus')]"/>
+        <delete model="ir.actions.report" search="[('report_name','=','sabechdi_formebi.n5_odoranti_document')]"/>
+    </data>
+</odoo>

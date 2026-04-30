@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="view_september_line_form_inherit_button" model="ir.ui.view">
+        <field name="name">september.line.form.inherit.button</field>
+        <field name="model">september.request</field>
+        <field name="inherit_id" ref="september_requests.view_september_request_form"/>
+        <field name="arch" type="xml">
+
+            <xpath expr="//field[@name='description']" position="after">
+                <field name="budget_request_id"/>
+            </xpath>
+
+            <xpath expr="//form/header" position="inside">
+                <button
+                        name="%(september_req_sum.server_action_call_method)d"
+                        string="Create Budgeting Lines"
+                        type="action"
+                        class="oe_highlight"/>
+            </xpath>
+        </field>
+    </record>
+</odoo>

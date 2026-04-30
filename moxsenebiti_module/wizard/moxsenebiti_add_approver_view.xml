@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="view_moxsenebiti_add_approver_form" model="ir.ui.view">
+        <field name="name">moxsenebiti.add.approver.form</field>
+        <field name="model">moxsenebiti.add.approver</field>
+        <field name="arch" type="xml">
+            <form string="დამდასტურებლის დამატება">
+                <group>
+                    <field name="moxsenebiti_id" invisible="1"/>
+                    <field name="user_id" required="1" options="{'no_create': True}"/>
+                </group>
+                <footer>
+                    <button name="action_confirm" string="დამატება" type="object" class="btn-primary"/>
+                    <button string="გაუქმება" class="btn-secondary" special="cancel"/>
+                </footer>
+            </form>
+        </field>
+    </record>
+</odoo>

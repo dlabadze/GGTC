@@ -1,0 +1,60 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <!-- Extend Account Reconcile Model Form View to add TBC fields -->
+    <record id="view_account_reconcile_model_form_tbc" model="ir.ui.view">
+        <field name="name">account.reconcile.model.form.tbc</field>
+        <field name="model">account.reconcile.model</field>
+        <field name="inherit_id" ref="account.view_account_reconcile_model_form"/>
+        <field name="arch" type="xml">
+            <!-- Add TBC section at the end of the form -->
+            <xpath expr="//sheet" position="inside">
+                <group string="TBC Bank Integration" name="tbc_integration" invisible="rule_type == 'writeoff_button'">
+                    <field name="use_tbc_mapping" widget="boolean_toggle"/>
+                    <field name="tbc_match_product_group"
+                           invisible="not use_tbc_mapping"
+                           placeholder="e.g., 210105"
+                           help="Match transactions with this TBC product group code (leave empty to match all)"/>
+                    <field name="tbc_code_mapping_ids"
+                           widget="many2many_tags"
+                           invisible="not use_tbc_mapping"
+                           options="{'no_create': True}"
+                           help="TBC code mappings to use when creating counterpart entries"/>
+                </group>
+            </xpath>
+        </field>
+    </record>
+
+    <!-- Menu item for TBC Reconciliation Models (optional - for quick access) -->
+    <record id="action_tbc_reconcile_models" model="ir.actions.act_window">
+        <field name="name">TBC Reconciliation Models</field>
+        <field name="res_model">account.reconcile.model</field>
+        <field name="view_mode">list,form</field>
+        <field name="domain">[('use_tbc_mapping', '=', True)]</field>
+        <field name="context">{'default_use_tbc_mapping': True, 'default_rule_type': 'writeoff_suggestion'}</field>
+        <field name="help" type="html">
+            <p class="o_view_nocontent_smiling_face">
+                Create TBC Reconciliation Models
+            </p>
+            <p>
+                TBC reconciliation models automatically match bank statement lines from TBC transactions
+                with the appropriate accounts based on product group codes.
+            </p>
+            <p>
+                You can set up rules to:
+                <ul>
+                    <li>Match specific TBC product groups</li>
+                    <li>Use TBC code mappings for account selection</li>
+                    <li>Auto-validate matching transactions</li>
+                </ul>
+            </p>
+        </field>
+    </record>
+
+    <!-- Add menu item under TBC Payment Integration -->
+    <menuitem id="menu_tbc_reconcile_models"
+              name="TBC Reconciliation Models"
+              parent="menu_tbc_payment_integration_root"
+              action="action_tbc_reconcile_models"
+              sequence="6"/>
+
+</odoo>

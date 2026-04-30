@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<odoo>
+    <record id="view_inherit_inventory_form_warehouse" model="ir.ui.view">
+        <field name="name">view.inherit.inventory.fo.warehouse</field>
+        <field name="model">inventory.request</field>
+        <field name="inherit_id" ref="studio_customization.odoo_studio_inventor_2b542e42-6193-438d-b6db-31c22c541287"/>
+        <field name="arch" type="xml">
+            <xpath expr="//field[@name='x_studio_warehouse']" position="replace">
+                <field name="x_studio_warehouse" optional="show"/>
+<!--                <field name="x_studio_warehouse" optional="show" readonly="readonly_warehouse == True"/>-->
+            </xpath>
+        </field>
+    </record>
+</odoo>

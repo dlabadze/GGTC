@@ -1,0 +1,33 @@
+<odoo>
+    <record id="view_picking_form_request_manual" model="ir.ui.view">
+        <field name="name">stock.picking.form.request.manual</field>
+        <field name="model">stock.picking</field>
+        <field name="inherit_id" ref="stock.view_picking_form"/>
+        <field name="arch" type="xml">
+
+            <!-- Manual fields -->
+            <xpath expr="//field[@name='origin']" position="after">
+                <field name="x_request_number_manual"/>
+                <field name="x_contract_number_manual"/>
+            </xpath>
+
+            <!-- Move lines dynamic fields -->
+            <xpath expr="//field[@name='move_ids_without_package']/list" position="inside">
+
+                <field name="x_internal_turnover_no"
+                       attrs="{'invisible': [('parent.x_is_odorant_picking', '=', False)]}"/>
+
+                <field name="x_internal_turnover_date"
+                       attrs="{'invisible': [('parent.x_is_odorant_picking', '=', False)]}"/>
+
+                <field name="x_pre_request_no"
+                       attrs="{'invisible': [('parent.x_is_odorant_picking', '=', False)]}"/>
+
+                <field name="x_reg_date"
+                       attrs="{'invisible': [('parent.x_is_odorant_picking', '=', False)]}"/>
+
+            </xpath>
+
+        </field>
+    </record>
+</odoo>

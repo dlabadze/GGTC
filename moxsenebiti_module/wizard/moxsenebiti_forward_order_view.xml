@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="view_moxsenebiti_forward_order_form" model="ir.ui.view">
+        <field name="name">moxsenebiti.forward.order.form</field>
+        <field name="model">moxsenebiti.forward.order</field>
+        <field name="arch" type="xml">
+            <form string="გადაწერა">
+                <group>
+                    <field name="moxsenebiti_id" invisible="1"/>
+                    <field name="new_receiver_id"/>
+                </group>
+                <footer>
+                    <button name="action_forward" string="გადაწერა" type="object" class="btn-primary"/>
+                    <button string="Cancel" class="btn-secondary" special="cancel"/>
+                </footer>
+            </form>
+        </field>
+    </record>
+</odoo>

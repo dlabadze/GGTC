@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="purchase_plan_views_inherited" model="ir.ui.view">
+        <field name="name">purchase.plan.form.inherit</field>
+        <field name="model">purchase.plan</field>
+        <field name="inherit_id" ref="budget.view_purchase_plan_form"/>
+        <field name="arch" type="xml">
+            <xpath expr="//field[@name='line_ids']/list" position="attributes">
+                <attribute name="limit">300</attribute>
+            </xpath>
+        </field>
+    </record>
+</odoo>

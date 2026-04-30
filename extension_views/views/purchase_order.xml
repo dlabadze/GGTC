@@ -1,0 +1,86 @@
+<odoo>
+    <data>
+        <!-- Extend the existing Purchase Order form view -->
+        <record id="view_purchase_order_form" model="ir.ui.view">
+            <field name="name">purchase.order.form</field>
+            <field name="model">purchase.order</field>
+            <field name="inherit_id" ref="purchase.purchase_order_form"/>
+            <field name="arch" type="xml">
+                <!-- Insert fields directly after partner_ref -->
+                <xpath expr="//field[@name='partner_ref']" position="after">
+                    <field name="status" invisible="1"/>
+                    <field name="combined_invoice_id" invisible="1"/>
+                    <field name="invoice_number" readonly="0"/>
+                    <field name="factura_num" readonly="0"/>
+                    <field name="invoice_id" readonly="1" invisible="1"/>
+                    <field name="start_location" invisible="1"/>
+                    <field name="end_location" invisible="1"/>
+                    <field name="editable_end_location" invisible="1"/>
+                    <field name="error_field" invisible="1"/>
+                    <field name="warehouse_id" invisible="1"/>
+                    <field name="warehouse_address" readonly="1" invisible="1"/>
+                    <field name="begin_date" invisible="1"/>
+                    <field name="formatted_begin_date" readonly="1" invisible="1"/>
+                    <field name="show_all_fields" invisible="1"/>
+                    <field name="delivery" invisible="1"/>
+                    <field name="is_start_location_required" readonly="1" invisible="1"/>
+                    <field name="is_editable_end_location_required" readonly="1" invisible="1"/>
+                    <field name="trans_id" invisible="1"/>
+                    <field name="trans_txt" invisible="1"/>
+                    <field name="is_trans_id_4" readonly="1" invisible="1"/>
+                    <field name="buyer_type" invisible="1"/>
+                    <field name="driver_type" invisible="1"/>
+                    <field name="transport_cost_payer" invisible="1"/>
+                    <field name="car_number" invisible="1"/>
+                    <field name="driver_id" invisible="1"/>
+                    <field name="driver_name" invisible="1"/>
+                    <field name="transport_cost" invisible="1"/>
+                    <field name="comment" invisible="1"/>
+                    <field name="rs_acc" readonly="1" invisible="1"/>
+                    <field name="rs_pass" readonly="1" invisible="1"/>
+                    <field name="partner_vat" readonly="1" invisible="1"/>
+                    <field name="completed_soap" invisible="1"/>
+                    <field name="is_soap_completed" readonly="1" invisible="1"/>
+                </xpath>
+            </field>
+        </record>
+        <record id="purchase_order_tree_landed_costs" model="ir.ui.view">
+            <field name="name">purchase.order.tree.landed.costs</field>
+            <field name="model">purchase.order</field>
+            <field name="inherit_id" ref="purchase.purchase_order_view_tree"/>
+            <field name="arch" type="xml">
+                <field name="state" position="after">
+                    <field name="has_landed_costs" widget="boolean_toggle"/>
+                </field>
+            </field>
+        </record>
+
+
+        <record id="purchase_order_tree_landed_costs1" model="ir.ui.view">
+            <field name="name">purchase.order.tree.landed.costs1</field>
+            <field name="model">purchase.order</field>
+            <field name="inherit_id" ref="purchase.purchase_order_kpis_tree"/>
+            <field name="arch" type="xml">
+                <field name="state" position="after">
+                    <field name="has_landed_costs" widget="boolean_toggle"/>
+                </field>
+            </field>
+        </record>
+
+        <record id="purchase_order_form_landed_costs" model="ir.ui.view">
+            <field name="name">purchase.order.form.landed.costs</field>
+            <field name="model">purchase.order</field>
+            <field name="inherit_id" ref="purchase.purchase_order_form"/>
+            <field name="arch" type="xml">
+                <div class="oe_button_box" position="inside">
+                    <button name="action_view_landed_costs"
+                            type="object"
+                            class="oe_stat_button"
+                            icon="fa-money">
+                        <field name="landed_cost_count" widget="statinfo" string="Landing Costs"/>
+                    </button>
+                </div>
+            </field>
+        </record>
+    </data>
+</odoo>

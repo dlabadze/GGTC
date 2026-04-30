@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <!-- Inherit Subscription List View to Add Button -->
+    <record id="sale_subscription_view_list_inherit" model="ir.ui.view">
+        <field name="name">sale.subscription.view.list.inherit</field>
+        <field name="model">sale.order</field>
+        <field name="inherit_id" ref="sale_subscription.sale_subscription_view_tree"/>
+        <field name="arch" type="xml">
+            <xpath expr="//list" position="inside">
+                <header>
+                    <button name="%(action_bulk_invoice_wizard)d"
+                            type="action"
+                            string="Bulk Generate Invoices"
+                            class="btn-primary"/>
+                </header>
+            </xpath>
+        </field>
+    </record>
+    <record id="sale_subscription_form_view_inherit_dates" model="ir.ui.view">
+        <field name="name">sale.order.subscription.form.dates</field>
+        <field name="model">sale.order</field>
+        <field name="inherit_id" ref="sale_subscription.sale_subscription_primary_form_view"/>
+        <field name="arch" type="xml">
+            <field name="next_invoice_date" position="after">
+                <field name="date_start_sub"/>
+                <field name="date_end_sub"/>
+            </field>
+        </field>
+    </record>
+</odoo>

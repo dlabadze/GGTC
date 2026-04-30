@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="view_inventory_line_list_inherit_update_purchase_plan" model="ir.ui.view">
+        <field name="name">inventory.line.list.inherit.update.purchase.plan</field>
+        <field name="model">inventory.line</field>
+        <field name="inherit_id" ref="inventory_requests.view_inventory_line_list"/>
+        <field name="arch" type="xml">
+            <xpath expr="//list/header" position="inside">
+                <button name="action_update_purchase_plan"
+                        string="შესყიდვის გეგმის განახლება"
+                        type="object"
+                        class="oe_highlight"
+                        icon="fa-clipboard"/>
+                <button name="cpv_dadastureba"
+                        string="CPV დასტური"
+                        type="object"
+                        class="oe_highlight"
+                        icon="fa-check"/>
+            </xpath>
+        </field>
+    </record>
+</odoo>

@@ -1,0 +1,25 @@
+<odoo>
+    <record id="approval_request_view_form_inherit_lines" model="ir.ui.view">
+        <field name="name">approval.request.form.lines.inherit</field>
+        <field name="model">approval.request</field>
+        <field name="inherit_id" ref="approvals.approval_request_view_form"/>
+        <field name="arch" type="xml">
+            <xpath expr="//notebook/page[@name='products']" position="before" >
+                <page string="დეტალები" invisible="category_id != 1">
+                    <field name="table_line_ids">
+                        <list editable="bottom">
+                            <field name="model_id"/>
+                        </list>
+                    </field>
+                </page>
+                <page string="თანამშრომლები" invisible="category_id != 1">
+                    <field name="table_line_ext_ids">
+                        <list editable="bottom">
+                            <field name="employee_id"/>
+                        </list>
+                    </field>
+                </page>
+            </xpath>
+        </field>
+    </record>
+</odoo>

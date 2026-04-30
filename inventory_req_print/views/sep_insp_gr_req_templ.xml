@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data>
+        <template id="sep_inspec_gr_rep">
+            <t t-call="web.html_container">
+                <t t-foreach="docs" t-as="doc">
+                    <meta charset="UTF-8"/>
+                    <meta name="content-language" content="ka"/>
+                    <main style="text-align: center; font-family: DejaVu Sans, sans-serif; line-height: 1.6; margin: 50px auto; width: 80%;">
+
+                        <h3 style="font-weight: bold; margin-bottom: 20px;">
+                            ინსპექტირების ჯგუფის დასკვნა
+                        </h3>
+
+                        <p style="text-align: justify; display: inline-block; text-align-last: center;">
+                            შპს „საქართველოს გაზის ტრანსპორტირების კომპანიის“ გენერალური დირექტორის 2025 წლის 01 ოქტომბრის №96 ბრძანების საფუძველზე
+                            განვახორციელე ინსპექტირება შპს „საქართველოს გაზის ტრანსპორტირების კომპანიასა“ და შპს „სან პეტროლიუმ ჯორჯიას“ შორის,
+                            2024 წლის 25 დეკემბერს გაფორმებულ №396.03.24 ხელშეკრულებაზე.
+
+                            <br/><br/>
+                            აღნიშნული ხელშეკრულების საფუძველზე 2025 წლის 01 სექტემბრიდან 30 სექტემბრის ჩათვლით
+                            ბენზინგასამართი სადგურებიდან მოწოდებულ იქნა ევროდიზელის ტიპის საწვავი (0690),
+                            22,652.62 ლიტრის ოდენობით, როგორც აგაი, ისე საბარათე სისტემით,
+                            რომლის საერთო ღირებულება შეადგენს 55,272.39 (ორმოცდათხუთმეტი ათას ორას სამოცდათორმეტი ლარი და ოცდაცხრამეტი თეთრი) ლარს.
+                        </p>
+                            <br/><br/>
+                            <strong style="text-align: center; display: inline-block; text-align-last: center;">დასკვნა:</strong><br/>
+                        <p style="text-align: justify; display: inline-block; text-align-last: center;">
+                            1. მოწოდებული დიზელის საწვავი (Euro Diesel) შეესაბამება ხელშეკრულებით გათვალისწინებულ საქონელს.<br/>
+                            2. „მომწოდებელმა“ ხელშეკრულებით ნაკისრი ვალდებულება შეასრულა ზემოაღნიშნული ხელშეკრულებით მითითებული ვადების დაცვით.
+                        </p>
+
+                    </main>
+                </t>
+            </t>
+        </template>
+    </data>
+</odoo>

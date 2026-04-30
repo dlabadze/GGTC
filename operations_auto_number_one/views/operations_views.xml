@@ -1,0 +1,57 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data>
+        <!-- Simple form view extension for x_operations -->
+        <record id="view_x_operations_form_simple" model="ir.ui.view">
+            <field name="name">x.operations.form.simple</field>
+            <field name="model">x_operations</field>
+            <field name="arch" type="xml">
+                <form>
+                    <sheet>
+                        <group>
+                            <field name="x_operation_number" 
+                                   placeholder="ავტომატური ნომერი" 
+                                   readonly="1"/>
+                            <field name="x_name" placeholder="აღწერა"/>
+                        </group>
+                    </sheet>
+                </form>
+            </field>
+        </record>
+
+        <!-- Simple tree view for x_operations -->
+        <record id="view_x_operations_tree_simple" model="ir.ui.view">
+            <field name="name">x.operations.tree.simple</field>
+            <field name="model">x_operations</field>
+            <field name="arch" type="xml">
+                <tree>
+                    <field name="x_operation_number"/>
+                    <field name="x_name"/>
+                </tree>
+            </field>
+        </record>
+
+        <!-- Action for x_operations -->
+        <record id="action_x_operations" model="ir.actions.act_window">
+            <field name="name">Operations</field>
+            <field name="res_model">x_operations</field>
+            <field name="view_mode">tree,form</field>
+            <field name="view_id" ref="view_x_operations_tree_simple"/>
+            <field name="help" type="html">
+                <p class="o_view_nocontent_smiling_face">
+                    Create your first operation!
+                </p>
+                <p>
+                    Operations will be automatically numbered with yearly reset.
+                    Each operation gets a unique number in format: N/1
+                </p>
+            </field>
+        </record>
+
+        <!-- Menu item -->
+        <menuitem id="menu_x_operations"
+                  name="Operations"
+                  action="action_x_operations"
+                  sequence="10"/>
+    </data>
+</odoo>

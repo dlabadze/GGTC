@@ -1,0 +1,75 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="view_partner_period_report_search" model="ir.ui.view">
+        <field name="name">partner.period.report.search</field>
+        <field name="model">partner.period.report</field>
+        <field name="arch" type="xml">
+            <search string="Partner Period Report">
+                <field name="partner_id"/>
+                <field name="partner"/>
+                <field name="vat" string="Tax ID"/>
+                <filter name="filter_has_initial_debit" string="Has Initial Balance Debit"
+                    domain="[('initial_balance_debit', '>', 0)]"/>
+                <filter name="filter_has_initial_credit" string="Has Initial Balance Credit"
+                    domain="[('initial_balance_credit', '>', 0)]"/>
+            </search>
+        </field>
+    </record>
+
+    <record id="view_partner_period_report_list" model="ir.ui.view">
+        <field name="name">partner.period.report.list</field>
+        <field name="model">partner.period.report</field>
+        <field name="arch" type="xml">
+            <list string="პერიოდი საწყისი და საბოლოო" create="false" delete="false" edit="false">
+                <field name="partner_id" column_invisible="1"/>
+                <field name="partner"/>
+                <button name="action_view_entries" type="object" string="View entries" class="btn-link"/>
+                <field name="vat" string="Tax ID"/>
+                <field name="currency_id" string="ვალუტა" optional="hide"/>
+                <field name="currency_initial_debit" string="საწყისი ნაშთი დებიტი ვალუტაში" optional="hide"/>
+                <field name="initial_balance_debit" string="საწყისი ნაშთი დებეტი"/>
+                <field name="currency_initial_credit" string="საწყისი ნაშთი კრედიტი ვალუტაში" optional="hide"/>
+                <field name="initial_balance_credit" string="საწყისი ნაშთი კრედიტი"/>
+                <field name="currency_brunva_debit" string="ბრუნვა დებიტი ვალუტაში" optional="hide"/>
+                <field name="brunva_debit" string="ბრუნვა დებეტი"/>
+                <field name="currency_brunva_credit" string="ბრუნვა კრედიტი ვალუტაში" optional="hide"/>
+                <field name="brunva_credit" string="ბრუნვა კრედიტი"/>
+                <field name="currency_final_balance_debit" string="საბოლოო ნაშთი დებიტი ვალუტაში" optional="hide"/>
+                <field name="final_balance_debit" string="საბოლოო ნაშთი დებეტი"/>
+                <field name="currency_final_balance_credit" string="საბოლოო ნაშთი კრედიტი ვალუტაში" optional="hide"/>
+                <field name="final_balance_credit" string="საბოლოო ნაშთი კრედიტი"/>
+            </list>
+        </field>
+    </record>
+
+    <record id="view_partner_period_report_wizard_form" model="ir.ui.view">
+        <field name="name">partner.period.report.wizard.form</field>
+        <field name="model">partner.period.report.wizard</field>
+        <field name="arch" type="xml">
+            <form string="პერიოდი საწყისი და საბოლოო">
+                <group>
+                    <field name="account_id"/>
+                    <field name="date_from"/>
+                    <field name="date_to"/>
+                </group>
+                <footer>
+                    <button name="action_generate_report" string="Generate Report" type="object" class="btn-primary"/>
+                    <button string="Cancel" class="btn-secondary" special="cancel"/>
+                </footer>
+            </form>
+        </field>
+    </record>
+
+    <record id="action_partner_period_report_wizard" model="ir.actions.act_window">
+        <field name="name">პერიოდი საწყისი და საბოლოო</field>
+        <field name="res_model">partner.period.report.wizard</field>
+        <field name="view_mode">form</field>
+        <field name="target">new</field>
+    </record>
+
+    <menuitem id="menu_partner_period_report"
+        name="პერიოდის ბრუნვის რეპორტი"
+        action="action_partner_period_report_wizard"
+        parent="account.account_reports_partners_reports_menu"
+        sequence="15"/>
+</odoo>

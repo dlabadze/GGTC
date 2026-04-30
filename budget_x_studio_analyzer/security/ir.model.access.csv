@@ -1,0 +1,2 @@
+id,name,model_id:id,group_id:id,perm_read,perm_write,perm_create,perm_unlink
+access_budget_x_studio_analyzer,budget.x_studio.analyzer access,model_budget_x_studio_analyzer,,1,1,1,1

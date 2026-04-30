@@ -1,0 +1,89 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    
+    <record id="view_purchase_plan_preliminary_list" model="ir.ui.view">
+        <field name="name">purchase.plan.preliminary.list</field>
+        <field name="model">purchase.plan.preliminary</field>
+        <field name="arch" type="xml">
+            <list>
+                <field name="id"/>
+                <field name="plan_id"/>
+                <field name="code_name"/>
+                <field name="change_date"/>
+                <field name="change_amount"/>
+            </list>
+        </field>
+    </record>
+
+    <record id="view_purchase_plan_preliminary_form" model="ir.ui.view">
+        <field name="name">purchase.plan.preliminary.form</field>
+        <field name="model">purchase.plan.preliminary</field>
+        <field name="arch" type="xml">
+            <form>
+                <sheet>
+                    <group>
+                        <group name="main_info" string="Main Info">
+                            <field name="plan_id"/>
+                            <field name="id" readonly="1"/>
+                            <field name="new_cpv" />
+                            <field name="new_cpv_code" invisible="not new_cpv"/>
+                            <field name="plan_line_id" string="CPV Code" invisible="new_cpv"/>
+                            <field name="amount"/>
+                            <field name="purchase_method_id"/>
+                            <field name="purchase_reason_id"/>
+                            <field name="currency_id" />
+
+                            <separator string="Change Details"/>
+                            <field name="change_date" string="ცვლილების თარიღი"/>
+                            <field name="change_amount" string="ცვლილების თანხა"/>
+                            <field name="change_comment" string="ცვლილების კომენტარი"/>
+                        </group>
+
+                        <group name="calculations" string="Calculations">
+                            <field name="pu_ac_am" string="არსებული სავარაუდო ღირებულება"/>
+                            <field name="pc_re_am" string="რესურსი"/>
+
+                            <separator string="New Totals"/>
+                            <field name="new_poss_amount" decoration-bf="1"/>
+                            <field name="new_res" decoration-bf="1"/>
+                        </group>
+                    </group>
+                </sheet>
+            </form>
+        </field>
+    </record>
+
+    <record id="view_purchase_plan_preliminary_line_list" model="ir.ui.view">
+        <field name="name">purchase.plan.preliminary.line.list</field>
+        <field name="model">purchase.plan.preliminary.line</field>
+        <field name="arch" type="xml">
+            <list>
+                <field name="date"/>
+                <field name="amount"/>
+                <field name="comment"/>
+                <field name="currency_id"/>
+            </list>
+        </field>
+    </record>
+
+    <record id="action_purchase_plan_preliminary_line" model="ir.actions.act_window">
+        <field name="name">Changes Lines</field>
+        <field name="res_model">purchase.plan.preliminary.line</field>
+        <field name="view_mode">list,form</field>
+    </record>
+
+    <record id="action_purchase_plan_preliminary" model="ir.actions.act_window">
+        <field name="name">Purchase Plan Changes</field>
+        <field name="res_model">purchase.plan.preliminary</field>
+        <field name="view_mode">list,form</field>
+    </record>
+
+    <menuitem
+            id="menu_purchase_plan_preliminary"
+            name="Purchase Plan Changes Preliminary"
+            parent="budget.menu_finance_purchase_plans"
+            action="action_purchase_plan_preliminary"
+            sequence="4"/>
+    
+</odoo>
+   

@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <!-- გაცემა Sub Menu -->
+    <menuitem id="menu_work_trip_import"
+        name="მივლინების იმპორტი"
+        parent="salary_management.menu_salary_payment"
+        action="action_work_trip_import"
+        sequence="10"/>
+
+<!--     salary payment import menu ?? და ასევე ნახე  ვიუში როოგრ წერია სწორად გაქ თუ არაა <3-->
+
+</odoo>

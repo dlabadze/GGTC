@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <!-- Inventory line form: use only product name for product_id -->
+    <record id="view_inventory_line_form_name_only" model="ir.ui.view">
+        <field name="name">inventory.line.form.name.only</field>
+        <field name="model">inventory.line</field>
+        <field name="inherit_id" ref="inventory_requests.view_inventory_line_form"/>
+        <field name="arch" type="xml">
+            <xpath expr="//field[@name='product_id']" position="attributes">
+                <attribute name="context">{'inventory_line_name_only': True}</attribute>
+            </xpath>
+        </field>
+    </record>
+</odoo>
+
+

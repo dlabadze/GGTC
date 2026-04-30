@@ -1,0 +1,109 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+    <!-- ══════════════════════════════════════════
+         LIST VIEW  (the interactive table)
+    ══════════════════════════════════════════ -->
+    <record id="view_mission_accounting_line_list" model="ir.ui.view">
+        <field name="name">mission.accounting.report.line.list</field>
+        <field name="model">mission.accounting.report.line</field>
+        <field name="arch" type="xml">
+            <list
+                string="ბუღალტრული შედარება"
+                create="false"
+                edit="false"
+                delete="false"
+                decoration-danger="diff > 0.005"
+                decoration-warning="diff &lt; -0.005">
+
+                <field name="req_id"        string="ბრძანება"       optional="show"/>
+                <field name="req_date"      string="თარიღი"        optional="show"/>
+                <field name="emp_name"      string="თანამშრომელი"/>
+                <field name="partner_id"    column_invisible="1"/>
+                <field name="mission_type"  string="ტიპი"          optional="show"/>
+                <field name="op_type"       string="ოპერაცია"      optional="show"/>
+                <field name="days"          string="დღეები"        optional="show"/>
+                <field name="calculated"    string="გამოთვლილი"    sum="გამოთვლილი ჯამი"/>
+                <field name="posted"        string="გატარებული"    sum="გატარებული ჯამი"/>
+                <field name="diff"          string="სხვაობა"       sum="სხვაობა ჯამი"/>
+                <button name="action_open_moves" type="object"
+                        string="გატარებები" icon="fa-book"
+                        class="btn-link"/>
+
+            </list>
+        </field>
+    </record>
+
+    <!-- ══════════════════════════════════════════
+         SEARCH VIEW  (filters + group-by)
+    ══════════════════════════════════════════ -->
+    <record id="view_mission_accounting_line_search" model="ir.ui.view">
+        <field name="name">mission.accounting.report.line.search</field>
+        <field name="model">mission.accounting.report.line</field>
+        <field name="arch" type="xml">
+            <search string="ძიება">
+
+                <field name="emp_name" string="თანამშრომელი"/>
+                <field name="req_name" string="ბრძანება"/>
+
+                <separator/>
+                <filter string="ზედმეტად გატარებული"  name="overpaid"  domain="[('diff', '&gt;',  0.005)]"/>
+                <filter string="ნაკლებად გატარებული"   name="underpaid" domain="[('diff', '&lt;', -0.005)]"/>
+                <separator/>
+                <filter string="ახალი"       name="filter_new"    domain="[('op_type', '=', 'new')]"/>
+                <filter string="რედაქტირება" name="filter_edit"   domain="[('op_type', '=', 'edit')]"/>
+                <filter string="გაუქმება"    name="filter_cancel" domain="[('op_type', '=', 'cancel')]"/>
+
+                <group expand="1" string="დაჯგუფება">
+                    <filter string="ბრძანება"      name="group_by_order" context="{'group_by': 'req_id'}"/>
+                    <filter string="თანამშრომელი"  name="group_by_emp"   context="{'group_by': 'emp_name'}"/>
+                    <filter string="ტიპი"          name="group_by_type"  context="{'group_by': 'mission_type'}"/>
+                    <filter string="ოპერაცია"      name="group_by_op"    context="{'group_by': 'op_type'}"/>
+                </group>
+
+            </search>
+        </field>
+    </record>
+
+    <!-- ══════════════════════════════════════════
+         WIZARD FORM
+    ══════════════════════════════════════════ -->
+    <record id="view_mission_accounting_wizard_form" model="ir.ui.view">
+        <field name="name">mission.accounting.report.wizard.form</field>
+        <field name="model">mission.accounting.report.wizard</field>
+        <field name="arch" type="xml">
+            <form string="ბუღალტრული შედარება">
+                <sheet>
+                    <group>
+                        <field name="date_from"/>
+                        <field name="date_to"/>
+                        <field name="show_matching"/>
+                    </group>
+                </sheet>
+                <footer>
+                    <button name="action_generate" type="object"
+                            string="გენერაცია" class="btn-primary"/>
+                    <button string="დახურვა" class="btn-secondary" special="cancel"/>
+                </footer>
+            </form>
+        </field>
+    </record>
+
+    <!-- ══════════════════════════════════════════
+         ACTIONS + MENU
+    ══════════════════════════════════════════ -->
+    <record id="action_mission_accounting_wizard" model="ir.actions.act_window">
+        <field name="name">ბუღალტრული შედარება</field>
+        <field name="res_model">mission.accounting.report.wizard</field>
+        <field name="view_mode">form</field>
+        <field name="target">new</field>
+    </record>
+
+    <menuitem
+        id="menu_mission_accounting_comparison"
+        name="ბუღალტრული შედარება"
+        parent="approvals.approvals_menu_root"
+        action="action_mission_accounting_wizard"
+        sequence="20"/>
+
+</odoo>

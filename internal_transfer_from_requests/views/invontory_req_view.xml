@@ -1,0 +1,15 @@
+<odoo>
+    <record id="view_stock_request_form_inherit" model="ir.ui.view">
+        <field name="name">inventory.request.form.inherit.button</field>
+        <field name="model">inventory.request</field>
+        <field name="inherit_id" ref="inventory_requests.view_inventory_request_form"/>
+        <field name="arch" type="xml">
+            <xpath expr="//div[contains(@class,'oe_button_box')][not(ancestor::field)]" position="inside">
+                <button class="oe_stat_button" icon="fa-truck" type="object" name="action_view_internal_transfers">
+                  <field widget="statinfo" name="internal_transfer_count" string="შიდა გადაცემები"/>
+                </button>
+          </xpath>
+        </field>
+    </record>
+
+</odoo>

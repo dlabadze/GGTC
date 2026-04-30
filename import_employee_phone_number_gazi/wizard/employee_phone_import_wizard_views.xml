@@ -1,0 +1,49 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <!-- Wizard Form View -->
+    <record id="view_employee_phone_import_wizard_gazi_form" model="ir.ui.view">
+        <field name="name">employee.phone.import.wizard.gazi.form</field>
+        <field name="model">employee.phone.import.wizard.gazi</field>
+        <field name="arch" type="xml">
+            <form string="Import Employee Phone Numbers">
+                <sheet>
+                    <group>
+                        <group>
+                            <field name="excel_file" filename="filename" widget="binary"/>
+                            <field name="filename" invisible="1"/>
+                        </group>
+                    </group>
+                    
+                    <group>
+                        <div class="alert alert-info" role="alert">
+                            <h4>Excel File Format:</h4>
+                            <p><strong>Column A:</strong> Employee Name (not used for search, reference only)</p>
+                            <p><strong>Column B:</strong> Identification ID - Required (used to find employee)</p>
+                            <p><strong>Columns C to Z:</strong> Phone Numbers - Multiple phone numbers can be in different columns</p>
+                            <p><em>Note: All phone numbers from columns C to Z will be concatenated with "; " separator. If multiple rows exist for the same employee, all phone numbers will be merged.</em></p>
+                        </div>
+                    </group>
+                </sheet>
+                
+                <footer>
+                    <button string="Import" 
+                            name="action_import" 
+                            type="object" 
+                            class="btn-primary"/>
+                    <button string="Cancel" 
+                            class="btn-secondary" 
+                            special="cancel"/>
+                </footer>
+            </form>
+        </field>
+    </record>
+
+    <!-- Wizard Action -->
+    <record id="action_employee_phone_import_wizard_gazi" model="ir.actions.act_window">
+        <field name="name">კორპორატიული ნომრების ატვირთვა</field>
+        <field name="res_model">employee.phone.import.wizard.gazi</field>
+        <field name="view_mode">form</field>
+        <field name="target">new</field>
+    </record>
+</odoo>
+

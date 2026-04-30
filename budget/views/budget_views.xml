@@ -1,0 +1,286 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <!-- List View -->
+    <record id="view_cpv_code_list" model="ir.ui.view">
+        <field name="name">cpv.code.list</field>
+        <field name="model">cpv.code</field>
+        <field name="arch" type="xml">
+            <list>
+                <field name="code"/>
+                <field name="name"/>
+            </list>
+        </field>
+    </record>
+
+    <!-- Form View -->
+    <record id="view_cpv_code_form" model="ir.ui.view">
+        <field name="name">cpv.code.form</field>
+        <field name="model">cpv.code</field>
+        <field name="arch" type="xml">
+            <form>
+                <sheet>
+                    <group>
+                        <field name="code"/>
+                        <field name="name"/>
+                    </group>
+                </sheet>
+            </form>
+        </field>
+    </record>
+    <record id="view_purchase_plan_line_search" model="ir.ui.view">
+        <field name="name">purchase.plan.line.search</field>
+        <field name="model">purchase.plan.line</field>
+        <field name="arch" type="xml">
+            <search>
+                <field name="cpv_id"/>
+                <field name="cpv_name"/>
+                <group expand="0" string="Group By">
+                    <filter string="CPV Code" name="group_by_cpv" domain="[]" context="{'group_by': 'cpv_id'}"/>
+                </group>
+            </search>
+        </field>
+    </record>
+
+    <record id="view_purchase_plan_line_search_inherit" model="ir.ui.view">
+        <field name="name">purchase.plan.line.search.inherit</field>
+        <field name="model">purchase.plan.line</field>
+        <field name="inherit_id" ref="budget.view_purchase_plan_line_search"/>
+        <field name="arch" type="xml">
+            <xpath expr="//field[@name='cpv_name']" position="after">
+                <field name="purchase_method_id"/>
+                <field name="purchase_reason_id"/>
+            </xpath>
+        </field>
+    </record>
+
+
+    <!-- Search View -->
+    <record id="view_cpv_code_search" model="ir.ui.view">
+        <field name="name">cpv.code.search</field>
+        <field name="model">cpv.code</field>
+        <field name="arch" type="xml">
+            <search>
+                <field name="code"/>
+                <field name="name"/>
+            </search>
+        </field>
+    </record>
+
+    <!-- Action -->
+    <record id="action_cpv_codes" model="ir.actions.act_window">
+        <field name="name">CPV Codes</field>
+        <field name="res_model">cpv.code</field>
+        <field name="view_mode">list,form</field>
+    </record>
+
+    <!-- Purchase Plans section at same level as Journals and Management -->
+    <menuitem
+            id="menu_finance_purchase_plans"
+            name="Purchase Plans"
+            parent="accountant.menu_accounting"
+            sequence="15"/>
+
+    <!-- CPV Codes submenu -->
+    <menuitem
+            id="menu_cpv_codes"
+            name="CPV Codes"
+            parent="menu_finance_purchase_plans"
+            action="action_cpv_codes"
+            sequence="1"/>
+
+     <record id="view_purchase_requisition_form_inherit_extended" model="ir.ui.view">
+        <field name="name">purchase.requisition.form.inherit.extended</field>
+        <field name="model">purchase.requisition</field>
+        <field name="inherit_id" ref="purchase_requisition.view_purchase_requisition_form"/>
+        <field name="arch" type="xml">
+            <sheet position="inside">
+                <notebook>
+                    <page string="დამატებითი ინფორმაცია">
+                        <group>
+                            <group string="თარიღები">
+                                <field name="registration_year"/>
+                                <field name="contract_registration_date"/>
+                                <field name="effective_date"/>
+                                <field name="delivery_date"/>
+                                <field name="contract_end_date"/>
+                                <field name="payment_due_date"/>
+                            </group>
+                            <group string="ზოგადი ინფორმაცია">
+                                <field name="purchase_method"/>
+                                <field name="purchase_basis"/>
+                                <field name="basis"/>
+                                <field name="contract_number"/>
+                                <field name="contract_number_iur"/>
+                                <field name="spa_number"/>
+                                <field name="cmr_number"/>
+                                <field name="cpv_code"/>
+                                <field name="budget_article"/>
+                            </group>
+                        </group>
+                        <group>
+                            <group string="მომწოდებელი">
+                                <field name="supplier"/>
+                                <field name="supplier_id_code"/>
+                            </group>
+                            <group string="ფინანსური ინფორმაცია">
+                                <field name="exchange_rate"/>
+                                <field name="percentage"/>
+                                <field name="contract_amount"/>
+                                <field name="requested_amount"/>
+                                <field name="receipt_delivery_amount"/>
+                                <field name="paid_amount"/>
+                                <field name="penalty_amount"/>
+                                <field name="remaining_amount"/>
+                            </group>
+                        </group>
+                        <group>
+                            <group string="სტატუსი და ტიპი">
+                                <field name="delivery_type"/>
+                                <field name="vat_included"/>
+                                <field name="currency_type"/>
+                                <field name="currency_rate"/>
+                                <field name="contract_status"/>
+                            </group>
+                            <group string="შენიშვნები">
+                                <field name="notes" nolabel="1"/>
+                            </group>
+                        </group>
+                    </page>
+                </notebook>
+            </sheet>
+        </field>
+    </record>
+    <!-- budget.line.changes form view -->
+    <record id="view_budget_line_changes_form" model="ir.ui.view">
+        <field name="name">budget.line.changes.form</field>
+        <field name="model">budget.line.changes</field>
+        <field name="arch" type="xml">
+            <form string="ბიუჯეტის ხაზის ცვლილებები">
+                <sheet>
+                    <group>
+                        <group string="ბიუჯეტი">
+                            <field name="budget_line_id" readonly="1"/>
+                            <field name="budget_amount" readonly="1"/>
+                        </group>
+                        <group string="მიმდინარე მნიშვნელობები">
+                            <field name="current_x_studio" readonly="1"/>
+                            <field name="current_paim_am" readonly="1"/>
+                        </group>
+                    </group>
+                    <group string="ახალი მნიშვნელობების გამოყენება">
+                        <group>
+                            <field name="update_mode"/>
+                            <field name="pending_x_studio"
+                                   invisible="update_mode == 'paim_am'"/>
+                            <field name="pending_paim_am"
+                                   invisible="update_mode == 'x_studio'"/>
+                        </group>
+                        <group>
+                            <field name="pending_comment" placeholder="კომენტარი..."/>
+                        </group>
+                    </group>
+                    <div class="o_row">
+                        <button name="action_apply_changes" type="object"
+                                string="გამოყენება" class="btn-primary" icon="fa-check"/>
+                    </div>
+                    <notebook>
+                        <page string="ცვლილებების ისტორია">
+                            <field name="line_ids" readonly="1">
+                                <list>
+                                    <field name="date"/>
+                                    <field name="x_studio_before"/>
+                                    <field name="x_studio_after"/>
+                                    <field name="paim_am_before"/>
+                                    <field name="paim_am_after"/>
+                                    <field name="comment"/>
+                                    <field name="currency_id" invisible="1"/>
+                                </list>
+                            </field>
+                        </page>
+                    </notebook>
+                </sheet>
+            </form>
+        </field>
+    </record>
+
+    <!-- Add this to your XML view file -->
+<record id="view_budget_line_form_inherit" model="ir.ui.view">
+    <field name="name">budget.line.form.inherit</field>
+    <field name="model">budget.line</field>
+    <field name="inherit_id" ref="account_budget.view_budget_line_form"/>
+    <field name="arch" type="xml">
+        <xpath expr="//sheet" position="inside">
+            <button name="action_view_inventory_lines"
+                type="object"
+                class="oe_stat_button"
+                string="Inventory Lines"
+                icon="fa-list-alt">
+            </button>
+        </xpath>
+        <xpath expr="//sheet" position="inside">
+                <button name="action_open_changes"
+                        type="object"
+                        class="oe_stat_button"
+                        icon="fa-pencil-square-o"
+                        string="ცვლილებები"/>
+        </xpath>
+        <xpath expr="//sheet" position="inside">
+            <notebook>
+                <page string="Purchase Orders">
+                    <field name="purchase_order_ids">
+                        <list>
+                            <field name="name"/>
+                            <field name="partner_id"/>
+                            <field name="date_order"/>
+                            <field name="amount_total"/>
+                            <field name="state"/>
+                            <field name="currency_id" invisible="1"/>
+                        </list>
+                    </field>
+                </page>
+                
+                <page string="Purchase Agreements">
+                    <field name="purchase_requisition_ids">
+                        <list>
+                            <field name="name"/>
+                            <field name="vendor_id"/>
+                            <field name="state"/>
+                            <field name="contract_number"/>
+                            <field name="currency_id" invisible="1"/>
+                        </list>
+                    </field>
+                </page>
+                
+                <page string="Purchase Requisition Lines">
+                    <field name="requisition_line_ids">
+                        <list>
+                            <field name="requisition_id"/>
+                            <field name="contract_number"/>
+                            <field name="product_id"/>
+                            <field name="product_qty"/>
+                            <field name="price_unit"/>
+                            <field name="line_total"/>
+                            <field name="purchase_plan_line_id"/>
+                            <field name="selected_plan_name"/>
+                        </list>
+                    </field>
+                </page>
+
+                <page string="Stock Moves">
+                    <field name="stock_move_ids" readonly="1">
+                        <list>
+                            <field name="picking_id"/>
+                            <field name="origin"/>
+                            <field name="product_id"/>
+                            <field name="product_uom_qty"/>
+                            <field name="quantity"/>
+                            <field name="date"/>
+                        </list>
+                    </field>
+                </page>
+            </notebook>
+        </xpath>
+    </field>
+</record>
+
+</odoo>

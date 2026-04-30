@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="view_inventory_line_price_upload_wizard_form" model="ir.ui.view">
+        <field name="name">inventory.line.price.upload.wizard.form</field>
+        <field name="model">inventory.line.price.upload.wizard</field>
+        <field name="arch" type="xml">
+            <form string="ექსელის ატვირთვა">
+                <group>
+                    <field name="request_id" invisible="1"/>
+                    <field name="excel_file" filename="excel_filename"/>
+                    <field name="excel_filename" invisible="1"/>
+                </group>
+                <footer>
+                    <button name="action_confirm" string="Confirm" type="object" class="oe_highlight"/>
+                    <button string="Cancel" class="btn-secondary" special="cancel"/>
+                </footer>
+            </form>
+        </field>
+    </record>
+</odoo>

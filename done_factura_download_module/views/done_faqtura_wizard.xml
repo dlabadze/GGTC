@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="view_done_faqturis_gadmowera_form" model="ir.ui.view">
+        <field name="name">done.faqturis.gadmowera.form</field>
+        <field name="model">done.faqturis.gadmowera</field>
+        <field name="arch" type="xml">
+            <form string="ფაქტურის ჩამოტვირთვა (agree_date, 30 დღე)">
+                <group>
+                    <field name="date1"/>
+                    <field name="date2"/>
+                    <field name="rs_acc" readonly="1" invisible="1"/>
+                    <field name="rs_pass" readonly="1" invisible="1"/>
+                </group>
+                <footer>
+                    <button string="ფაქტურის ჩამოტვირთვა" type="object" name="send_soap_request" class="btn-primary"/>
+                    <button string="გაუქმება" class="btn-secondary" special="cancel"/>
+                </footer>
+            </form>
+        </field>
+    </record>
+
+    <record id="action_done_faqturis_gadmowera" model="ir.actions.act_window">
+        <field name="name">ფაქტურის ჩამოტვირთვა (agree_date)</field>
+        <field name="res_model">done.faqturis.gadmowera</field>
+        <field name="view_mode">form</field>
+        <field name="target">new</field>
+    </record>
+
+    <record id="view_done_factura_check_wizard_form" model="ir.ui.view">
+        <field name="name">done.factura.check.wizard.form</field>
+        <field name="model">done.factura.check.wizard</field>
+        <field name="arch" type="xml">
+            <form string="ფაქტურის შემოწმება">
+                <group>
+                    <field name="date1"/>
+                    <field name="date2"/>
+                </group>
+                <footer>
+                    <button string="შემოწმება" type="object" name="action_check" class="btn-primary"/>
+                    <button string="გაუქმება" class="btn-secondary" special="cancel"/>
+                </footer>
+            </form>
+        </field>
+    </record>
+</odoo>

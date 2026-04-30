@@ -1,0 +1,208 @@
+<odoo>
+    <template id="report_purchase_plan_lines_template">
+        <div class="page">
+            <div class="oe_structure"/>
+            <div class="row">
+
+                <div class="col-8 offset-2 text-center">
+                    <h2 style="font-size: 30px; margin: 0; font-weight: bold; ">
+                        შპს გაზის ტრანსპორტირების კომპანიის <br/> 2025წ სახელმწიფო შესყიდვების გეგმის ცვლილება
+                    </h2>
+                </div>
+
+                <div class="col-2 text-left">
+                    <span style="font-size: 14px;">
+                        <t t-esc="o.create_date.strftime('%d/%m/%Y')"/>
+                    </span>
+                </div>
+            </div>
+
+            <div class="row mt-4">
+                <div class="col-12">
+                    <table class="table table-sm table-bordered">
+                        <thead>
+                            <tr>
+                                <th class="text-right">N</th>
+                                <th class="text-right">ძირითადი CVP</th>
+                                <th class="text-right">არსებული სავარაუდო ღირებულება </th>
+                                <th class="text-right">შესყიდვის საშუალება</th>
+                                <th class="text-right">შესყიდვების საფუძველი</th>
+                                <th class="text-right">რესურსი</th>
+                                <th class="text-right">შენიშვნა</th>
+                                <th class="text-right">ახალი სავარაუდო ღირებულება</th>
+                                <th class="text-right">სხვაობა</th>
+                                <th class="text-right">ახალი რესურსი</th>
+                                <th class="text-right">CPV დასახელება</th>
+                            </tr>
+                        </thead>
+
+                    <tbody>
+                        <t t-set="i" t-value="1"/>
+
+                        <t t-foreach="lines" t-as="line">
+                            <tr>
+                                <td class="text-right"><t t-esc="i"/></td>
+                                <td class="text-right"><span t-field="line.cpv_id.code"/></td>
+                                <td class="text-right"><span t-field="line.pu_st_am"/></td>
+                                <td class="text-right"><span t-field="line.purchase_method_id.name"/></td>
+                                <td class="text-right"><span t-field="line.purchase_reason_id.name"/></td>
+                                <td class="text-right"><span t-field="line.pc_re_am"/></td>
+                                <td class="text-right"></td>
+                                <td class="text-right"><span t-field="line.pu_ac_am"/></td>
+                                <td class="text-right"><span t-field="line.pu_diff"/></td>
+                                <td class="text-right"><span t-field="line.pa_re_am"/></td>
+                                <td class="text-right"><span t-field="line.cpv_name"/></td>
+                            </tr>
+
+                            <!-- Increase counter -->
+                            <t t-set="i" t-value="i + 1"/>
+                        </t>
+                    </tbody>
+                    </table>
+
+                    <div class="row mt-4 " >
+                        <div class="col-3">
+                            <p  style="font-size: 15px; margin: 0;">გენერალური დირექტორის მოადგილე</p>
+                        </div>
+                    </div>
+
+                    <div class="row mt-4 " >
+                        <div class="col-3">
+                            <p  style="font-size: 15px; margin: 0;">ირაკლი კანდელაკი</p>
+                        </div>
+                    </div>
+                    <br/>
+                    <div class="row mt-4 " >
+                        <div class="col-3">
+                            <p  style="font-size: 15px; margin: 0;">შესყიდვების დეპარტამენტის უფროსი</p>
+                        </div>
+                    </div>
+
+                    <div class="row mt-4 " >
+                        <div class="col-3">
+                            <p  style="font-size: 15px; margin: 0;">ეკატერინე ზაბახიძე</p>
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+        </div>
+    </template>
+
+    <!--    purchase plan part-->
+    <template id="report_purchase_plan_document">
+        <t t-call="web.html_container">
+            <t t-foreach="docs" t-as="o">
+                <t t-call="web.external_layout">
+                    <t t-call="plan_lines.report_purchase_plan_lines_template">
+                        <t t-set="plan" t-value="o"/>
+                        <t t-set="lines" t-value="o.line_ids"/>
+                    </t>
+                </t>
+            </t>
+        </t>
+    </template>
+
+    <!-- Purchase Plan Changes Template -->
+    <template id="report_purchase_plan_changes_template">
+        <div class="page">
+            <div class="oe_structure"/>
+            <div class="row">
+
+                <div class="col-8 offset-2 text-center">
+                    <h2 style="font-size: 30px; margin: 0; font-weight: bold; ">
+                        შპს გაზის ტრანსპორტირების კომპანიის <br/> 2025წ სახელმწიფო შესყიდვების გეგმის ცვლილება
+                    </h2>
+                </div>
+
+                <div class="col-2 text-left">
+                    <span style="font-size: 14px;">
+                        <t t-esc="time.strftime('%d/%m/%Y')"/>
+                    </span>
+                </div>
+            </div>
+
+            <div class="row mt-4">
+                <div class="col-12">
+                    <table class="table table-sm table-bordered">
+                        <thead>
+                            <tr>
+                                <th class="text-right">N</th>
+                                <th class="text-right">ძირითადი CVP</th>
+                                <th class="text-right">არსებული სავარაუდო ღირებულება</th>
+                                <th class="text-right">შესყიდვის საშუალება</th>
+                                <th class="text-right">შესყიდვების საფუძველი</th>
+                                <th class="text-right">რესურსი</th>
+                                <th class="text-right">შენიშვნა</th>
+                                <th class="text-right">ახალი სავარაუდო ღირებულება</th>
+                                <th class="text-right">სხვაობა</th>
+                                <th class="text-right">ახალი რესურსი</th>
+                                <th class="text-right">CPV დასახელება</th>
+                            </tr>
+                        </thead>
+
+                        <tbody>
+                            <t t-set="i" t-value="1"/>
+
+                            <t t-foreach="lines" t-as="change_line">
+                                <t t-set="line" t-value="change_line.plan_line_id"/>
+                                <tr>
+                                    <td class="text-right"><t t-esc="i"/></td>
+                                    <td class="text-right"><span t-field="line.cpv_id.code"/></td>
+                                    <td class="text-right"><span t-field="line.pu_st_am"/></td>
+                                    <td class="text-right"><span t-field="line.purchase_method_id.name"/></td>
+                                    <td class="text-right"><span t-field="line.purchase_reason_id.name"/></td>
+                                    <td class="text-right"><span t-field="line.pc_re_am"/></td>
+                                    <td class="text-right"><span t-field="line.vadebi"/></td>
+                                    <td class="text-right"><span t-field="line.pu_ac_am"/></td>
+                                    <td class="text-right"><span t-field="line.pu_diff"/></td>
+                                    <td class="text-right"><span t-field="line.pa_re_am"/></td>
+                                    <td class="text-right"><span t-field="line.cpv_name"/></td>
+                                </tr>
+
+                                <!-- Increase counter -->
+                                <t t-set="i" t-value="i + 1"/>
+                            </t>
+                        </tbody>
+                    </table>
+
+                    <div class="row mt-4">
+                        <div class="col-3">
+                            <p style="font-size: 15px; margin: 0;">გენერალური დირექტორის მოადგილე</p>
+                        </div>
+                    </div>
+
+                    <div class="row mt-4">
+                        <div class="col-3">
+                            <p style="font-size: 15px; margin: 0;">ირაკლი კანდელაკი</p>
+                        </div>
+                    </div>
+                    <br/>
+                    <div class="row mt-4">
+                        <div class="col-3">
+                            <p style="font-size: 15px; margin: 0;">შესყიდვების დეპარტამენტის უფროსი</p>
+                        </div>
+                    </div>
+
+                    <div class="row mt-4">
+                        <div class="col-3">
+                            <p style="font-size: 15px; margin: 0;">ეკატერინე ზაბახიძე</p>
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+        </div>
+    </template>
+
+    <!--purchase plan changes part-->
+    <template id="report_purchase_plan_changes_document">
+            <t t-call="web.html_container">
+                <t t-call="web.external_layout">
+                    <t t-set="lines" t-value="docs"/>
+                    <t t-call="plan_lines.report_purchase_plan_changes_template"/>
+                </t>
+           </t>
+    </template>
+
+</odoo>

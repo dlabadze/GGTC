@@ -1,0 +1,58 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+    <!-- Report list view -->
+    <record id="view_shegavati_employee_report_list" model="ir.ui.view">
+        <field name="name">shegavati.employee.report.list</field>
+        <field name="model">shegavati.employee.report</field>
+        <field name="arch" type="xml">
+            <list string="შეღავათის რეპორტი" create="false" delete="false" edit="false">
+                <field name="partner_id" string="თანამშრომელი"/>
+                <field name="partner_vat" string="პირადი ნომერი"/>
+                <field name="start_date" string="შეღავათის დაწყების თარიღი"/>
+                <field name="partner_shegavati" string="თანამშრომლის შეღავათი"/>
+                <field name="total_credits" string="ათვისებული შეღავათი"/>
+                <field name="total_credits_2" string="საპენსიოს გარეშე"/>
+                <field name="shegavati" string="დარჩენილი შეღავათი"/>
+                <button name="action_view_entries" type="object" string="View entries" class="btn-link"/>
+            </list>
+        </field>
+    </record>
+
+    <!-- Wizard form -->
+    <record id="view_shegavati_employee_report_wizard_form" model="ir.ui.view">
+        <field name="name">shegavati.employee.report.wizard.form</field>
+        <field name="model">shegavati.employee.report.wizard</field>
+        <field name="arch" type="xml">
+            <form string="შეღავათის რეპორტი">
+                <group>
+                    <field name="end_date" string="საბოლოო თარიღი"/>
+                </group>
+                <footer>
+                    <button name="action_confirm" string="Confirm" type="object" class="btn-primary"/>
+                    <button string="Cancel" class="btn-secondary" special="cancel"/>
+                </footer>
+            </form>
+        </field>
+    </record>
+
+    <record id="action_shegavati_employee_report_wizard" model="ir.actions.act_window">
+        <field name="name">შეღავათის რეპორტი</field>
+        <field name="res_model">shegavati.employee.report.wizard</field>
+        <field name="view_mode">form</field>
+        <field name="target">new</field>
+    </record>
+
+    <record id="action_shegavati_employee_report" model="ir.actions.act_window">
+        <field name="name">შეღავათის რეპორტი</field>
+        <field name="res_model">shegavati.employee.report</field>
+        <field name="view_mode">list</field>
+    </record>
+
+    <menuitem id="menu_shegavati_employee_report"
+        name="შეღავათის რეპორტი"
+        action="action_shegavati_employee_report_wizard"
+        parent="account.account_reports_partners_reports_menu"
+        sequence="21"/>
+
+</odoo>

@@ -1,0 +1,70 @@
+<odoo>
+    <data>
+        <record id="view_faqturis_gadmowera_realizacia_form" model="ir.ui.view">
+            <field name="name">faqturis.gadmowera.realizacia.form</field>
+            <field name="model">faqturis.gadmowera.realizacia</field>
+            <field name="arch" type="xml">
+                <form string="FAQTURI GADMO WERA REALIZACIA">
+                    <group>
+                        <field name="date1"/>
+                        <field name="date2"/>
+                        <field name="selected_month"/>
+                        <field name="rs_acc" readonly="1" invisible="1"/>  <!-- Keep readonly if it shouldn't be edited -->
+                        <field name="rs_pass" readonly="1" invisible="1"/>  <!-- Keep readonly if it shouldn't be edited -->
+                    </group>
+                    <footer>
+                        <button string="ფაქტურის ჩამოტვირთვა" type="object" name="send_soap_request" class="btn-primary"/>
+                        <button string="გაუქმება" class="btn-secondary" special="cancel"/>
+                    </footer>
+                </form>
+            </field>
+        </record>
+
+        <record id="view_faqturis_gadmowera_realizacia_list" model="ir.ui.view">
+            <field name="name">faqturis.gadmowera.realizacia.list</field>
+            <field name="model">faqturis.gadmowera.realizacia</field>
+            <field name="arch" type="xml">
+                <list string="Invoices">
+                    <field name="date1"/>
+                    <field name="date2"/>
+                    <field name="selected_month"/>
+                    <field name="rs_acc" invisible="1"/>
+                    <field name="rs_pass" invisible="1"/>
+                </list>
+            </field>
+        </record>
+        <record id="view_faqturis_gadmowera_realizacia_buyer_form" model="ir.ui.view">
+            <field name="name">faqturis.gadmowera.realizacia.buyer.form</field>
+            <field name="model">faqturis.gadmowera.realizacia.buyer</field>
+            <field name="arch" type="xml">
+                <form string="FAQTURI GADMO WERA REALIZACIA BUYER">
+                    <sheet>
+                        <group>
+                            <group>
+                                <field name="date1" />
+                                <field name="date2" />
+                                <field name="selected_month"/>
+                            </group>
+                            <group>
+                                <field name="rs_acc" readonly="1"  invisible="1"/>
+                                <field name="rs_pass" readonly="1"  invisible="1"/>
+                            </group>
+                        </group>
+                        <footer>
+                            <button name="send_soap_request" string="ფაქტურის ჩამოტვირთვა" type="object" class="btn-primary"/>
+                            <button string="გაუქმება" class="btn-secondary" special="cancel"/>
+                        </footer>
+                    </sheet>
+                </form>
+            </field>
+        </record>
+
+        <!-- Action to open the wizard -->
+        <record id="action_faqturis_gadmowera_realizacia_buyer" model="ir.actions.act_window">
+            <field name="name">FAQTURI GADMO WERA REALIZACIA BUYER</field>
+            <field name="res_model">faqturis.gadmowera.realizacia.buyer</field>
+            <field name="view_mode">form</field>
+            <field name="target">new</field>
+        </record>
+    </data>
+</odoo>

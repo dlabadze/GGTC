@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<odoo>
+    <!-- Wizard Form View -->
+    <record id="view_update_categories_wizard_form" model="ir.ui.view">
+        <field name="name">update.categories.wizard.form</field>
+        <field name="model">update.categories.wizard</field>
+        <field name="arch" type="xml">
+            <form string="Update Categories">
+                <sheet>
+                    <group>
+                        <field name="categories" widget="radio"/>
+                    </group>
+                    <group>
+                        <field name="file_name" invisible="1"/>
+                        <field name="excel_file" filename="file_name"/>
+                    </group>
+                </sheet>
+                <footer>
+                    <button name="action_update_categories" 
+                            string="Update" 
+                            type="object" 
+                            class="btn-primary"/>
+                    <button string="Cancel" 
+                            class="btn-secondary" 
+                            special="cancel"/>
+                </footer>
+            </form>
+        </field>
+    </record>
+
+    <!-- Wizard Action -->
+    <record id="action_update_categories_wizard" model="ir.actions.act_window">
+        <field name="name">Update Categories</field>
+        <field name="res_model">update.categories.wizard</field>
+        <field name="view_mode">form</field>
+        <field name="target">new</field>
+        <field name="binding_model_id" ref="product.model_product_template"/>
+        <field name="binding_view_types">form,list</field>
+    </record>
+</odoo>

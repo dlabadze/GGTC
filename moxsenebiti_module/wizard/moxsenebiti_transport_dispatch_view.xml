@@ -1,0 +1,104 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="view_moxsenebiti_transport_dispatch_form" model="ir.ui.view">
+        <field name="name">moxsenebiti.transport.dispatch.form</field>
+        <field name="model">moxsenebiti.transport.dispatch</field>
+        <field name="arch" type="xml">
+            <form string="ტრანსპორტის დეპარტამენტი" class="o_dialog_size_full_width">
+                <sheet>
+
+                    <!-- Header banner -->
+                    <div class="alert alert-info d-flex align-items-center mb-3" role="alert">
+                        <i class="fa fa-truck me-2" style="font-size:1.4rem;"/>
+                        <div>
+                            <strong>გთხოვთ შეავსოთ მივლინებისთვის საჭირო მონაცემები</strong>&amp;nbsp;—&amp;nbsp;
+                            <field name="moxsenebiti_id" readonly="1" class="d-inline"/>
+                        </div>
+                    </div>
+
+                    <!-- ── Section 1: Employee / Vehicle lines ── -->
+                    <div class="o_horizontal_separator mt-2 mb-2 fw-bold text-uppercase text-muted" style="font-size:0.75rem; letter-spacing:0.08em;">
+                        &#128661; თანამშრომლები და სატრანსპორტო საშუალებები
+                    </div>
+
+                    <field name="employee_line_ids" nolabel="1">
+                        <list editable="bottom"
+                              decoration-info="car_id == False"
+                              string="სია">
+                            <field name="employee_id"
+                                   string="თანამშრომელი"
+                                   required="1"
+                                   column_invisible="False"
+                                   options="{'no_create': True}"
+                                   style="min-width:150px;"/>
+                            <field name="car_id"
+                                   string="ავტომობილი"
+                                   options="{'no_create': True}"
+                                   style="min-width:150px;"/>
+                            <field name="wvis_norma"
+                                   string="წვ. ნორმა"
+                                   readonly="1"
+                                   optional="show"
+                                   style="width:90px;"/>
+                            <field name="moto_norma"
+                                   string="მოტო ნორმა"
+                                   readonly="1"
+                                   optional="show"
+                                   style="width:90px;"/>
+                            <field name="km"
+                                   string="კმ"
+                                   style="width:60px;"/>
+                            <field name="moto_hours"
+                                   string="მოტო/სთ"
+                                   style="width:80px;"/>
+                            <field name="fuel_amount_km"
+                                   string="საწვ.(კმ)"
+                                   readonly="1"
+                                   optional="show"
+                                   style="width:120px;"/>
+                            <field name="fuel_amount_moto"
+                                   string="საწვ.(მოტო)"
+                                   readonly="1"
+                                   optional="show"
+                                   style="width:120px;"/>
+                            <field name="fuel_amount"
+                                   string="სულ საწვ."
+                                   readonly="1"
+                                   style="width:120px; font-weight:bold;"/>
+                        </list>
+                    </field>
+
+                    <!-- ── Section 2: Transport approvers ── -->
+                    <div class="o_horizontal_separator mt-4 mb-2 fw-bold text-uppercase text-muted" style="font-size:0.75rem; letter-spacing:0.08em;">
+                        &#128100; გთოვთ აირჩიოთ ვიზიტორები
+                    </div>
+
+                    <div class="row mt-2">
+                        <div class="col-12">
+                            <field name="transport_approver_ids"
+                                   widget="many2many_tags"
+                                   nolabel="1"
+                                   placeholder="დაამატეთ სატრანსპორტო განყოფილების ვიზიტორები..."
+                                   options="{'no_create': True, 'color_field': 'color'}"
+                                   style="width:100%; min-height:42px;"/>
+                        </div>
+                    </div>
+
+                    <div class="alert alert-warning mt-3 mb-0 p-2" role="alert" style="font-size:0.85rem;">
+                        <i class="fa fa-info-circle me-1"/>
+                        შეავსეთ ყველა სტრიქონი. გაგზავნის შემდეგ, ვიზიტორები მიიღებენ შეტყობინებას ვიზირებისთვის.
+                    </div>
+
+                </sheet>
+
+                <footer>
+                    <button name="action_confirm"
+                            string="&#10003; გაგზავნა ვიზიტორებთან"
+                            type="object"
+                            class="btn-primary"/>
+                    <button string="გაუქმება" class="btn-secondary" special="cancel"/>
+                </footer>
+            </form>
+        </field>
+    </record>
+</odoo>

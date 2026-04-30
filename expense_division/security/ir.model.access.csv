@@ -1,0 +1,4 @@
+id,name,model_id:id,group_id:id,perm_read,perm_write,perm_create,perm_unlink
+access_divide_deb_wizard,divide.deb.wizard,model_divide_deb_wizard,account.group_account_user,1,1,1,1
+access_divide_deb_preset,divide.deb.preset,model_divide_deb_preset,account.group_account_user,1,1,1,1
+access_divide_deb_preset_save,divide.deb.preset.save,model_divide_deb_preset_save,account.group_account_user,1,1,1,1

@@ -1,0 +1,15 @@
+id,name,model_id:id,group_id:id,perm_read,perm_write,perm_create,perm_unlink
+access_cpv_code_accountant,cpv.code.accountant,model_cpv_code,account.group_account_user,1,1,1,1
+access_budget_cpv_accountant,budget.cpv.accountant,model_budget_cpv,account.group_account_user,1,1,1,1
+access_budget_cpv_line_accountant,budget.cpv.line.accountant,model_budget_cpv_line,account.group_account_user,1,1,1,1
+access_purchase_plan_accountant,purchase.plan.accountant,model_purchase_plan,account.group_account_user,1,1,1,1
+access_purchase_plan_line_accountant,purchase.plan.line.accountant,model_purchase_plan_line,account.group_account_user,1,1,1,1
+access_purchase_plan_changes_accountant,purchase.plan.changes.accountant,model_purchase_plan_changes,account.group_account_user,1,1,1,1
+access_purchase_plan_changes_line_accountant,purchase.plan.changes.line.accountant,model_purchase_plan_changes_line,account.group_account_user,1,1,1,1
+access_account_payment_line_accountant,account.payment.line.accountant,model_account_payment_line,account.group_account_user,1,1,1,1
+access_account_payment_purchase_plan_line_accountant,account.payment.purchase.plan.line.accountant,model_account_payment_purchase_plan_line,account.group_account_user,1,1,1,1
+access_purchase_method_all,purchase.method.all,model_purchase_method,,1,1,1,1
+access_purchase_reason_all,purchase.reason.all,model_purchase_reason,,1,1,1,1
+access_purchase_plan_variant_all,purchase.plan.variant.all,model_purchase_plan_variant,,1,1,1,1
+access_budget_line_changes_accountant,budget.line.changes.accountant,model_budget_line_changes,account.group_account_user,1,1,1,1
+access_budget_line_changes_line_accountant,budget.line.changes.line.accountant,model_budget_line_changes_line,account.group_account_user,1,1,1,1

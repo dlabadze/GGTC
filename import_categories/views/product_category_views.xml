@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<odoo>
+    <!-- Inherit Product Category List View -->
+    <record id="product_category_list_view_inherit" model="ir.ui.view">
+        <field name="name">product.category.list.view.inherit</field>
+        <field name="model">product.category</field>
+        <field name="inherit_id" ref="product.product_category_list_view"/>
+        <field name="arch" type="xml">
+            <xpath expr="//list" position="inside">
+                <header>
+                    <button name="action_open_update_categories_wizard" 
+                            string="Update Categories" 
+                            type="object" 
+                            class="btn-primary"
+                            display="always"/>
+                </header>
+            </xpath>
+        </field>
+    </record>
+</odoo>

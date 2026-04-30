@@ -1,0 +1,10 @@
+id,name,model_id:id,group_id:id,perm_read,perm_write,perm_create,perm_unlink
+access_tbc_payment_integration_tbc_payment_integration,tbc_payment_integration.tbc_payment_integration,model_tbc_payment_integration_tbc_payment_integration,base.group_user,1,1,1,1
+access_tbc_movements,tbc.movements access for user,model_tbc_movements,base.group_user,1,1,1,1
+access_tbc_code_mapping,tbc.code.mapping access for user,model_tbc_code_mapping,base.group_user,1,1,1,1
+access_tbc_account_statement_wizard,tbc_account_statement_wizard_access,model_tbc_account_statement_wizard,base.group_user,1,1,1,1
+access_bog_statement_pdf_wizard,bog_statement_pdf_wizard_access,model_bog_statement_pdf_wizard,base.group_user,1,1,1,1
+access_custom_bank_user,access.custom.bank.user,model_custom_bank,base.group_user,1,1,1,1
+access_tbc_partner_selection_wizard,tbc.partner.selection.wizard access for user,model_tbc_partner_selection_wizard,base.group_user,1,1,1,1
+access_purchase_requisition_payment_wizard,purchase.requisition.payment.wizard access for user,model_purchase_requisition_payment_wizard,base.group_user,1,1,1,1
+access_budget_payment_wizard,budget.payment.wizard access for user,model_budget_payment_wizard,base.group_user,1,1,1,1

@@ -1,0 +1,381 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data>
+        <template id="accounting_dashboard_template" name="EGT Sales Dashboard">
+            <t t-call="web.frontend_layout">
+                <div class="container mt-4">
+                    <h1>EGT Sales Dashboard</h1>
+                    
+                    <div class="card mb-4">
+                        <div class="card-body">
+                            <div class="row">
+                                <div class="col-md-3">
+                                    <label>Date From:</label>
+                                    <input type="date" id="dateFrom" class="form-control" t-att-value="dashboard_data['date_from']"/>
+                                </div>
+                                <div class="col-md-3">
+                                    <label>Date To:</label>
+                                    <input type="date" id="dateTo" class="form-control" t-att-value="dashboard_data['date_to']"/>
+                                </div>
+                                <div class="col-md-3">
+                                    <label>Month From:</label>
+                                    <input type="month" id="monthFrom" class="form-control" t-att-value="dashboard_data.get('month_from', '')"/>
+                                </div>
+                                <div class="col-md-3">
+                                    <label>Month To:</label>
+                                    <input type="month" id="monthTo" class="form-control" t-att-value="dashboard_data.get('month_to', '')"/>
+                                </div>
+                            </div>
+                            <button class="btn btn-primary mt-3" onclick="refreshData()">Refresh Dashboard</button>
+                        </div>
+                    </div>
+                    
+                    <!-- Summary Cards -->
+                    <div class="row mb-4">
+                        <div class="col-md-3">
+                            <div class="card border-primary">
+                                <div class="card-header bg-primary text-white">
+                                    <h6>Top Product</h6>
+                                </div>
+                                <div class="card-body text-center">
+                                    <t t-if="dashboard_data['summary']['top_product']">
+                                        <h6><t t-esc="dashboard_data['summary']['top_product']['name']"/></h6>
+                                        <p>$<t t-esc="dashboard_data['summary']['top_product']['revenue_with_tax']"/></p>
+                                    </t>
+                                    <t t-else="">
+                                        <p>No data</p>
+                                    </t>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-3">
+                            <div class="card border-success">
+                                <div class="card-header bg-success text-white">
+                                    <h6>Top Customer</h6>
+                                </div>
+                                <div class="card-body text-center">
+                                    <t t-if="dashboard_data['summary']['top_customer']">
+                                        <h6><t t-esc="dashboard_data['summary']['top_customer']['name']"/></h6>
+                                        <p>$<t t-esc="dashboard_data['summary']['top_customer']['revenue_with_tax']"/></p>
+                                    </t>
+                                    <t t-else="">
+                                        <p>No data</p>
+                                    </t>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-3">
+                            <div class="card border-info">
+                                <div class="card-header bg-info text-white">
+                                    <h6>Top Category</h6>
+                                </div>
+                                <div class="card-body text-center">
+                                    <t t-if="dashboard_data['summary']['top_category']">
+                                        <h6><t t-esc="dashboard_data['summary']['top_category']['name']"/></h6>
+                                        <p>$<t t-esc="dashboard_data['summary']['top_category']['revenue_with_tax']"/></p>
+                                    </t>
+                                    <t t-else="">
+                                        <p>No data</p>
+                                    </t>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-3">
+                            <div class="card border-warning">
+                                <div class="card-header bg-warning text-dark">
+                                    <h6>Total Revenue</h6>
+                                </div>
+                                <div class="card-body text-center">
+                                    <h5>$<t t-esc="dashboard_data['summary']['total_revenue_with_tax']"/></h5>
+                                    <small>Without Tax: $<t t-esc="dashboard_data['summary']['total_revenue_without_tax']"/></small>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- Main Tables Row -->
+                    <div class="row mb-4">
+                        <div class="col-md-6">
+                            <div class="card">
+                                <div class="card-header bg-primary text-white">
+                                    <h5>Top Products</h5>
+                                </div>
+                                <div class="card-body">
+                                    <div class="table-responsive">
+                                        <table class="table table-striped table-sm">
+                                            <thead>
+                                                <tr>
+                                                    <th>N</th>
+                                                    <th>Name</th>
+                                                    <th>Revenue</th>
+                                                    <th>Qty</th>
+                                                    <th>%</th>
+                                                </tr>
+                                            </thead>
+                                            <tbody>
+                                                <t t-foreach="dashboard_data['top_products']" t-as="product">
+                                                    <tr>
+                                                        <td><t t-esc="product['rank']"/></td>
+                                                        <td><t t-esc="product['name']"/></td>
+                                                        <td>$<t t-esc="product['revenue_with_tax']"/></td>
+                                                        <td><t t-esc="product['quantity']"/></td>
+                                                        <td><t t-esc="product['percentage']"/>%</td>
+                                                    </tr>
+                                                </t>
+                                                <t t-if="not dashboard_data['top_products']">
+                                                    <tr>
+                                                        <td colspan="5">No product data</td>
+                                                    </tr>
+                                                </t>
+                                            </tbody>
+                                        </table>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div class="col-md-6">
+                            <div class="card">
+                                <div class="card-header bg-info text-white">
+                                    <h5>Top Categories</h5>
+                                </div>
+                                <div class="card-body">
+                                    <div class="table-responsive">
+                                        <table class="table table-striped table-sm">
+                                            <thead>
+                                                <tr>
+                                                    <th>N</th>
+                                                    <th>Category</th>
+                                                    <th>Revenue</th>
+                                                    <th>%</th>
+                                                </tr>
+                                            </thead>
+                                            <tbody>
+                                                <t t-foreach="dashboard_data['top_categories']" t-as="category">
+                                                    <tr>
+                                                        <td><t t-esc="category['rank']"/></td>
+                                                        <td><t t-esc="category['name']"/></td>
+                                                        <td>$<t t-esc="category['revenue_with_tax']"/></td>
+                                                        <td><t t-esc="category['percentage']"/>%</td>
+                                                    </tr>
+                                                </t>
+                                                <t t-if="not dashboard_data['top_categories']">
+                                                    <tr>
+                                                        <td colspan="4">No category data</td>
+                                                    </tr>
+                                                </t>
+                                            </tbody>
+                                        </table>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- Top Customers Full Width -->
+                    <div class="row mb-4">
+                        <div class="col-12">
+                            <div class="card">
+                                <div class="card-header bg-success text-white">
+                                    <h5>Top Customers</h5>
+                                </div>
+                                <div class="card-body">
+                                    <div class="table-responsive">
+                                        <table class="table table-striped table-sm">
+                                            <thead>
+                                                <tr>
+                                                    <th>N</th>
+                                                    <th>Customer Name</th>
+                                                    <th>Revenue</th>
+                                                    <th>Invoices</th>
+                                                    <th>%</th>
+                                                </tr>
+                                            </thead>
+                                            <tbody>
+                                                <t t-foreach="dashboard_data['top_customers']" t-as="customer">
+                                                    <tr>
+                                                        <td><t t-esc="customer['rank']"/></td>
+                                                        <td><t t-esc="customer['name']"/></td>
+                                                        <td>$<t t-esc="customer['revenue_with_tax']"/></td>
+                                                        <td><t t-esc="customer['invoice_count']"/></td>
+                                                        <td><t t-esc="customer['percentage']"/>%</td>
+                                                    </tr>
+                                                </t>
+                                                <t t-if="not dashboard_data['top_customers']">
+                                                    <tr>
+                                                        <td colspan="5">No customer data</td>
+                                                    </tr>
+                                                </t>
+                                            </tbody>
+                                        </table>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- Monthly Tables -->
+                    <div class="row mb-4">
+                        <div class="col-12 mb-4">
+                            <div class="card">
+                                <div class="card-header bg-warning text-dark">
+                                    <h5>Revenue by Month</h5>
+                                </div>
+                                <div class="card-body">
+                                    <table class="table table-striped">
+                                        <thead>
+                                            <tr>
+                                                <th>Category</th>
+                                                <t t-foreach="dashboard_data.get('monthly_data', {}).get('months', [])" t-as="month">
+                                                    <th><t t-esc="month['short']"/></th>
+                                                </t>
+                                                <th>Total</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            <t t-set="revenue_data" t-value="dashboard_data.get('monthly_data', {}).get('revenue_by_category', {})"/>
+                                            <t t-foreach="revenue_data" t-as="category">
+                                                <tr>
+                                                    <td><t t-esc="category"/></td>
+                                                    <t t-set="row_total" t-value="0"/>
+                                                    <t t-foreach="dashboard_data.get('monthly_data', {}).get('months', [])" t-as="month">
+                                                        <t t-set="amount" t-value="revenue_data[category].get(month['key'], 0)"/>
+                                                        <t t-set="row_total" t-value="row_total + amount"/>
+                                                        <td>
+                                                            <t t-if="amount > 0">
+                                                                $<t t-esc="amount"/>
+                                                            </t>
+                                                            <t t-else="">
+                                                                -
+                                                            </t>
+                                                        </td>
+                                                    </t>
+                                                    <td><strong>$<t t-esc="row_total"/></strong></td>
+                                                </tr>
+                                            </t>
+                                            <t t-if="not revenue_data">
+                                                <tr>
+                                                    <td colspan="10">No revenue data for selected period</td>
+                                                </tr>
+                                            </t>
+                                        </tbody>
+                                    </table>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div class="col-12">
+                            <div class="card">
+                                <div class="card-header bg-secondary text-white">
+                                    <h5>Quantity by Month</h5>
+                                </div>
+                                <div class="card-body">
+                                    <table class="table table-striped">
+                                        <thead>
+                                            <tr>
+                                                <th>Category</th>
+                                                <t t-foreach="dashboard_data.get('monthly_data', {}).get('months', [])" t-as="month">
+                                                    <th><t t-esc="month['short']"/></th>
+                                                </t>
+                                                <th>Total</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            <t t-set="quantity_data" t-value="dashboard_data.get('monthly_data', {}).get('quantity_by_category', {})"/>
+                                            <t t-foreach="quantity_data" t-as="category">
+                                                <tr>
+                                                    <td><t t-esc="category"/></td>
+                                                    <t t-set="row_total" t-value="0"/>
+                                                    <t t-foreach="dashboard_data.get('monthly_data', {}).get('months', [])" t-as="month">
+                                                        <t t-set="quantity" t-value="quantity_data[category].get(month['key'], 0)"/>
+                                                        <t t-set="row_total" t-value="row_total + quantity"/>
+                                                        <td>
+                                                            <t t-if="quantity > 0">
+                                                                <t t-esc="quantity"/>
+                                                            </t>
+                                                            <t t-else="">
+                                                                -
+                                                            </t>
+                                                        </td>
+                                                    </t>
+                                                    <td><strong><t t-esc="row_total"/></strong></td>
+                                                </tr>
+                                            </t>
+                                            <t t-if="not quantity_data">
+                                                <tr>
+                                                    <td colspan="10">No quantity data for selected period</td>
+                                                </tr>
+                                            </t>
+                                        </tbody>
+                                    </table>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- System Info -->
+                    <div class="row">
+                        <div class="col-12">
+                            <div class="card">
+                                <div class="card-body">
+                                    <div class="row text-center">
+                                        <div class="col-md-3">
+                                            <h6>Total Invoices</h6>
+                                            <h4><t t-esc="dashboard_data['summary']['total_invoices']"/></h4>
+                                        </div>
+                                        <div class="col-md-3">
+                                            <h6>Total Quantity</h6>
+                                            <h4><t t-esc="dashboard_data['summary']['total_quantity']"/></h4>
+                                        </div>
+                                        <div class="col-md-3">
+                                            <h6>Current User</h6>
+                                            <h6><t t-esc="user_name"/></h6>
+                                        </div>
+                                        <div class="col-md-3">
+                                            <h6>Company</h6>
+                                            <h6><t t-esc="company"/></h6>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <script>
+                    function refreshData() {
+                        var dateFrom = document.getElementById('dateFrom').value;
+                        var dateTo = document.getElementById('dateTo').value;
+                        var monthFrom = document.getElementById('monthFrom').value;
+                        var monthTo = document.getElementById('monthTo').value;
+                        
+                        var url = '/accounting/dashboard?';
+                        if (dateFrom) url += 'date_from=' + dateFrom + '&amp;';
+                        if (dateTo) url += 'date_to=' + dateTo + '&amp;';
+                        if (monthFrom) url += 'month_from=' + monthFrom + '&amp;';
+                        if (monthTo) url += 'month_to=' + monthTo + '&amp;';
+                        
+                        window.location.href = url;
+                    }
+                    
+                    document.addEventListener('DOMContentLoaded', function() {
+                        var monthFrom = document.getElementById('monthFrom');
+                        var monthTo = document.getElementById('monthTo');
+                        
+                        if (!monthFrom.value) {
+                            var currentYear = new Date().getFullYear();
+                            var currentMonth = new Date().getMonth() + 1;
+                            monthFrom.value = currentYear + '-' + (currentMonth &lt; 10 ? '0' : '') + currentMonth;
+                        }
+                        
+                        if (!monthTo.value) {
+                            var currentYear = new Date().getFullYear();
+                            var currentMonth = new Date().getMonth() + 1;
+                            monthTo.value = currentYear + '-' + (currentMonth &lt; 10 ? '0' : '') + currentMonth;
+                        }
+                    });
+                </script>
+            </t>
+        </template>
+    </data>
+</odoo>

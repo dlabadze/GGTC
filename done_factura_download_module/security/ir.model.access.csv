@@ -1,0 +1,8 @@
+id,name,model_id:id,group_id:id,perm_read,perm_write,perm_create,perm_unlink
+access_done_faqturi_user,access_done_faqturi_user,model_done_factura,base.group_user,1,1,1,1
+access_done_faqtura_line_user,access_done_faqtura_line_user,model_done_faqtura_line,base.group_user,1,1,1,1
+access_done_faqtura_document_user,access_done_faqtura_document_user,model_done_faqtura_document,base.group_user,1,1,1,1
+access_done_faqturis_gadmowera_user,access_done_faqturis_gadmowera_user,model_done_faqturis_gadmowera,base.group_user,1,1,1,1
+access_done_factura_check_wizard_user,access_done_factura_check_wizard_user,model_done_factura_check_wizard,base.group_user,1,1,1,1
+access_factura_checking_user,access_factura_checking_user,model_factura_checking,base.group_user,1,1,1,1
+access_purchase_requisition_avansi_user,access_purchase_requisition_avansi_user,model_purchase_requisition_avansi,base.group_user,1,1,1,1

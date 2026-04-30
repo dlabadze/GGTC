@@ -1,0 +1,250 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <!-- Wizard Form View -->
+    <record id="view_fetch_waybills_wizard_form" model="ir.ui.view">
+        <field name="name">fetch.waybills.wizard.form</field>
+        <field name="model">fetch.waybills.wizard</field>
+        <field name="arch" type="xml">
+            <form string="Fetch Waybills">
+                <group>
+                    <field name="date1"/>
+                    <field name="date2"/>
+                </group>
+                <footer>
+                    <button string="გადმოწერა" type="object" name="fetch_waybills" class="oe_highlight" style="color:red"/>
+                    <button string="გაუქმება" class="btn-secondary" special="cancel"/>
+                </footer>
+            </form>
+        </field>
+    </record>
+
+    <!-- Wizard Action -->
+    <record id="action_fetch_waybills_wizard" model="ir.actions.act_window">
+        <field name="name">Fetch Waybills Wizard</field>
+        <field name="res_model">fetch.waybills.wizard</field>
+        <field name="view_mode">form</field>
+        <field name="view_id" ref="view_fetch_waybills_wizard_form"/>
+        <field name="target">new</field>
+    </record>
+
+    <!-- list View for Waybill Model -->
+    <record id="view_waybill_list" model="ir.ui.view">
+        <field name="name">waybill.list</field>
+        <field name="model">waybill</field>
+        <field name="arch" type="xml">
+            <list js_class="button_5_list" create="false" string="Waybills" decoration-success="mdgomareoba == 'korektirebuli'" decoration-warning="mdgomareoba == 'gadatanili'">
+                <!-- <header>
+                    <button name="action_open_fetch_waybills_wizard" type="object" string="ზედნადების ჩამოტვირთვა" class="oe_highlight"/>
+                </header> -->
+                <field name="waybill_id_number"/>
+                <field name="waybill_number"/>
+                <field name="waybill_type"/>
+                <field name="create_date"/>
+                <field name="buyer_tin"/>
+                <field name="buyer_name"/>
+                <field name="seller_name"/>
+                <field name="seller_tin"/>
+                <field name="start_address"/>
+                <field name="transport_cost"/>
+                <field name="activate_date"/>
+                <field name="full_amount"/>
+                <field name="status_name"/>
+                <field name="status" invisible="1"/>
+                <field name="mdgomareoba"/>
+            </list>
+        </field>
+    </record>
+
+    <record id="view_waybill_form" model="ir.ui.view">
+        <field name="name">waybill.form</field>
+        <field name="model">waybill</field>
+        <field name="arch" type="xml">
+            <form string="Waybill">
+                <header>
+                    <button name="create_vendor_bill"
+                            type="object"
+                            string="შეძენის ოპერაციის გატარება"
+                            class="btn-primary" invisible="error_text != 'შესყიდვა'"/>
+                    <button name="create_sale_order" type="object" string="რეალიზაციის გატარება" class="btn-primary" invisible="error_text != 'რეალიზაცია'"/>
+                    <button name="action_create_internal_delivery" type="object" string="შიდა გადაცემის გატარება" class="oe_highlight" invisible="error_text != 'შიდა გადაზიდვა'"/>
+                    <button name="create_purchase_return" type="object" string="შეძენის დაბრუნების გატარება" class="oe_highlight" invisible="error_text != 'შესყიდვის დაბრუნება'"/>
+                    <button name="create_inventory_receipt"
+                        type="object"
+                        string="Create Inventory Receipt"
+                        class="btn-primary"
+                        invisible="error_text != 'რეალიზაციის დაბრუნება'"/>
+                    <button name="create_customer_invoice" type="object" string="რეალიზაციის გატარება ბუღალტერიაში" class="oe_highlight" invisible="error_text != 'რეალიზაცია'"/>
+                </header>
+                <sheet>
+                    <group>
+                        <group>
+                            <field name="waybill_id_number"/>
+                            <field name="waybill_number"/>
+                            <field name="waybill_type"/>
+                            <field name="create_date"/>
+                            <field name="buyer_tin"/>
+                            <field name="buyer_name"/>
+                            <field name="seller_name"/>
+                            <field name="seller_tin"/>
+                            <field name="start_address"/>
+                            <field name="transport_cost"/>
+                            <field name="activate_date"/>
+                            <field name="full_amount"/>
+                            <field name="status_name"/>
+                            <field name="status" invisible="1"/>
+                            <field name="invoice_id"/>
+                            <field name="mdgomareoba" invisible="1"/>
+                        </group>
+                        <group>
+                            <field name="s_user_id" invisible="1"/>
+                            <field name="begin_date" invisible="1"/>
+                            <field name="is_confirmed" invisible="1"/>
+                            <field name="is_corrected" invisible="1"/>
+                            <field name="seller_st" invisible="1"/>
+                            <field name="is_med" invisible="1"/>
+                            <field name="waybill_comment"/>
+                            <field name="end_address"/>
+                            <field name="driver_tin"/>
+                            <field name="driver_name"/>
+                            <field name="car_number"/>
+                            <field name="delivery_date"/>
+                            <field name="close_date"/>
+                            <field name="error_text" invisible="1"/>
+                            <field name="product_category_id"/>
+                            <field name="stockId1"/>
+                            <field name="is_trans_id_4" invisible="1"/>
+                            <field name="stockId2" invisible="not is_trans_id_4"/>
+                            <field name="xarjgat"/>
+                            <field name="xarjang" invisible="not xarjgat"/>
+                            <field name="rs_acc" invisible="1"/>
+                            <field name="rs_pass" invisible="1"/>
+                        </group>
+                    </group>
+                    <notebook>
+                        <page string="Lines">
+                            <field name="line_ids">
+                                <list editable="bottom" decoration-danger="not product_id">
+                                    <field name="w_name"/>
+                                    <field name="quantity"/>
+                                    <field name="price"/>
+                                    <field name="amount"/>
+                                    <field name="bar_code"/>
+                                    <field name="a_id"/>
+                                    <field name="vat_type"/>
+                                    <field name="koef"/>
+                                    <field name="product_id"/>
+                                    <field name="quantity_fact"/>
+                                    <field name="xarjang"/>
+                                    <field name="product_category_id"/>
+                                    <field name="unit_id"/>
+                                    <field name="unit_txt"/>
+                                </list>
+                                <form string="Line Details">
+                                    <group>
+                                        <field name="w_name"/>
+                                        <field name="quantity"/>
+                                        <field name="price"/>
+                                        <field name="amount"/>
+                                        <field name="bar_code"/>
+                                        <field name="a_id"/>
+                                        <field name="koef"/>
+                                        <field name="vat_type"/>
+                                        <field name="product_id"/>
+                                        <field name="quantity_fact"/>
+                                        <field name="xarjang"/>
+                                        <field name="product_category_id"/>
+                                    </group>
+                                </form>
+                            </field>
+                        </page>
+                        <page string="Line History">
+                            <field name="waybill_line_history_ids">
+                                <list editable="bottom">
+                                    <field name="product_id"/>
+                                    <field name="w_name"/>
+                                    <field name="quantity"/>
+                                    <field name="price"/>
+                                    <field name="amount"/>
+                                    <field name="bar_code"/>
+                                    <field name="a_id"/>
+                                    <field name="vat_type"/>
+                                    <field name="status"/>
+                                    <field name="quantity_fact"/>
+                                    <field name="xarjang"/>
+                                </list>
+                            </field>
+                        </page>
+                    </notebook>
+                </sheet>
+            </form>
+        </field>
+    </record>
+    <record id="view_waybill_search" model="ir.ui.view">
+        <field name="name">waybill.search</field>
+        <field name="model">waybill</field>
+        <field name="arch" type="xml">
+            <search string="Waybill Search">
+                <field name="waybill_number"/>
+                <field name="buyer_tin"/>
+                <field name="create_date"/>
+                <field name="waybill_type"/>
+            </search>
+        </field>
+    </record>
+
+    <!-- Menu Items -->
+    <menuitem id="menu_waybill_root" name="RS ზედნადები" sequence="1"/>
+    
+
+    <!-- Action for Waybill Model -->
+    <!-- Action for Waybill Model with Domain Filter -->
+    <record id="action_waybill" model="ir.actions.act_window">
+        <field name="name">რეალიზაცია</field>
+        <field name="res_model">waybill</field>
+        <field name="view_mode">list,form</field>
+        <field name="search_view_id" ref="view_waybill_search"/>
+        <field name="domain">['|', ('error_text', '=', 'რეალიზაცია'), ('error_text', '=', False)]</field>
+    </record>
+
+
+    <!-- Menu Action for Waybill Model -->
+    <menuitem id="menu_action_waybill" name="რეალიზაცია" parent="menu_waybill_root" action="action_waybill" sequence="2"/>
+
+    <!-- Access Rules -->
+    <record id="waybill_rule_manager" model="ir.rule">
+        <field name="name">Waybill Manager Rule</field>
+        <field name="model_id" ref="model_waybill"/>
+        <field name="groups" eval="[(4, ref('base.group_user'))]"/>
+        <field name="domain_force">[(1, '=', 1)]</field>
+        <field name="perm_read" eval="True"/>
+        <field name="perm_write" eval="True"/>
+        <field name="perm_create" eval="True"/>
+        <field name="perm_unlink" eval="True"/>
+    </record>
+
+    <record id="waybill_rule_user" model="ir.rule">
+        <field name="name">Waybill User Rule</field>
+        <field name="model_id" ref="model_waybill"/>
+        <field name="groups" eval="[(4, ref('base.group_user'))]"/>
+        <field name="domain_force">[(1, '=', 1)]</field>
+        <field name="perm_read" eval="True"/>
+        <field name="perm_write" eval="False"/>
+        <field name="perm_create" eval="False"/>
+        <field name="perm_unlink" eval="False"/>
+    </record>
+    <record id="model_waybill_line_history_access" model="ir.model.access">
+        <field name="name">waybill.line.history access</field>
+        <field name="model_id" ref="model_waybill_line_history"/>
+        <field name="group_id" ref="base.group_user"/>
+        <field name="perm_read" eval="1"/>
+        <field name="perm_write" eval="1"/>
+        <field name="perm_create" eval="1"/>
+        <field name="perm_unlink" eval="1"/>
+    </record>
+
+
+
+
+
+
+</odoo>

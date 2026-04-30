@@ -1,0 +1,71 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="view_partner_currency_movement_report_wizard" model="ir.ui.view">
+        <field name="name">partner.currency.movement.report.wizard.form</field>
+        <field name="model">partner.currency.movement.report.wizard</field>
+        <field name="arch" type="xml">
+            <form string="Partner Currency Movement Report">
+                <header>
+                    <button name="action_generate_report" string="Generate Report" type="object" class="btn-primary"/>
+                    <button name="action_preview_report" string="Preview" type="object" class="btn-secondary"/>
+                </header>
+                <sheet>
+                    <div class="oe_title">
+                        <h1>Partner Currency Movement Report</h1>
+                        <p>Generate detailed partner currency movement reports showing balances and movements by client/vendor/employee, currency and account.</p>
+                    </div>
+                    
+                    <group>
+                        <group name="date_range" string="Date Range">
+                            <field name="date_from" required="1"/>
+                            <field name="date_to" required="1"/>
+                            <field name="company_id" options="{'no_create': True}"/>
+                        </group>
+                        
+                        <group name="report_format" string="Report Format">
+                            <field name="report_format" widget="radio" options="{'horizontal': true}"/>
+                        </group>
+                    </group>
+                    
+                    <notebook>
+                        <page string="Filters" name="filters">
+                            <group>
+                                <group name="partner_filters" string="Partner Filters">
+                                    <field name="partner_category_filter" widget="radio"/>
+                                    <field name="partner_ids" widget="many2many_tags" 
+                                           invisible="partner_category_filter != 'all'"/>
+                                </group>
+                                
+                                <group name="account_currency_filters" string="Account &amp; Currency Filters">
+                                    <field name="account_ids" widget="many2many_tags"/>
+                                    <field name="currency_ids" widget="many2many_tags"/>
+                                </group>
+                            </group>
+                        </page>
+                        
+                        <page string="Display Options" name="display_options">
+                            <group>
+                                <group name="balance_options" string="Balance Options">
+                                    <field name="show_zero_balance"/>
+                                </group>
+                                
+                                <group name="grouping_options" string="Grouping Options">
+                                    <field name="group_by_partner"/>
+                                    <field name="group_by_currency"/>
+                                </group>
+                            </group>
+                        </page>
+                    </notebook>
+                </sheet>
+            </form>
+        </field>
+    </record>
+
+    <record id="action_partner_currency_movement_report_wizard" model="ir.actions.act_window">
+        <field name="name">Partner Currency Movement Report</field>
+        <field name="res_model">partner.currency.movement.report.wizard</field>
+        <field name="view_mode">form</field>
+        <field name="target">new</field>
+        <field name="view_id" ref="view_partner_currency_movement_report_wizard"/>
+    </record>
+</odoo> 

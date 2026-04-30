@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <!-- Wizard Form -->
+    <record id="view_night_expense_wizard_form" model="ir.ui.view">
+        <field name="name">night.expense.wizard.form</field>
+        <field name="model">night.expense.wizard</field>
+        <field name="arch" type="xml">
+            <form string="ღამის ხარჯის გადანაწილება">
+                <group>
+                    <field name="partner_id"/>
+                    <field name="move_id" invisible="1"/>
+                </group>
+                <footer>
+                    <button string="დადასტურება"
+                            type="object"
+                            name="action_confirm"
+                            class="btn-primary"/>
+                    <button string="გაუქმება"
+                            class="btn-secondary"
+                            special="cancel"/>
+                </footer>
+            </form>
+        </field>
+    </record>
+
+    <!-- Action button on account.move form (appears in Action dropdown) -->
+    <record id="action_night_expense_wizard" model="ir.actions.act_window">
+        <field name="name">სასტუმროზე გადახურვა</field>
+        <field name="res_model">night.expense.wizard</field>
+        <field name="view_mode">form</field>
+        <field name="target">new</field>
+        <field name="context">{'default_move_id': active_id}</field>
+        <field name="binding_model_id" ref="account.model_account_move"/>
+        <field name="binding_view_types">form</field>
+    </record>
+</odoo>

@@ -1,0 +1,242 @@
+<odoo>
+    <record id="view_users_form" model="ir.ui.view">
+        <field name="name">res.users.form</field>
+        <field name="model">res.users</field>
+        <field name="inherit_id" ref="base.view_users_form"/>
+        <field name="arch" type="xml">
+            <xpath expr="//h1" position="inside">
+                <field name="bog_client_secret" placeholder='bog client secret'/>
+                <field name="bog_client_id" placeholder='bog client id'/>
+            </xpath>
+        </field>
+    </record>
+    <record id="view_tbc_movements_wizard_form" model="ir.ui.view">
+        <field name="name">tbc.movements.wizard.form</field>
+        <field name="model">tbc.movements.wizard</field>
+        <field name="arch" type="xml">
+            <form string="TBC Movements Wizard">
+                <group>
+                    <group>
+                        <field name="company_id"
+                               invisible="1"/>
+                        <field name="selected_bank_account_id"
+                               required="1"/>
+                    </group>
+                    <group>
+                        <field name="fromdate" required="1"/>
+                        <field name="todate" required="1"/>
+                        <field name="currency" required="1"/>
+                    </group>
+                </group>
+                <footer>
+                    <button string="Fetch Data" 
+                            type="object" 
+                            name="action_get_data" 
+                            class="btn-primary"/>
+                    <button string="Cancel" 
+                            class="btn-secondary" 
+                            special="cancel"/>
+                </footer>
+            </form>
+        </field>
+    </record>
+    <!-- list View for TBC Account Movements -->
+    <record id="view_tbc_movements_list" model="ir.ui.view">
+        <field name="name">tbc.movements.list</field>
+        <field name="model">tbc.movements</field>
+        <field name="arch" type="xml">
+            <list js_class="custom_button_in_tree" create="false" string="TBC Account Movements">
+                <header>
+                    <button name="action_create_statement_lines"
+                            type="object"
+                            string="Create Statement Lines"
+                            class="btn-primary"
+                            help="Create bank statement lines from selected movements"
+                            groups="base.group_user"/>
+                </header>
+                <!-- Main visible fields -->
+                <field name="movement_id"/>
+                <field name="external_payment_id"/>
+                <field name="debit_credit"/>
+                <field name="value_date"/>
+                <field name="amount"/>
+                <field name="currency"/>
+                <field name="partner_name"/>
+                <field name="state"/>
+                <field name="statement_line_id" optional="hide"/>
+                
+                <!-- All other fields from form view for Excel export -->
+                <field name="description"/>
+                <field name="account_number"/>
+                <field name="account_name"/>
+                <field name="additional_information"/>
+                <field name="document_date"/>
+                <field name="document_number"/>
+                <field name="partner_account_number"/>
+                <field name="partner_tax_code"/>
+                <field name="taxpayer_code"/>
+                <field name="taxpayer_name"/>
+                <field name="operation_code"/>
+                <field name="partner_personal_number"/>
+                <field name="partner_document_type"/>
+                <field name="partner_document_number"/>
+                <field name="parent_external_payment_id"/>
+                <field name="status_code"/>
+                <field name="transaction_type"/>
+                <field name="get_account_movements_response_io_id"/>
+            </list>
+        </field>
+    </record>
+
+    <!-- Form View for TBC Account Movements -->
+    <record id="view_tbc_movements_form" model="ir.ui.view">
+        <field name="name">tbc.movements.form</field>
+        <field name="model">tbc.movements</field>
+        <field name="arch" type="xml">
+            <form string="თიბისი ბანკის ამონაწერი">
+                <header>
+                <button name="action_create_statement_lines"
+                        type="object"
+                        string="Create Statement Line"
+                        class="btn-primary"
+                        invisible="state in ('imported', 'done')"
+                        help="Create bank statement line from this movement"/>
+                <field name="state" widget="statusbar" statusbar_visible="draft,imported,done"/>
+                </header>
+                <sheet>
+                    <group>
+                        <field name="statement_line_id" readonly="1"/>
+                        <field name="movement_id"/>
+                        <field name="external_payment_id"/>
+                        <field name="debit_credit"/>
+                        <field name="value_date"/>
+                        <field name="description"/>
+                        <field name="amount"/>
+                        <field name="currency"/>
+                        <field name="account_number"/>
+                        <field name="account_name"/>
+                        <field name="additional_information"/>
+                        <field name="document_date"/>
+                        <field name="document_number"/>
+                        <field name="partner_account_number"/>
+                        <field name="partner_name"/>
+                        <field name="partner_tax_code"/>
+                        <field name="taxpayer_code"/>
+                        <field name="taxpayer_name"/>
+                        <field name="operation_code"/>
+                        <field name="partner_personal_number"/>
+                        <field name="partner_document_type"/>
+                        <field name="partner_document_number"/>
+                        <field name="parent_external_payment_id"/>
+                        <field name="status_code"/>
+                        <field name="transaction_type"/>
+                        <field name="get_account_movements_response_io_id"/>
+                    </group>
+                </sheet>
+            </form>
+        </field>
+    </record>
+	<record id="view_tbc_movements_search" model="ir.ui.view">
+		<field name="name">tbc.movements.search</field>
+		<field name="model">tbc.movements</field>
+		<field name="arch" type="xml">
+			<search string="TBC Movements Search">
+				<field name="movement_id"/>
+				<field name="external_payment_id"/>
+				<field name="partner_name"/>
+				<filter name="filter_draft" string="დაუდასტურებელი" domain="[('state','=','draft')]"/>
+				<filter name="filter_done" string="გატარებული" domain="[('state','=','done')]"/>
+			</search>
+		</field>
+	</record>
+
+    <!-- Action for TBC Movements Wizard -->
+    <record id="action_tbc_movements_wizard" model="ir.actions.act_window">
+        <field name="name">TBC Movements Wizard</field>
+        <field name="res_model">tbc.movements.wizard</field>
+        <field name="view_mode">form</field>
+        <field name="target">new</field>
+    </record>
+
+    <!-- Action for TBC Account Movements -->
+    <record id="action_tbc_movements" model="ir.actions.act_window">
+        <field name="name">TBC Account Movements</field>
+        <field name="res_model">tbc.movements</field>
+        <field name="view_mode">list,form</field>
+        <field name="view_id" ref="view_tbc_movements_list"/>
+		<field name="search_view_id" ref="view_tbc_movements_search"/>
+
+    </record>
+
+ 
+
+    <!-- Access Rights for TBC Account Movements -->
+    <record id="access_tbc_movements" model="ir.model.access">
+        <field name="name">access_tbc_movements</field>
+        <field name="model_id" ref="model_tbc_movements"/>
+        <field name="group_id" ref="base.group_user"/>
+        <field name="perm_read" eval="1"/>
+        <field name="perm_write" eval="1"/>
+        <field name="perm_create" eval="1"/>
+        <field name="perm_unlink" eval="1"/>
+    </record>
+    <record id="access_tbc_movements_wizard" model="ir.model.access">
+        <field name="name">Access for TBC Movements Wizard</field>
+        <field name="model_id" ref="model_tbc_movements_wizard"/>
+        <field name="group_id" ref="base.group_user"/> <!-- You can change this to a specific group if needed -->
+        <field name="perm_read" eval="1"/>
+        <field name="perm_write" eval="1"/>
+        <field name="perm_create" eval="1"/>
+        <field name="perm_unlink" eval="1"/>
+    </record>
+
+    <record id="view_account_account_form_inherit" model="ir.ui.view">
+        <field name="name">account.account.form.inherit.bank.type</field>
+        <field name="model">account.account</field>
+        <field name="inherit_id" ref="account.view_account_form"/>
+        <field name="arch" type="xml">
+            <xpath expr="//field[@name='name']" position="after">
+                <group>
+                    <label for="bank_type_id"/>
+                    <div>
+                        <field name="bank_type_id"/>
+                    </div>
+                </group>
+            </xpath>
+        </field>
+    </record>
+
+    <record id="view_custom_bank_form" model="ir.ui.view">
+        <field name="name">custom.bank.form</field>
+        <field name="model">custom.bank</field>
+        <field name="arch" type="xml">
+            <form string="Bank Type">
+                <sheet>
+                    <group>
+                        <field name="name"/>
+                    </group>
+                </sheet>
+            </form>
+        </field>
+    </record>
+
+    <record id="view_custom_bank_tree" model="ir.ui.view">
+        <field name="name">custom.bank.tree</field>
+        <field name="model">custom.bank</field>
+        <field name="arch" type="xml">
+            <list string="Bank Types">
+                <field name="name"/>
+            </list>
+        </field>
+    </record>
+
+    <record id="action_custom_bank" model="ir.actions.act_window">
+        <field name="name">Bank Types</field>
+        <field name="res_model">custom.bank</field>
+        <field name="view_mode">list,form</field>
+    </record>
+
+    <menuitem id="menu_custom_bank_root" name="Banks" sequence="50"/>
+    <menuitem id="menu_custom_bank" name="Bank Types" parent="menu_custom_bank_root" action="action_custom_bank"/>
+
+</odoo>

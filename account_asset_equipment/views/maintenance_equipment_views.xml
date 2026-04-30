@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="hr_equipment_view_form_inherit_equipment" model="ir.ui.view">
+        <field name="name">hr.equipment.view.form.inherit.equipment</field>
+        <field name="model">maintenance.equipment</field>
+        <field name="inherit_id" ref="maintenance.hr_equipment_view_form"/>
+        <field name="arch" type="xml">
+            <xpath expr="//notebook" position="inside">
+                <page string="Account Assets" name="account_assets">
+                    <field name="account_asset_ids" readonly="1"/>
+                </page>
+            </xpath>
+            <xpath expr="//div[@name='button_box']" position="inside">
+                    <!-- <button name="action_open_account_assets" type="object" string="Account Assets" icon="fa-cubes"/> -->
+                    <button name="action_open_stock_pickings" type="object" string="Moves" icon="fa-cubes"/>
+            </xpath>
+        </field>
+    </record>
+</odoo>

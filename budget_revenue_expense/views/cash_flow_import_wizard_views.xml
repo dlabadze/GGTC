@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="view_cash_flow_import_wizard_form" model="ir.ui.view">
+        <field name="name">cash.flow.import.wizard.form</field>
+        <field name="model">cash.flow.import.wizard</field>
+        <field name="arch" type="xml">
+            <form string="Import Cash Flow Excel">
+                <group invisible="state == 'done'">
+                    <group>
+                        <field name="journal_id"/>
+                        <field name="currency_id"/>
+                    </group>
+                    <group>
+                        <field name="excel_file" filename="file_name" widget="binary"/>
+                        <field name="file_name" invisible="1"/>
+                    </group>
+                </group>
+                <group invisible="state == 'draft'">
+                    <field name="result_message" nolabel="1" readonly="1"/>
+                </group>
+                <field name="state" invisible="1"/>
+                <footer>
+                    <button name="action_import" type="object" string="Import"
+                            class="btn-primary" invisible="state == 'done'"/>
+                    <button string="Close" class="btn-secondary" special="cancel"/>
+                </footer>
+            </form>
+        </field>
+    </record>
+
+    <record id="action_cash_flow_import_wizard" model="ir.actions.act_window">
+        <field name="name">Import Cash Flow</field>
+        <field name="res_model">cash.flow.import.wizard</field>
+        <field name="view_mode">form</field>
+        <field name="target">new</field>
+    </record>
+
+    <menuitem
+        id="menu_cash_flow_import"
+        name="Import Cash Flow"
+        parent="budget.menu_finance_purchase_plans"
+        action="action_cash_flow_import_wizard"
+        sequence="99"/>
+</odoo>

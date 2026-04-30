@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <!-- Salary Components Import Wizard Form View -->
+    <record id="salary_components_import_wizard_form_view" model="ir.ui.view">
+        <field name="name">salary.components.import.wizard.form</field>
+        <field name="model">salary.components.import.wizard</field>
+        <field name="arch" type="xml">
+            <form string="სახელფასო კომპონენტების ატვირთვა">
+                <group>
+                    <field name="excel_file" filename="filename"/>
+                    <field name="filename" invisible="1"/>
+                </group>
+                <div class="alert alert-info" role="alert">
+                    <div class="d-flex align-items-start">
+                        <i class="fa fa-info-circle fa-2x mt-1 me-3 text-primary"/>
+                        <div>
+                            <h5 class="alert-heading mb-2">ინფორმაცია</h5>
+                            <p class="mb-1"><strong>Excel ფაილი უნდა შეიცავდეს შემდეგ სვეტებს:</strong></p>
+                            <ul class="mb-0">
+                                <li><strong>თანამშრომელი</strong> - ინფორმაციული (არ იყენებს კოდი)</li>
+                                <li><strong>პირადი ნომერი</strong> - თანამშრომლის პირადი ნომერი</li>
+                                <li><strong>დასახელება</strong> - კომპონენტის დასახელება</li>
+                                <li><strong>დაწყების თარიღი</strong> - ფორმატი: დღე.თვე.წელი (მაგ: 25.05.2025)</li>
+                                <li><strong>დასრულების თარიღი</strong> - ფორმატი: დღე.თვე.წელი (მაგ: 31.12.2025)</li>
+                                <li><strong>თანხა</strong> - კომპონენტის თანხა</li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+                <footer>
+                    <button string="ატვირთვა" name="action_import" type="object" class="btn-primary"/>
+                    <button string="გაუქმება" class="btn-secondary" special="cancel"/>
+                </footer>
+            </form>
+        </field>
+    </record>
+
+    <!-- Wizard Window Action -->
+    <record id="action_salary_components_import_wizard" model="ir.actions.act_window">
+        <field name="name">სახელფასო კომპონენტების ატვირთვა</field>
+        <field name="res_model">salary.components.import.wizard</field>
+        <field name="view_mode">form</field>
+        <field name="target">new</field>
+    </record>
+</odoo>
+

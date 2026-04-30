@@ -1,0 +1,14 @@
+<odoo>
+    <record id="budget_view_purchase_plan_changes_list_custom" model="ir.ui.view">
+        <field name="name">budget.view.purchase.plan.changes.list.custom</field>
+        <field name="model">purchase.plan.changes</field>
+        <field name="inherit_id" ref="budget.view_purchase_plan_changes_list"/>
+        <field name="arch" type="xml">
+            <xpath expr="//field[@name='name']" position="after">
+                <field name="first_line_date"/>
+                <field name="first_line_amount"/>
+                <field name="first_line_comment"/>
+            </xpath>
+        </field>
+    </record>
+</odoo>

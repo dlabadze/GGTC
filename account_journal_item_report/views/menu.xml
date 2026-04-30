@@ -1,0 +1,5 @@
+<odoo>
+    <menuitem id="menu_account_journal_item_report_root" name="Journal Item Report" parent="account.menu_finance_reports" sequence="100"/>
+    <menuitem id="menu_account_journal_item_report_wizard" name="Journal Item Report Wizard" parent="menu_account_journal_item_report_root" action="account_journal_item_report.action_account_journal_item_report_wizard"/>
+    <menuitem id="menu_trial_balance_wizard" name="მოძრაობის უწყისი" parent="account_reports.account_reports_audit_reports_menu" action="action_trial_balance_wizard"/>
+</odoo>

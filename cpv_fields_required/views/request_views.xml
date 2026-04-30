@@ -1,0 +1,19 @@
+<odoo>
+    <record id="view_inventory_request_form_inherit_studio" model="ir.ui.view">
+        <field name="name">inventory.request.form.inherit.studio</field>
+        <field name="model">inventory.request</field>
+        <field name="inherit_id" ref="studio_customization.odoo_studio_inventor_2b542e42-6193-438d-b6db-31c22c541287"/>
+        <field name="groups_id" eval="[(6, 0, [])]"/>
+        <field name="arch" type="xml">
+            <xpath expr="//field[@name='x_studio_purchase_plan']" position="before">
+                <field name="is_cpv_fields_required" column_invisible="True"/>
+            </xpath>
+            <xpath expr="//field[@name='x_studio_purchase_plan']" position="attributes">
+                <attribute name="required">is_cpv_fields_required == True</attribute>
+            </xpath>
+            <xpath expr="//field[@name='x_studio_purchase_plan_line']" position="attributes">
+                <attribute name="required">is_cpv_fields_required == True</attribute>
+            </xpath>
+        </field>
+    </record>
+</odoo>

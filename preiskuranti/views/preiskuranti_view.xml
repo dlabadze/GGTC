@@ -1,0 +1,116 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<odoo>
+
+    <!-- ========================= -->
+    <!--        FORM VIEW          -->
+    <!-- ========================= -->
+    <record id="view_preiskuranti_form" model="ir.ui.view">
+        <field name="name">preiskuranti.form</field>
+        <field name="model">preiskuranti</field>
+        <field name="arch" type="xml">
+            <form string="პრეისკურანტი">
+                <sheet>
+                    <group>
+                        <field name="purchase_agreement_id"/>
+                        <field name="total_preiskuranti"/>
+                        <field name="total_agreement"/>
+                        <field name="initial_total"/>
+                        <field name="name"/>
+                        <field name="date"/>
+                        <field name="partner_id"/>
+                        <field name="model_ids" widget="many2many_tags"/>
+                    </group>
+
+                    <notebook>
+                        <page string="დეტალიზაცია">
+                            <field name="preiskuranti_line_ids">
+                                <list editable="bottom">
+                                    <field name="product_id"/>
+                                    <field name="garantia"/>
+                                    <field name="fasi"/>
+                                </list>
+                            </field>
+                        </page>
+                        <page string="შესათანხმებელი პროდუქცია">
+                            <field name="candidate_line_ids">
+                                <list editable="bottom" decoration-success="is_validated" class="preiskuranti_candidate_list">
+                                    <field name="product_id"/>
+                                    <field name="garantia"/>
+                                    <field name="fasi"/>
+                                    <field name="is_validated" invisible="1"/>
+                                    <button name="action_validate" type="object" icon="fa-check" title="Validate"/>
+                                </list>
+                            </field>
+                        </page>
+                    </notebook>
+                </sheet>
+                <chatter/>
+            </form>
+        </field>
+    </record>
+
+    <!-- ========================= -->
+    <!--        LIST VIEW          -->
+    <!-- ========================= -->
+    <record id="view_preiskuranti_list" model="ir.ui.view">
+        <field name="name">preiskuranti.list</field>
+        <field name="model">preiskuranti</field>
+        <field name="arch" type="xml">
+            <list>
+                <field name="purchase_agreement_id"/>
+                <field name="total_preiskuranti"/>
+                <field name="total_agreement"/>
+                <field name="name"/>
+                <field name="date"/>
+                <field name="partner_id"/>
+                <field name="model_ids"/>
+            </list>
+        </field>
+    </record>
+
+    <!-- ========================= -->
+    <!--        SEARCH VIEW        -->
+    <!-- ========================= -->
+    <record id="view_preiskuranti_search" model="ir.ui.view">
+        <field name="name">preiskuranti.search</field>
+        <field name="model">preiskuranti</field>
+        <field name="arch" type="xml">
+            <search string="ძებნა">
+                <field name="purchase_agreement_id"/>
+                <field name="total_preiskuranti"/>
+                <field name="total_agreement"/>
+                <field name="name"/>
+                <field name="partner_id"/>
+                <field name="model_ids"/>
+                <field name="date"/>
+                <separator/>
+                <filter string="დააქრივებული" name="inactive" domain="[('active', '=', False)]"/>
+            </search>
+        </field>
+    </record>
+
+    <!-- ========================= -->
+    <!--        ACTION             -->
+    <!-- ========================= -->
+    <record id="action_preiskuranti" model="ir.actions.act_window">
+        <field name="name">პრეისკურანტი</field>
+        <field name="type">ir.actions.act_window</field>
+        <field name="res_model">preiskuranti</field>
+        <field name="view_mode">list,form</field>
+        <field name="search_view_id" ref="view_preiskuranti_search"/>
+    </record>
+
+    <!-- ========================= -->
+    <!--        MENU ITEMS         -->
+    <!-- ========================= -->
+    <menuitem id="menu_preiskuranti_root"
+              name="პრეისკურანტი"
+              sequence="10"/>
+
+    <menuitem id="menu_preiskuranti_records"
+              name="ჩანაწერები"
+              parent="menu_preiskuranti_root"
+              action="action_preiskuranti"
+              sequence="10"/>
+
+</odoo>

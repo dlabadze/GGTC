@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="view_wizard_update_purchase_plan_form" model="ir.ui.view">
+        <field name="name">wizard.update.purchase.plan.form</field>
+        <field name="model">wizard.update.purchase.plan</field>
+        <field name="arch" type="xml">
+            <form string="Update Purchase Plan">
+                <group>
+                    <field name="purchase_plan_id"/>
+                    <field name="purchase_plan_line_id"/>
+                    <field name="inventory_line_ids" widget="many2many_tags" invisible="1"/>
+                </group>
+                <footer>
+                    <button name="action_update_purchase_plan" type="object" string="Update" class="btn-primary"/>
+                    <button string="Cancel" class="btn-secondary" special="cancel"/>
+                </footer>
+            </form>
+        </field>
+    </record>
+
+    <record id="action_wizard_update_purchase_plan" model="ir.actions.act_window">
+        <field name="name">Update Purchase Plan</field>
+        <field name="res_model">wizard.update.purchase.plan</field>
+        <field name="view_mode">form</field>
+        <field name="view_id" ref="view_wizard_update_purchase_plan_form"/>
+        <field name="target">new</field>
+    </record>
+</odoo>

@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <!-- Menu item for Partner Currency Movement Report -->
+    <menuitem 
+        id="menu_partner_currency_movement_report"
+        name="Partner Currency Movement Report"
+        parent="account.menu_finance_reports"
+        action="action_partner_currency_movement_report_wizard"
+        sequence="101"/>
+</odoo> 

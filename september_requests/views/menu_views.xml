@@ -1,0 +1,208 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <!-- Actions for Configuration -->
+
+    <!-- Request Stages Action -->
+    <record id="action_september_request_stage" model="ir.actions.act_window">
+        <field name="name">Request Stages</field>
+        <field name="res_model">september.request.stage</field>
+        <field name="view_mode">list,form</field>
+        <field name="help" type="html">
+            <p class="o_view_nocontent_smiling_face">
+                Create your first request stage!
+            </p>
+            <p>
+                Configure the different stages that a September request can go through.
+            </p>
+        </field>
+    </record>
+
+    <!-- Line Stages Action -->
+    <record id="action_september_line_stage" model="ir.actions.act_window">
+        <field name="name">Line Stages</field>
+        <field name="res_model">september.line.stage</field>
+        <field name="view_mode">list,form</field>
+        <field name="help" type="html">
+            <p class="o_view_nocontent_smiling_face">
+                Create your first line stage!
+            </p>
+            <p>
+                Configure the different stages that a September line can go through.
+            </p>
+        </field>
+    </record>
+
+    <!-- Request Tags Action -->
+    <record id="action_september_request_tag" model="ir.actions.act_window">
+        <field name="name">Request Tags</field>
+        <field name="res_model">september.request.tag</field>
+        <field name="view_mode">list,form</field>
+        <field name="help" type="html">
+            <p class="o_view_nocontent_smiling_face">
+                Create your first request tag!
+            </p>
+            <p>
+                Create tags to categorize and organize your September requests.
+            </p>
+        </field>
+    </record>
+
+    <!-- Line Tags Action -->
+    <record id="action_september_line_tag" model="ir.actions.act_window">
+        <field name="name">Line Tags</field>
+        <field name="res_model">september.line.tag</field>
+        <field name="view_mode">list,form</field>
+        <field name="help" type="html">
+            <p class="o_view_nocontent_smiling_face">
+                Create your first line tag!
+            </p>
+            <p>
+                Create tags to categorize and organize your September lines.
+            </p>
+        </field>
+    </record>
+
+    <!-- Main Actions for Requests and Lines -->
+    <record id="action_september_request" model="ir.actions.act_window">
+        <field name="name">September Requests</field>
+        <field name="res_model">september.request</field>
+        <field name="view_mode">kanban,list,form</field>
+        <field name="context">{}</field>
+        <field name="help" type="html">
+            <p class="o_view_nocontent_smiling_face">
+                Create your first September request!
+            </p>
+            <p>
+                Manage your September requests efficiently with kanban and list views.
+            </p>
+        </field>
+    </record>
+
+    <record id="action_september_line" model="ir.actions.act_window">
+        <field name="name">September Lines</field>
+        <field name="res_model">september.line</field>
+        <field name="view_mode">kanban,list,form</field>
+        <field name="context">{}</field>
+        <field name="help" type="html">
+            <p class="o_view_nocontent_smiling_face">
+                No September lines yet!
+            </p>
+            <p>
+                September lines are created within September requests.
+            </p>
+        </field>
+    </record>
+
+    <!-- Main Menu -->
+    <menuitem id="menu_september_requests_root"
+              name="September Requests"
+              web_icon="september_requests,static/description/september_req.png"
+              sequence="50"/>
+
+    <!-- Sub Menus -->
+    <menuitem id="menu_september_request"
+              name="Requests"
+              parent="menu_september_requests_root"
+              action="action_september_request"
+              sequence="10"/>
+
+    <menuitem id="menu_september_line"
+              name="Lines"
+              parent="menu_september_requests_root"
+              action="action_september_line"
+              sequence="20"/>
+
+    <!-- Configuration Menu -->
+    <menuitem id="menu_september_configuration"
+              name="Configuration"
+              parent="menu_september_requests_root"
+              sequence="90"
+              groups="base.group_system"/>
+
+    <!-- Stages Submenu -->
+    <menuitem id="menu_september_stages"
+              name="Stages"
+              parent="menu_september_configuration"
+              sequence="10"/>
+
+    <!-- Request Stages Menu -->
+    <menuitem id="menu_september_request_stages"
+              name="Request Stages"
+              parent="menu_september_stages"
+              action="action_september_request_stage"
+              sequence="10"/>
+
+    <!-- Line Stages Menu -->
+    <menuitem id="menu_september_line_stages"
+              name="Line Stages"
+              parent="menu_september_stages"
+              action="action_september_line_stage"
+              sequence="20"/>
+
+    <!-- Tags Submenu -->
+    <menuitem id="menu_september_tags"
+              name="Tags"
+              parent="menu_september_configuration"
+              sequence="20"/>
+
+    <!-- Request Tags Menu -->
+    <menuitem id="menu_september_request_tags"
+              name="Request Tags"
+              parent="menu_september_tags"
+              action="action_september_request_tag"
+              sequence="10"/>
+
+    <!-- Line Tags Menu -->
+    <menuitem id="menu_september_line_tags"
+              name="Line Tags"
+              parent="menu_september_tags"
+              action="action_september_line_tag"
+              sequence="20"/>
+
+    <!-- Search Views -->
+    <record id="view_september_request_search" model="ir.ui.view">
+        <field name="name">september.request.search</field>
+        <field name="model">september.request</field>
+        <field name="arch" type="xml">
+            <search string="September Requests">
+                <field name="name"/>
+                <field name="requested_by"/>
+                <field name="stage_id"/>
+                <field name="tag_ids"/>
+                <separator/>
+                <filter name="my_requests" string="My Requests"
+                        domain="[('requested_by', '=', uid)]"/>
+                <filter name="high_priority" string="High Priority"
+                        domain="[('priority', 'in', ['2', '3'])]"/>
+                <separator/>
+                <filter name="group_by_stage" string="Stage"
+                        context="{'group_by': 'stage_id'}"/>
+                <filter name="group_by_requested_by" string="Requested By"
+                        context="{'group_by': 'requested_by'}"/>
+                <filter name="group_by_priority" string="Priority"
+                        context="{'group_by': 'priority'}"/>
+            </search>
+        </field>
+    </record>
+
+    <record id="view_september_line_search" model="ir.ui.view">
+        <field name="name">september.line.search</field>
+        <field name="model">september.line</field>
+        <field name="arch" type="xml">
+            <search string="September Lines">
+                <field name="name"/>
+                <field name="product_id"/>
+                <field name="request_id"/>
+                <field name="stage_id"/>
+                <field name="tag_ids"/>
+                <separator/>
+                <filter name="group_by_stage" string="Stage"
+                        context="{'group_by': 'stage_id'}"/>
+                <filter name="group_by_request" string="Request"
+                        context="{'group_by': 'request_id'}"/>
+                <filter name="group_by_product" string="Product"
+                        context="{'group_by': 'product_id'}"/>
+            </search>
+        </field>
+    </record>
+</odoo>

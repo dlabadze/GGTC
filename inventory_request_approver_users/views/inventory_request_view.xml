@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="view_inventory_request_form" model="ir.ui.view">
+        <field name="name">inventory.request.form</field>
+        <field name="model">inventory.request</field>
+        <field name="inherit_id" ref="inventory_request_extension.view_inventory_request_form"/>
+        <field name="arch" type="xml">
+            <xpath expr="//field[@name='users_in_lines']" position="after">
+                <field name="approver_users_ids" widget="many2many_tags" invisible="1"/>
+            </xpath>
+            <xpath expr="//notebook" position="inside">
+                <page string="ხელმომწერები">
+                    <field name="approver_users_ids">
+                        <list editable="bottom">
+                            <field name="approve_datetime"/>
+                            <field name="user_id"/>
+                            <field name="job_position"/>
+                            <field name="user_signature"/>
+                        </list>
+                    </field>
+                </page>
+            </xpath>
+        </field>
+    </record>
+
+    <record id="view_inventory_request_list" model="ir.ui.view">
+        <field name="name">inventory.request.list.inherit</field>
+        <field name="model">inventory.request</field>
+        <field name="inherit_id" ref="inventory_requests.view_inventory_request_list"/>
+        <field name="arch" type="xml">
+            <xpath expr="//list" position="inside">
+                <header>
+                    <button name="action_approve" string="მომთხოვნების დადასტურება" type="object" class="oe_highlight" invisible="1"/>
+                </header>
+            </xpath>
+        </field>
+    </record>
+</odoo>

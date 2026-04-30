@@ -1,0 +1,6 @@
+id,name,model_id:id,group_id:id,perm_read,perm_write,perm_create,perm_unlink
+access_account_journal_item_report_wizard,account.journal.item.report.wizard,model_account_journal_item_report_wizard,,1,1,1,1
+access_account_journal_item_report_result,account.journal.item.report.result,model_account_journal_item_report_result,,1,0,1,0
+access_trial_balance_wizard,trial.balance.wizard,model_trial_balance_wizard,,1,1,1,1
+access_trial_balance_result,trial.balance.result,model_trial_balance_result,,1,0,1,0
+access_trial_balance_move_line,trial.balance.move.line,model_trial_balance_move_line,,1,0,1,0

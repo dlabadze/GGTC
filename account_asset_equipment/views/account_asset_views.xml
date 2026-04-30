@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="view_account_asset_form_inherit_equipment" model="ir.ui.view">
+        <field name="name">account.asset.form.inherit.equipment</field>
+        <field name="model">account.asset</field>
+        <field name="inherit_id" ref="account_asset.view_account_asset_form"/>
+        <field name="arch" type="xml">
+            <xpath expr="//page[@name='main_page']" position="inside">
+                <group string="Equipment" name="equipment">
+                    <field name="equipment_id"/>
+                </group>
+            </xpath>
+            <xpath expr="//button[@name='action_open_linked_assets']" position="after">
+                <button name="action_open_equipment" type="object" string="Equipment" icon="fa-cubes"/>
+            </xpath>
+        </field>
+    </record>
+</odoo>

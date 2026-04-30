@@ -1,0 +1,202 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data>
+
+        <!-- Paper Format -->
+        <record id="sabechdi_formebi_paperformat_chamoceris" model="report.paperformat">
+            <field name="name">საბეჭდი ფორმა N5</field>
+            <field name="format">A4</field>
+            <field name="orientation">Portrait</field>
+            <field name="margin_top">15</field>
+            <field name="margin_bottom">10</field>
+            <field name="margin_left">7</field>
+            <field name="margin_right">7</field>
+            <field name="header_spacing">0</field>
+            <field name="header_line" eval="False"/>
+        </record>
+
+        <!-- Report Action -->
+        <record id="action_report_chamoceris_akti" model="ir.actions.report">
+            <field name="name">ფორმა 5</field>
+            <field name="model">stock.picking</field>
+            <field name="report_type">qweb-pdf</field>
+            <field name="report_name">sabechdi_formebi.chamoceris_akti_document</field>
+            <field name="report_file">sabechdi_formebi.chamoceris_akti_document</field>
+            <field name="binding_model_id" ref="stock.model_stock_picking"/>
+            <field name="binding_type">report</field>
+            <field name="paperformat_id" ref="sabechdi_formebi.sabechdi_formebi_paperformat_chamoceris"/>
+        </record>
+
+        <!-- Report Template -->
+        <template id="chamoceris_akti_document">
+            <t t-call="web.external_layout">
+                <main class="o-main">
+                    <t t-foreach="docs" t-as="doc">
+
+                        <t t-set="related_picking" t-value="doc.env['stock.picking'].search([('x_studio_request_ref', '=', doc.x_studio_request_ref.id), ('location_dest_id', '=', doc.location_id.id)], limit=1)"/>
+
+                        <div style="font-family: 'DejaVu Sans', sans-serif; font-size: 12px; padding: 20px;">
+
+                            <!-- Header -->
+                            <div style="display: flex; justify-content: space-between; margin-bottom: 10px;">
+                                <div>შპს “საქართველოს გაზის ტრანსპორტირების კომპანია”</div>
+                                <div style="text-align: right;">
+                                    <t t-if="doc.x_studio_many2one_field_17u_1j6fe1kq9 and doc.x_studio_many2one_field_17u_1j6fe1kq9.job_id">
+                                        <span t-esc="doc.x_studio_many2one_field_17u_1j6fe1kq9.job_id.name"/>
+                                    </t>
+                                    <br/><br/><br/><br/><br/><br/>
+                                </div>
+                            </div>
+
+                            <!-- Form number + signature line -->
+                            <div style="display: flex; justify-content: space-between; gap:10px; margin-top: 0px; margin-bottom: 20px; font-weight:bold;">
+                                <div>ფორმა 5</div>
+                                <div style="text-align: right;">
+                                    <div style="margin-bottom:30px; font-size:15px;">
+                                        /..........................
+                                        <t t-if="doc.x_studio_many2one_field_17u_1j6fe1kq9">
+                                            <t t-esc="doc.x_studio_many2one_field_17u_1j6fe1kq9.name"/>
+                                        </t>
+                                    </div>
+                                    <div style="font-size:15px;">
+                                        თარიღი:
+                                        <t t-if="doc.date_of_transfer">
+                                            <span t-field="doc.date_of_transfer" t-options='{"widget": "date"}'/>
+                                        </t>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- Title -->
+                            <div style="text-align: center; margin-top: 10px;">
+                                <div style="font-size: 14pt; font-weight: bold;">ჩამოწერის აქტი</div>
+                                <div style="margin-top: 10px;">
+                                    აქტი N
+                                    <t t-if="doc.x_studio_aqtis_nomeri">
+                                        <t t-esc="doc.x_studio_aqtis_nomeri"/>
+                                    </t>
+                                </div>
+                            </div>
+
+                            <!-- ობიექტი -->
+                            <div style="margin-top: 20px; text-align: left; font-weight:bold; font-size:12px;">
+                                საფუძველი:
+                                <span style="font-weight:normal;">
+                                    <t t-if="doc.comment">
+                                        <t t-esc="doc.comment"/>
+                                    </t>
+                                </span>
+                            </div>
+
+                            <!-- Main Table -->
+                            <table style="width: 100%; border-collapse: collapse; font-size: 10pt; margin-top: 30px;">
+                                <tr>
+                                    <th style="border: 1px solid #000; padding: 6px; text-align: center;" rowspan="2">N</th>
+                                    <th style="border: 1px solid #000; text-align: center; padding: 6px;" colspan="2">
+                                        შიდა ბრუნვის ზედდებული
+                                    </th>
+                                    <th style="border: 1px solid #000; padding: 6px; text-align: center;" rowspan="2">მოთხ.<br/>წინასწ. N</th>
+                                    <th style="border: 1px solid #000; padding: 6px; text-align: center;" rowspan="2">მოთხ.<br/>რეგ. თარიღი</th>
+                                    <th style="border: 1px solid #000; padding: 6px; text-align: center;" rowspan="2">სასაქონ. კოდი</th>
+                                    <th style="border: 1px solid #000; padding: 6px; text-align: center;" rowspan="2">დასახელება</th>
+                                    <th style="border: 1px solid #000; padding: 6px; text-align: center;" rowspan="2">რაოდენობა</th>
+                                    <th style="border: 1px solid #000; padding: 6px; text-align: center;" rowspan="2">ერთეული</th>
+                                </tr>
+
+                                <tr>
+                                    <th style="border: 1px solid #000; padding: 6px; text-align: center;">N</th>
+                                    <th style="border: 1px solid #000; padding: 6px; text-align: center;">თარიღი</th>
+                                </tr>
+
+                                <!-- FIXED COUNTER -->
+                                <t t-set="counter" t-value="0"/>
+                                <t t-foreach="doc.move_ids_without_package" t-as="line">
+                                    <t t-set="counter" t-value="counter + 1"/>
+
+                                    <tr>
+                                        <td style="border: 1px solid #000; padding: 6px; text-align:center;">
+                                            <t t-esc="counter"/>
+                                        </td>
+                                        <td style="border: 1px solid #000; padding: 6px; text-align:center;">
+                                            <t t-if="related_picking">
+                                                <t t-esc="related_picking.x_studio_aqtis_nomeri"/>
+                                            </t>
+                                        </td>
+                                        <td style="border: 1px solid #000; padding: 6px; text-align:center;">
+                                            <t t-if="related_picking and related_picking.date_done">
+                                                <t t-esc="related_picking.date_done.strftime('%d/%m/%Y')"/>
+                                            </t>
+                                        </td>
+                                        <td style="border: 1px solid #000; padding: 6px; text-align:center;">
+                                            <t t-if="doc.x_studio_related_field_2sg_1j7espk8g">
+                                                <t t-esc="doc.x_studio_related_field_2sg_1j7espk8g"/>
+                                            </t>
+                                        </td>
+                                        <td style="border: 1px solid #000; padding: 6px; text-align:center;">
+                                            <t t-if="doc.x_studio_request_ref and doc.x_studio_request_ref.request_date">
+                                                <t t-esc="doc.x_studio_request_ref.request_date.strftime('%d/%m/%Y')"/>
+                                            </t>
+                                        </td>
+                                        <td style="border: 1px solid #000; padding: 6px; text-align:center;">
+                                            <t t-esc="line.product_id.default_code"/>
+                                        </td>
+                                        <td style="border: 1px solid #000; padding: 6px;">
+                                            <t t-esc="line.product_id.name"/>
+                                        </td>
+                                        <td style="border: 1px solid #000; padding: 6px; text-align:center;">
+                                            <t t-esc="line.quantity"
+                                               t-options='{"widget": "float", "precision": 4}'/>
+                                        </td>
+                                        <td style="border: 1px solid #000; padding: 6px; text-align:center;">
+                                            <t t-esc="line.product_uom.name"/>
+                                        </td>
+                                    </tr>
+                                </t>
+                            </table>
+
+                            <!-- Confirmation -->
+                            <div style="margin-top: 40px; text-align: left;">
+                                ვადასტურებ, რომ მასალები გახარჯულია/დამონტაჟებულია ზემოაღნიშნულ ობიექტზე
+                            </div>
+
+                            <!-- Footer Signatures -->
+                            <div style="display: flex; justify-content: space-between; margin-top: 40px;">
+                                <div style="width: 30%; text-align: left;">
+                                    თანამდებობა:
+                                    <div style="margin-top: 5px; text-align: left; display:flex; flex-direction:column; gap:10px;">
+                                        <t t-if="doc.x_studio_many2many_field_85m_1j5r5h7ad">
+                                            <t t-foreach="doc.x_studio_many2many_field_85m_1j5r5h7ad" t-as="emp">
+                                                <t t-if="emp.job_id">
+                                                    <div style="margin-top:25px;"><t t-esc="emp.job_id.name"/></div>
+                                                </t>
+                                            </t>
+                                        </t>
+                                    </div>
+                                </div>
+
+                                <div style="width: 30%; text-align: center;">
+                                    სახელი, გვარი:
+                                    <div style="margin-top: 5px; text-align: left; display:flex; flex-direction:column; gap:10px;">
+                                        <t t-if="doc.x_studio_many2many_field_85m_1j5r5h7ad">
+                                            <t t-foreach="doc.x_studio_many2many_field_85m_1j5r5h7ad" t-as="emp">
+                                                <div style="margin-top:25px;"><t t-esc="emp.name"/></div>
+                                            </t>
+                                        </t>
+                                    </div>
+                                </div>
+
+                                <div style="width: 30%; text-align: right;">
+                                    ხელმოწერა:
+                                    <div style="margin-top: 5px; text-align: center;"></div>
+                                </div>
+                            </div>
+
+                        </div>
+
+                    </t>
+                </main>
+            </t>
+        </template>
+
+    </data>
+</odoo>

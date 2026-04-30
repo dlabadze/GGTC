@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="view_fetch_waybills_wizard" model="ir.ui.view">
+        <field name="name">fetch.waybills.wizard.form</field>
+        <field name="model">fetch.waybills.wizard</field>
+        <field name="arch" type="xml">
+            <form string="Fetch Waybills">
+                <group>
+                    <field name="date"/>
+                </group>
+                <footer>
+                    <button name="fetch_waybills" string="გადმოწერა" type="object" class="btn-primary"/>
+                    <button string="გაუქმება" class="btn-secondary" special="cancel"/>
+                </footer>
+            </form>
+        </field>
+    </record>
+
+    <record id="action_fetch_waybills_wizard" model="ir.actions.act_window">
+        <field name="name">Fetch Waybills</field>
+        <field name="res_model">fetch.waybills.wizard</field>
+        <field name="view_mode">form</field>
+        <field name="target">new</field>
+    </record>
+</odoo>

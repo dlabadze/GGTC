@@ -1,0 +1,17 @@
+id,name,model_id:id,group_id:id,perm_read,perm_write,perm_create,perm_unlink
+access_salary_import_user,salary.import.user,model_salary_import,account.group_account_invoice,1,1,1,0
+access_salary_import_manager,salary.import.manager,model_salary_import,account.group_account_manager,1,1,1,1
+access_salary_import_line_user,salary.import.line.user,model_salary_import_line,account.group_account_invoice,1,1,1,0
+access_salary_import_line_manager,salary.import.line.manager,model_salary_import_line,account.group_account_manager,1,1,1,1
+access_salary_batch_import_user,salary.batch.import.user,model_salary_batch_import,account.group_account_invoice,1,1,1,0
+access_salary_batch_import_manager,salary.batch.import.manager,model_salary_batch_import,account.group_account_manager,1,1,1,1
+access_insurance_import_user,insurance.import.user,model_insurance_import,account.group_account_invoice,1,1,1,0
+access_insurance_import_manager,insurance.import.manager,model_insurance_import,account.group_account_manager,1,1,1,1
+access_insurance_import_line_user,insurance.import.line.user,model_insurance_import_line,account.group_account_invoice,1,1,1,0
+access_insurance_import_line_manager,insurance.import.line.manager,model_insurance_import_line,account.group_account_manager,1,1,1,1
+access_salary_payment_import_user,salary.payment.import.user,model_salary_payment_import,account.group_account_invoice,1,1,1,0
+access_salary_payment_import_manager,salary.payment.import.manager,model_salary_payment_import,account.group_account_manager,1,1,1,1
+access_salary_payment_import_line_user,salary.payment.import.line.user,model_salary_payment_import_line,account.group_account_invoice,1,1,1,0
+access_salary_payment_import_line_manager,salary.payment.import.line.manager,model_salary_payment_import_line,account.group_account_manager,1,1,1,1
+access_employee_report_user,employee.report.user,model_employee_report,base.group_user,1,1,1,0
+access_employee_report_manager,employee.report.manager,model_employee_report,account.group_account_manager,1,1,1,1

@@ -1,0 +1,9 @@
+<odoo>
+    <data>
+        <template id="assets_backend" name="waybill_management_custom assets" inherit_id="web.assets_backend">
+            <xpath expr="." position="inside">
+                <link rel="stylesheet" type="text/css" href="/waybill_management_custom/static/src/css/custom_background.css"/>
+            </xpath>
+        </template>
+    </data>
+</odoo>

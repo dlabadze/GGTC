@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data>
+        <record id="server_action_copy_to_inventory" model="ir.actions.server">
+            <field name="name">Make A Copy</field>
+            <field name="model_id" ref="september_requests.model_september_request"/>
+            <field name="binding_model_id" ref="september_requests.model_september_request"/>
+            <field name="binding_type">action</field>
+            <field name="state">code</field>
+            <field name="code">records.copy_to_inventory()
+            </field>
+        </record>
+    </data>
+</odoo>

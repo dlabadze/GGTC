@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data>
+        <!-- Send SMS Wizard Form View -->
+        <record id="view_send_sms_wizard_form" model="ir.ui.view">
+            <field name="name">send.sms.wizard.form</field>
+            <field name="model">send.sms.wizard</field>
+            <field name="arch" type="xml">
+                <form>
+                    <group>
+                        <field name="config_id"/>
+                        <field name="to_number"/>
+
+                    </group>
+                    <group>
+                        <field name="message" nolabel="1"/>
+                    </group>
+                    <footer>
+                        <button name="action_send_sms" string="Send SMS" type="object" class="btn-primary"/>
+                        <button string="Cancel" class="btn-secondary" special="cancel"/>
+                    </footer>
+                </form>
+            </field>
+        </record>
+
+        <!-- Send SMS Wizard Action -->
+        <record id="action_send_sms_wizard" model="ir.actions.act_window">
+            <field name="name">Send SMS</field>
+            <field name="res_model">send.sms.wizard</field>
+            <field name="view_mode">form</field>
+            <field name="target">new</field>
+        </record>
+
+        <!-- Send SMS Menu Item -->
+        <menuitem id="menu_send_sms" 
+                  name="Send SMS" 
+                  parent="menu_sms_root" 
+                  action="action_send_sms_wizard" 
+                  sequence="5"/>
+    </data>
+</odoo> 

@@ -1,0 +1,5 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+   <menuitem id="menu_income_benefit_import" name="საშემოსავლო შეღავათის ატვირთვა" parent="salary_components_import_excel.menu_importing" action="income_benefit_import.action_income_benefit_import_wizard" sequence="121"/>
+</odoo>
+

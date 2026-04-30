@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+    <menuitem id="menu_accounting_library_root"
+              name="რეესტრი"
+              sequence="70"
+              web_icon="accounting_library,static/description/icon.png"/>
+
+    <menuitem id="menu_accounting_library_all"
+              name="ყველა"
+              parent="menu_accounting_library_root"
+              action="action_accounting_library_all"
+              sequence="10"/>
+
+    <menuitem id="menu_accounting_library_not_done"
+              name="მიმდინარე"
+              parent="menu_accounting_library_root"
+              action="action_accounting_library_not_done"
+              sequence="20"/>
+
+    <menuitem id="menu_accounting_library_done"
+              name="დასრულებული"
+              parent="menu_accounting_library_root"
+              action="action_accounting_library_done"
+              sequence="30"/>
+
+    <menuitem id="menu_accounting_library_config"
+              name="კონფიგურაცია"
+              parent="menu_accounting_library_root"
+              sequence="90"/>
+
+    <menuitem id="menu_accounting_library_categories"
+              name="კატეგორიები"
+              parent="menu_accounting_library_config"
+              action="action_accounting_library_category"
+              sequence="10"/>
+
+</odoo>

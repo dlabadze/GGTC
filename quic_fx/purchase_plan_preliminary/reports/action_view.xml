@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="paperformat_purchase_plan" model="report.paperformat">
+        <field name="name">No Margins</field>
+        <field name="default" eval="False"/>
+        <field name="format">A4</field>
+        <field name="page_height">0</field>
+        <field name="page_width">0</field>
+        <field name="margin_top">5</field>
+        <field name="margin_bottom">5</field>
+        <field name="margin_left">5</field>
+        <field name="margin_right">5</field>
+        <field name="orientation">Landscape</field>
+    </record>
+
+<!--    <record id="action_report_purchase_plan_preliminary" model="ir.actions.report">-->
+<!--        <field name="name">Purchase Plan Report</field>-->
+<!--        <field name="model">purchase.plan.preliminary</field>-->
+<!--        <field name="report_type">qweb-pdf</field>-->
+<!--        <field name="report_name">purchase_plan_preliminary.report_purchase_plan_document</field>-->
+<!--        <field name="report_file">purchase_plan_preliminary.report_purchase_plan_document</field>-->
+<!--        <field name="binding_model_id" ref="budget.model_purchase_plan"/>-->
+<!--        <field name="binding_type">report</field>-->
+<!--        <field name="paperformat_id" ref="purchase_plan_preliminary.paperformat_purchase_plan"/>-->
+
+<!--    </record>-->
+
+    <record id="action_report_purchase_plan_preliminary" model="ir.actions.report">
+        <field name="name">Purchase Plan Changes Preliminary Report</field>
+        <field name="model">purchase.plan.preliminary</field>
+        <field name="report_type">qweb-pdf</field>
+        <field name="report_name">purchase_plan_preliminary.report_purchase_plan_preliminary_document</field>
+        <field name="report_file">purchase_plan_preliminary.report_purchase_plan_preliminary_document</field>
+        <field name="binding_model_id" ref="purchase_plan_preliminary.model_purchase_plan_preliminary"/>
+        <field name="binding_type">report</field>
+        <field name="paperformat_id" ref="purchase_plan_preliminary.paperformat_purchase_plan"/>
+    </record>
+
+</odoo>

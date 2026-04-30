@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <!-- Server Action to Open Import Wizard -->
+    <record id="action_open_fuel_import_wizard" model="ir.actions.server">
+        <field name="name">🚀 Import Fuel Data from Excel</field>
+        <field name="model_id" ref="model_fuel_import_helper"/>
+        <field name="state">code</field>
+        <field name="code">
+# Open the fuel import wizard
+action = env['fuel.import.helper'].open_fuel_import_wizard()
+        </field>
+    </record>
+    
+    <!-- Main Menu: საწვავის ჩასხმის ჟურნალი -->
+    <menuitem id="menu_fuel_filling_main" 
+              name="საწვავის ჩასხმის ჟურნალი" 
+              parent="fleet.fleet_vehicles" 
+              sequence="10"/>
+    
+    <!-- SINGLE Import Menu -->
+    <menuitem id="menu_fuel_import_single" 
+              name="📊 Import Fuel Data" 
+              parent="menu_fuel_filling_main"
+              action="action_fuel_import_wizard" 
+              sequence="10"/>
+
+     <menuitem id="menu_branch" 
+              name="ფილიალები" 
+              parent="fleet.fleet_configuration"
+              action="action_fleet_branch" 
+              sequence="10"/>
+
+</odoo>

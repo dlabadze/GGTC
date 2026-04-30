@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="view_hr_payslip_form_inherit_date" model="ir.ui.view">
+        <field name="name">hr.payslip.form.inherit.date</field>
+        <field name="model">hr.payslip</field>
+        <field name="inherit_id" ref="hr_payroll.view_hr_payslip_form"/>
+        <field name="arch" type="xml">
+            <xpath expr="//field[@name='payment_report']" position="after">
+                <!--<label for="journal_entry_date" string="Journal Date"/>-->
+                <field name="journal_entry_date" string="დარიცხვის თარიღი"/>
+                <field name="budget_mux" string="ბიუჯეტის მუხლი"/> 
+            </xpath>
+        </field>
+    </record>
+</odoo>

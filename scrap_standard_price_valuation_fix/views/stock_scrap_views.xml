@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="dv_stock_scrap_form_std_price_valuation_fix" model="ir.ui.view">
+        <field name="name">stock.scrap.form.dv.std.price.valuation.fix</field>
+        <field name="model">stock.scrap</field>
+        <field name="inherit_id" ref="stock.stock_scrap_form_view"/>
+        <field name="arch" type="xml">
+            <xpath expr="//header" position="inside">
+                <button
+                    name="action_dv_apply_standard_price_valuation_fix"
+                    type="object"
+                    string="Fix Valuation"
+                />
+            </xpath>
+            <xpath expr="//sheet//group" position="inside">
+                <field name="dv_fix_valuation_to_standard_price"/>
+            </xpath>
+        </field>
+    </record>
+</odoo>
+

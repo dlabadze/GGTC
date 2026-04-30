@@ -1,0 +1,59 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data>
+        <!-- Form View -->
+        <record id="view_fleet_fuel_remain_form" model="ir.ui.view">
+            <field name="name">fleet.fuel.remain.form</field>
+            <field name="model">fleet.fuel.remain</field>
+            <field name="arch" type="xml">
+                <form string="Fuel Remains">
+                    <sheet>
+                        <group>
+                            <group>
+                                <field name="date"/>
+                                <field name="reservoir_name"/>
+                            </group>
+                            <group>
+                                <field name="initial_remain"/>
+                                <field name="final_remain"/>
+                            </group>
+                        </group>
+                    </sheet>
+                </form>
+            </field>
+        </record>
+
+        <!-- Tree View -->
+        <record id="view_fleet_fuel_remain_list" model="ir.ui.view">
+            <field name="name">fleet.fuel.remain.list</field>
+            <field name="model">fleet.fuel.remain</field>
+            <field name="arch" type="xml">
+                <list string="Fuel Remains">
+                    <field name="date"/>
+                    <field name="reservoir_name"/>
+                    <field name="initial_remain"/>
+                    <field name="final_remain"/>
+                </list>
+            </field>
+        </record>
+
+        <!-- Action -->
+        <record id="action_fleet_fuel_remain" model="ir.actions.act_window">
+            <field name="name">საწვავის ნაშთები</field>
+            <field name="res_model">fleet.fuel.remain</field>
+            <field name="view_mode">list,form</field>
+            <field name="help" type="html">
+              <p class="o_view_nocontent_smiling_face">
+                Create a new Fuel Remain Record
+              </p>
+            </field>
+        </record>
+
+        <!-- Menu Item -->
+        <menuitem id="menu_fleet_fuel_remain"
+                  name="საწვავის ნაშთები"
+                  parent="fleet.menu_root"
+                  action="action_fleet_fuel_remain"
+                  sequence="100"/>
+    </data>
+</odoo>

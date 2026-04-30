@@ -1,0 +1,15 @@
+<odoo>
+    <record id="account_move_view_inherit_barcode1" model="ir.ui.view">
+        <field name="name">account.move.form.inherit</field>
+        <field name="model">account.move</field>
+        <field name="inherit_id" ref="account.view_move_form"/>
+        <field name="arch" type="xml">
+            <xpath expr="//field[@name='invoice_origin']" position="after">
+                <group string="Other Info">
+                    <field name="warehouse_id"/>
+                    <field name="warehouse_address"/>
+                </group>
+            </xpath>
+        </field>
+    </record>
+</odoo>

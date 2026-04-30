@@ -1,0 +1,191 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<odoo>
+
+    <!-- Form View -->
+    <record id="view_gadziritadeba_form" model="ir.ui.view">
+        <field name="name">gadziritadeba.form</field>
+        <field name="model">gadziritadeba</field>
+        <field name="arch" type="xml">
+            <form string="ექსპლუატაცია (საწყობი)">
+                <header>
+                    <field name="state" widget="statusbar" statusbar_visible="draft,validated"/>
+
+                    <button name="action_validate"
+                        string="Validate"
+                        type="object"
+                        class="btn-primary"
+                        invisible="state == 'validated'"/>
+
+                    <button name="action_reset_draft"
+                        string="Reset to Draft"
+                        type="object"
+                        class="btn-secondary"
+                        invisible="state == 'draft'"/>
+
+                    <button name="action_seen_draft"
+                        string="Check Record"
+                        type="object"
+                        class="btn-warning"
+                        invisible="state == 'validated'"/>    
+                </header>
+
+                <sheet>
+
+
+
+
+                    <div class="oe_button_box" name="button_box">
+                        <button class="oe_stat_button" 
+                                type="object" 
+                                name="assets"
+                                icon="fa-building-o">
+                            <span class="o_stat_text">Assets</span>
+                        </button>
+                    </div>
+
+
+
+                    <group>
+                        <field name="picking_id"
+                               style="font-weight:bold; font-size:16px; margin-bottom:5px;"/>
+                        <field name="date"/>
+                        <field name="aqtnumb"/>
+                        <field name="requestnum"/>
+                        <field name="gamcsaw"/>
+                        <field name="mimpiri"/>
+                        <field name="comment"/>
+                    </group>
+                    <notebook>
+                        <page string="დეტალები" name="gadziritadeba_lines">
+                            <field name="gadziritadeba_line_ids">
+                                <list editable="bottom">
+                                    <field name="group_asset_name"/>
+                                    <field name="product_id"/>
+                                    <field name="quantity" sum="სულ რაოდენობა"/>
+                                    <field name="price"/>
+                                    <field name="sumofdzs" sum="სულ ღირებულება"/>
+                                    <field name="dziritad" sum="ძ/ს"/>
+                                    <field name="mcirefas" sum="მ/ფ"/>
+                                    <field name="per_unit"/>
+                                    <field name="account_id"/>
+                                    <field name="account_depr_id"/>
+                                    <field name="depreciation_duration_months"/>
+                                    <field name="asset_idd"/>
+                                </list>
+                            </field>
+                        </page>
+                    </notebook>
+                </sheet>
+            </form>
+        </field>
+    </record>
+
+    <!-- List View with Colors -->
+    <record id="view_gadziritadeba_list" model="ir.ui.view">
+        <field name="name">gadziritadeba.list</field>
+        <field name="model">gadziritadeba</field>
+        <field name="arch" type="xml">
+            <list decoration-info="state == 'draft'" 
+                  decoration-success="state == 'validated'"
+                  decoration-warning="state == 'seen'">
+                <field name="picking_id"/>
+                <field name="date"/>
+                <field name="aqtnumb"/>
+                <field name="requestnum"/>
+                <field name="gamcsaw"/>
+                <field name="mimpiri"/>
+                <field name="comment"/>
+                <field name="state"/>
+            </list>
+        </field>
+    </record>
+
+    <!-- Search View -->
+    <record id="view_gadziritadeba_search" model="ir.ui.view">
+        <field name="name">gadziritadeba.search</field>
+        <field name="model">gadziritadeba</field>
+        <field name="arch" type="xml">
+            <search string="ძებნა">
+                <field name="picking_id" string="ჩამოწერა"/>
+                <field name="date" string="თარიღი"/>
+                <field name="aqtnumb"/>
+                <field name="requestnum"/>
+                <field name="gamcsaw"/>
+                <field name="mimpiri"/>
+                <field name="comment" string="საფუძველი"/>
+                
+                
+                <separator/>
+                
+                <filter name="filter_draft" 
+                        string="დრაფტი" 
+                        domain="[('state', '=', 'draft')]"/>
+                        
+                <filter name="filter_validated" 
+                        string="ვალიდირებული" 
+                        domain="[('state', '=', 'validated')]"/>
+
+                <filter name="filter_seen" 
+                        string="ნანახი" 
+                        domain="[('state', '=', 'seen')]"/>        
+                
+                <separator/>
+                
+                <filter name="filter_today" 
+                        string="დღეს" 
+                        domain="[('date', '=', context_today())]"/>
+                        
+                <filter name="filter_this_month" 
+                        string="ამ თვეში" 
+                        domain="[]"
+                        context="{'search_default_date': 1}"/>
+
+                <group expand="0" string="დაჯგუფება">
+                    <filter string="სტატუსით" 
+                            name="group_by_state" 
+                            domain="[]" 
+                            context="{'group_by': 'state'}"/>
+                    <filter string="თარიღით" 
+                            name="group_by_date" 
+                            domain="[]" 
+                            context="{'group_by': 'date:month'}"/>
+                </group>
+            </search>
+        </field>
+    </record>
+
+    <!-- Action Window -->
+    <record id="action_gadziritadeba" model="ir.actions.act_window">
+        <field name="name">ექსლუატაცია</field>
+        <field name="type">ir.actions.act_window</field>
+        <field name="res_model">gadziritadeba</field>
+        <field name="view_mode">list,form</field>
+        <field name="search_view_id" ref="view_gadziritadeba_search"/>
+        <field name="help" type="html">
+            <p class="o_view_nocontent_smiling_face">
+                Scrap transfer entries linked to stock pickings.
+            </p>
+        </field>
+    </record>
+
+    <!-- Menu Items -->
+    <menuitem
+        id="menu_gadziritadeba_root"
+        name="ექსპლუატაცია (საწყობი)"
+        web_icon="gadziritadeba,static/description/icon.png"
+        sequence="10"/>
+
+    <menuitem
+        id="menu_gadziritadeba_master"
+        name="ექსპლუატაცია"
+        parent="menu_gadziritadeba_root"
+        sequence="10"/>
+
+    <menuitem
+        id="menu_gadziritadeba_list"
+        name="ჩანაწერები"
+        parent="menu_gadziritadeba_master"
+        action="action_gadziritadeba"
+        sequence="10"/>
+
+</odoo>

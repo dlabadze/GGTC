@@ -1,0 +1,113 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="view_picking_form_inherit_request_number" model="ir.ui.view">
+        <field name="name">stock.picking.form.inherit.request.number</field>
+        <field name="model">stock.picking</field>
+        <field name="inherit_id" ref="stock.view_picking_form"/>
+        <field name="arch" type="xml">
+            <xpath expr="//list//field[@name='product_id']" position="after">
+                <field name="request_number"/>
+            </xpath>
+        </field>
+    </record>
+    <record id="view_budget_analytic_form_inherit" model="ir.ui.view">
+        <field name="name">budget.analytic.form.inherit</field>
+        <field name="model">budget.analytic</field>
+        <field name="inherit_id" ref="account_budget.view_budget_analytic_form"/>
+        <field name="arch" type="xml">
+            <xpath expr="//field[@name='budget_line_ids']/list/field[@name='company_id']" position="after">
+                <field name="pur_plan_am" sum="Purchase Plan"/>
+                <field name="pu_re_am" sum="Plan Resource"/>
+                <field name="cont_am" sum="Contract Amount"/>
+                <field name="co_re_am" sum="Contract Resource"/>
+                <field name="paim_am" sum="Paid Amount"/>
+                <field name="pa_re_am" sum="Payment Resource"/>
+                <field name="write_off_resource" sum="ჩამოწერის რესურსი"/>
+                <field name="request_resource" sum="მოთხოვნის მიხედვით რესურსი"/>
+            </xpath>
+        </field>
+    </record>
+
+    <record id="view_budget_line_form_inherited" model="ir.ui.view">
+        <field name="name">budget.line.form.inherited</field>
+        <field name="model">budget.line</field>
+        <field name="inherit_id" ref="account_budget.view_budget_line_form"/>
+        <field name="arch" type="xml">
+            <field name="budget_amount" position="after">
+                <field name="purchase_plan_id"/>
+                <field name="pur_plan_am"/>
+                <field name="pu_re_am"/>
+                <field name="cont_am"/>
+                <field name="co_re_am"/>
+                <field name="paim_am"/>
+                <field name="pa_re_am"/>
+            </field>
+        </field>
+    </record>
+    <record id="view_budget_line_tree_inherited" model="ir.ui.view">
+       <field name="name">budget.line.tree.inherited</field>
+       <field name="model">budget.line</field>
+       <field name="inherit_id" ref="account_budget.view_budget_line_tree"/>
+       <field name="arch" type="xml">
+           <field name="budget_amount" position="after">
+               <field name="purchase_plan_id"/>
+               <field name="pur_plan_am" sum="Total Planned Purchase"/>
+               <field name="pu_re_am"/>
+               <field name="cont_am" sum="Total Contracted Amount"/>
+               <field name="co_re_am"/>
+               <field name="paim_am" sum="Total Paid Amount"/>
+               <field name="pa_re_am"/>
+           </field>
+       </field>
+   </record>
+    <record id="view_purchase_plan_line_list" model="ir.ui.view">
+        <field name="name">purchase.plan.line.list</field>
+        <field name="model">purchase.plan.line</field>
+        <field name="arch" type="xml">
+            <list string="Purchase Plan Lines">
+                <field name="plan_id"/>
+                <field name="cpv_id"/>
+                <field name="purchase_method_id"/>
+                <field name="purchase_reason_id"/>
+                <field name="variant_ids"/>
+                <field name="cpv_name"/>
+                <field name="pu_st_am"/>
+                <field name="pu_ac_am"/>
+                <field name="pcon_am"/>
+                <field name="pc_re_am"/>
+                <field name="paim_am"/>
+                <field name="pa_re_am"/>
+                <field name="currency_id"/>
+            </list>
+        </field>
+    </record>
+    <!-- Purchase Plan Line Form View
+    <record id="view_purchase_plan_line_form" model="ir.ui.view">
+        <field name="name">purchase.plan.line.form</field>
+        <field name="model">purchase.plan.line</field>
+        <field name="arch" type="xml">
+            <form string="Purchase Plan Line">
+                <sheet>
+                    <group>
+                        <field name="plan_id"/>
+                        <field name="cpv_id" required="1"/>
+                        <field name="cpv_name"/>
+                        <field name="purchase_method_id"/>
+                        <field name="purchase_reason_id"/>
+                        <field name="pu_st_am"/>
+                        <field name="pu_ac_am"/>
+                        <field name="pcon_am"/>
+                        <field name="pc_re_am"/>
+                        <field name="paim_am"/>
+                        <field name="pa_re_am"/>
+                        <field name="budget_cpv_id"/>
+                        <field name="change_id"/>
+                        <field name="currency_id"/>
+                        <field name="variant_ids"/>
+                    </group>
+                </sheet>
+            </form>
+        </field>
+    </record> -->
+
+</odoo>

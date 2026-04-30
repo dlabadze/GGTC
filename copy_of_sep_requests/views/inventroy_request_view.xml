@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data>
+        <record id="view_inventory_request_form_inherit_depcode" model="ir.ui.view">
+            <field name="name">inventory.request.form.inherit.depcode</field>
+            <field name="model">inventory.request</field>
+            <field name="inherit_id" ref="inventory_requests.view_inventory_request_form"/>
+            <field name="arch" type="xml">
+
+            <xpath expr="//field[@name='department_id']" position="after">
+                <field name="dep_code"/>
+                <field name="september_request_id"/>
+<!--                <field name="location"/>-->
+<!--                <field name="location_object"/>-->
+            </xpath>
+
+            <xpath expr="//field[@name='line_ids']/list" position="inside">
+                <field name="expected_date"/>
+                <field name="stage_id"/>
+                <field name="tag_ids" widget="many2many_tags" options="{'color_field': 'color'}"/>
+                <field name="notes"/>
+            </xpath>
+
+            <xpath expr="/form[1]/sheet[1]/group[1]/group[2]/field[2]" position="after">
+                <field name="dep_head"/>
+                <field name="head"/>
+                <field name="finance_1"/>
+            </xpath>
+
+            </field>
+        </record>
+    </data>
+</odoo>

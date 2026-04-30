@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<odoo>
+    <record id="view_order_form_custom" model="ir.ui.view">
+        <field name="name">sale.order.form.custom</field>
+        <field name="model">sale.order</field>
+        <field name="inherit_id" ref="sale.view_order_form"/>
+        <field name="arch" type="xml">
+            <xpath expr="//field[@name='partner_id']" position="after">
+                <!-- Add fields after the customer field -->
+                <field name="show_all_fields"/>
+                <field name="is_start_location_required" invisible="1"/>
+                <field name="is_editable_end_location_required" invisible="1"/>
+                <field name="combined_invoice_id" invisible="1"/>
+                <field name="status" invisible="1"  required="not show_all_fields"/>
+                <field name="invoice_number" invisible="0"/>
+                <field name="begin_date"  invisible="not show_all_fields"  required="show_all_fields"/>
+                <field name="delivery" invisible="not show_all_fields"   required="show_all_fields"/>
+                <field name="trans_id" invisible="not show_all_fields"  required="show_all_fields"/>
+                <field name="trans_txt" invisible="not is_trans_id_4 or not show_all_fields" placeholder="აუცილებელი ველი"/>
+                <field name="is_trans_id_4" invisible="1"/>
+                <field name="start_location" invisible="not show_all_fields" required="is_start_location_required"/>
+                <field name="editable_end_location" invisible="not show_all_fields"  required="is_editable_end_location_required"/>
+                
+                <field name="buyer_type" invisible="not show_all_fields"  required="show_all_fields"/>
+            </xpath>
+            <xpath expr="//field[@name='payment_term_id']" position="after">
+                <field name="car_number" invisible="not show_all_fields"  required="is_editable_end_location_required" placeholder="აუცილებელი ველი(დაიმალება თ ტრანსპორტირების გარეშეა)"/>
+                <field name="driver_type" invisible="not show_all_fields"  required="is_editable_end_location_required"/>
+                <field name="driver_id" invisible="not show_all_fields"  required="not is_trans_id_4 or is_editable_end_location_required" placeholder="აუცილებელი ველი(ესეც დაიმალება თუ ტრანსპორტირების გარეშეა)"/>
+                <field name="driver_name" invisible="not show_all_fields"/>
+                <field name="transport_cost_payer" invisible="not show_all_fields"  required="not is_trans_id_4 or is_editable_end_location_required" />
+                <field name="transport_cost" invisible="not show_all_fields"  required="is_editable_end_location_required"/>
+                <field name="comment" invisible="not show_all_fields"/>
+                <field name="error_field" invisible="1"/>
+                <field name="partner_vat" invisible="1"/>
+                <field name="completed_soap" invisible="1"/>
+                <field name="is_soap_completed" invisible="1"/>
+                <field name="rs_acc" invisible="1"/>
+                <field name="rs_pass" invisible="1"/>
+            </xpath>
+        </field>
+    </record>
+</odoo>

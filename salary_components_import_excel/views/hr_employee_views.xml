@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+   <menuitem id="menu_importing" name="ატვირთვები" parent="hr.menu_hr_root" sequence="120"/>
+   <menuitem id="menu_salary_components_import_excel" name="დარიცხვა/დაკავებები ატვირთვა" parent="menu_importing" action="action_salary_components_import_wizard" sequence="10"/>
+</odoo>
+

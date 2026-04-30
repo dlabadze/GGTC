@@ -1,0 +1,17 @@
+<odoo>
+    <record id="view_inventory_request_lines_inherit" model="ir.ui.view">
+    <field name="name">inventory.request.form.inherit.button</field>
+    <field name="model">inventory.line</field>
+    <field name="inherit_id" ref="inventory_requests.view_inventory_line_form"/> <!-- change-->
+    <field name="arch" type="xml">
+            <xpath expr="//header" position="inside">
+                <div class="oe_button_box" name="button_box">
+                    <button class="oe_stat_button" type="object" name="action_view_purchase_agreements" icon="fa-truck">
+                        <field name="purchase_agreements_count" widget="statinfo" string="Purchase Agreements"/>
+                    </button>
+                </div>
+            </xpath>
+    </field>
+    </record>
+
+</odoo>

@@ -1,0 +1,393 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <!-- Configuration Views -->
+
+    <!-- September Request Stage Views -->
+    <record id="view_september_request_stage_list" model="ir.ui.view">
+        <field name="name">september.request.stage.list</field>
+        <field name="model">september.request.stage</field>
+        <field name="arch" type="xml">
+            <list string="Request Stages" editable="bottom">
+                <field name="sequence" widget="handle"/>
+                <field name="name"/>
+                <field name="description"/>
+                <field name="fold"/>
+                <field name="color" widget="color_picker"/>
+                <field name="active"/>
+            </list>
+        </field>
+    </record>
+
+    <record id="view_september_request_stage_form" model="ir.ui.view">
+        <field name="name">september.request.stage.form</field>
+        <field name="model">september.request.stage</field>
+        <field name="arch" type="xml">
+            <form string="Request Stage">
+                <sheet>
+                    <group>
+                        <group>
+                            <field name="name"/>
+                            <field name="sequence"/>
+                            <field name="active"/>
+                        </group>
+                        <group>
+                            <field name="color" widget="color_picker"/>
+                            <field name="fold"/>
+                        </group>
+                    </group>
+                    <group>
+                        <field name="description"/>
+                    </group>
+                </sheet>
+            </form>
+        </field>
+    </record>
+
+    <!-- September Line Stage Views -->
+    <record id="view_september_line_stage_list" model="ir.ui.view">
+        <field name="name">september.line.stage.list</field>
+        <field name="model">september.line.stage</field>
+        <field name="arch" type="xml">
+            <list string="Line Stages" editable="bottom">
+                <field name="sequence" widget="handle"/>
+                <field name="name"/>
+                <field name="description"/>
+                <field name="fold"/>
+                <field name="color" widget="color_picker"/>
+                <field name="active"/>
+            </list>
+        </field>
+    </record>
+
+    <record id="view_september_line_stage_form" model="ir.ui.view">
+        <field name="name">september.line.stage.form</field>
+        <field name="model">september.line.stage</field>
+        <field name="arch" type="xml">
+            <form string="Line Stage">
+                <sheet>
+                    <group>
+                        <group>
+                            <field name="name"/>
+                            <field name="sequence"/>
+                            <field name="active"/>
+                        </group>
+                        <group>
+                            <field name="color" widget="color_picker"/>
+                            <field name="fold"/>
+                        </group>
+                    </group>
+                    <group>
+                        <field name="description"/>
+                    </group>
+                </sheet>
+            </form>
+        </field>
+    </record>
+
+    <!-- September Request Tag Views -->
+    <record id="view_september_request_tag_list" model="ir.ui.view">
+        <field name="name">september.request.tag.list</field>
+        <field name="model">september.request.tag</field>
+        <field name="arch" type="xml">
+            <list string="Request Tags" editable="bottom">
+                <field name="name"/>
+                <field name="color" widget="color_picker"/>
+                <field name="active"/>
+            </list>
+        </field>
+    </record>
+
+    <record id="view_september_request_tag_form" model="ir.ui.view">
+        <field name="name">september.request.tag.form</field>
+        <field name="model">september.request.tag</field>
+        <field name="arch" type="xml">
+            <form string="Request Tag">
+                <sheet>
+                    <group>
+                        <field name="name"/>
+                        <field name="color" widget="color_picker"/>
+                        <field name="active"/>
+                    </group>
+                </sheet>
+            </form>
+        </field>
+    </record>
+
+    <!-- September Line Tag Views -->
+    <record id="view_september_line_tag_list" model="ir.ui.view">
+        <field name="name">september.line.tag.list</field>
+        <field name="model">september.line.tag</field>
+        <field name="arch" type="xml">
+            <list string="Line Tags" editable="bottom">
+                <field name="name"/>
+                <field name="color" widget="color_picker"/>
+                <field name="active"/>
+            </list>
+        </field>
+    </record>
+
+    <record id="view_september_line_tag_form" model="ir.ui.view">
+        <field name="name">september.line.tag.form</field>
+        <field name="model">september.line.tag</field>
+        <field name="arch" type="xml">
+            <form string="Line Tag">
+                <sheet>
+                    <group>
+                        <field name="name"/>
+                        <field name="color" widget="color_picker"/>
+                        <field name="active"/>
+                    </group>
+                </sheet>
+            </form>
+        </field>
+    </record>
+
+    <!-- Updated September Request Views -->
+    <record id="view_september_request_list" model="ir.ui.view">
+        <field name="name">september.request.list</field>
+        <field name="model">september.request</field>
+        <field name="arch" type="xml">
+            <list string="September Requests">
+                <field name="name"/>
+                <field name="request_date"/>
+                <field name="requested_by"/>
+                <field name="department_id"/>
+                <field name="stage_id"/>
+                <field name="priority" widget="priority"/>
+                <field name="tag_ids" widget="many2many_tags" options="{'color_field': 'color'}"/>
+                <field name="total_lines"/>
+            </list>
+        </field>
+    </record>
+
+    <record id="view_september_request_form" model="ir.ui.view">
+        <field name="name">september.request.form</field>
+        <field name="model">september.request</field>
+        <field name="arch" type="xml">
+            <form string="September Request">
+                <header>
+                    <field name="stage_id" widget="statusbar" options="{'clickable': '1'}"/>
+                </header>
+                <sheet>
+                    <div class="oe_button_box" name="button_box">
+                        <!-- Add custom buttons here if needed -->
+                    </div>
+                    <div class="oe_title">
+                        <h1>
+                            <field name="name" readonly="1"/>
+                        </h1>
+                        <field name="tag_ids" widget="many2many_tags" options="{'color_field': 'color'}" placeholder="Tags..."/>
+                    </div>
+                    <group>
+                        <group>
+                            <field name="request_date"/>
+                            <field name="requested_by"/>
+                            <field name="department_id"/>
+                        </group>
+                        <group>
+                            <field name="priority" widget="priority"/>
+                            <field name="total_lines"/>
+                        </group>
+                    </group>
+                    <group>
+                        <field name="description"/>
+                    </group>
+                    <notebook>
+                        <page string="September Lines">
+                            <field name="line_ids">
+                                <list editable="bottom">
+                                    <field name="sequence" widget="handle"/>
+                                    <field name="product_id"/>
+                                    <field name="name"/>
+                                    <field name="quantity"/>
+                                    <field name="uom_id"/>
+                                    <field name="unit_price" widget="monetary"/>
+                                    <field name="amount" widget="monetary" readonly="1"/>
+                                    <field name="budget_name_main"/>
+                                    <field name="budget_main"/>
+                                    <field name="expected_date"/>
+                                    <field name="stage_id"/>
+                                    <field name="tag_ids" widget="many2many_tags" options="{'color_field': 'color'}"/>
+                                    <field name="notes"/>
+                                </list>
+                            </field>
+                        </page>
+                    </notebook>
+                </sheet>
+            </form>
+        </field>
+    </record>
+
+    <record id="view_september_request_kanban" model="ir.ui.view">
+        <field name="name">september.request.kanban</field>
+        <field name="model">september.request</field>
+        <field name="arch" type="xml">
+            <kanban default_group_by="stage_id" class="o_kanban_small_column">
+                <field name="stage_id"/>
+                <field name="priority"/>
+                <field name="tag_ids"/>
+                <field name="requested_by"/>
+                <field name="total_lines"/>
+                <templates>
+                    <t t-name="kanban-box">
+                        <div class="oe_kanban_global_click">
+                            <div class="oe_kanban_content">
+                                <div class="o_kanban_record_top">
+                                    <div class="o_kanban_record_headings">
+                                        <strong class="o_kanban_record_title">
+                                            <field name="name"/>
+                                        </strong>
+                                    </div>
+                                    <div class="o_kanban_record_badges">
+                                        <field name="priority" widget="priority"/>
+                                    </div>
+                                </div>
+                                <div class="o_kanban_record_body">
+                                    <field name="tag_ids" widget="many2many_tags" options="{'color_field': 'color'}"/>
+                                    <div>
+                                        <i class="fa fa-user"/> <field name="requested_by"/>
+                                    </div>
+                                    <div>
+                                        <i class="fa fa-list"/> <field name="total_lines"/> lines
+                                    </div>
+                                </div>
+                                <div class="o_kanban_record_bottom">
+                                    <div class="oe_kanban_bottom_left">
+                                        <field name="request_date"/>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </t>
+                </templates>
+            </kanban>
+        </field>
+    </record>
+
+    <!-- Updated September Line Views -->
+    <record id="view_september_line_list" model="ir.ui.view">
+        <field name="name">september.line.list</field>
+        <field name="model">september.line</field>
+        <field name="arch" type="xml">
+            <list string="September Lines">
+                <field name="sequence" widget="handle"/>
+                <field name="request_id"/>
+                <field name="product_id"/>
+                <field name="name"/>
+                <field name="quantity"/>
+                <field name="uom_id"/>
+                <field name="unit_price" widget="monetary"/>
+                <field name="amount" widget="monetary"/>
+                <field name="budget_name_main"/>
+                <field name="budget_main"/>
+                <field name="expected_date"/>
+                <field name="stage_id"/>
+                <field name="tag_ids" widget="many2many_tags" options="{'color_field': 'color'}"/>
+            </list>
+        </field>
+    </record>
+
+    <record id="view_september_line_form" model="ir.ui.view">
+        <field name="name">september.line.form</field>
+        <field name="model">september.line</field>
+        <field name="arch" type="xml">
+            <form string="September Line">
+                <header>
+                    <field name="stage_id" widget="statusbar" options="{'clickable': '1'}"/>
+                </header>
+                <sheet>
+                    <div class="oe_title">
+                        <h1>
+                            <field name="name"/>
+                        </h1>
+                        <field name="tag_ids" widget="many2many_tags" options="{'color_field': 'color'}" placeholder="Tags..."/>
+                    </div>
+                    <group>
+                        <group>
+                            <field name="request_id"/>
+                            <field name="product_id"/>
+                            <field name="quantity"/>
+                            <field name="uom_id"/>
+                        </group>
+                        <group>
+                            <field name="sequence"/>
+                            <field name="expected_date"/>
+                            <field name="request_stage_id"/>
+                        </group>
+                    </group>
+                    <group>
+                        <group string="Pricing">
+                            <field name="unit_price" widget="monetary"/>
+                            <field name="amount" widget="monetary" readonly="1"/>
+                        </group>
+                        <group string="Budget">
+                            <field name="budget_name_main"/>
+                            <field name="budget_main"/>
+                        </group>
+                    </group>
+                    <group>
+                        <field name="notes"/>
+                    </group>
+                </sheet>
+            </form>
+        </field>
+    </record>
+
+    <record id="view_september_line_kanban" model="ir.ui.view">
+        <field name="name">september.line.kanban</field>
+        <field name="model">september.line</field>
+        <field name="arch" type="xml">
+            <kanban default_group_by="stage_id" class="o_kanban_small_column">
+                <field name="stage_id"/>
+                <field name="tag_ids"/>
+                <field name="product_id"/>
+                <field name="quantity"/>
+                <field name="uom_id"/>
+                <field name="unit_price"/>
+                <field name="amount"/>
+                <field name="budget_name_main"/>
+                <field name="budget_main"/>
+                <templates>
+                    <t t-name="kanban-box">
+                        <div class="oe_kanban_global_click">
+                            <div class="oe_kanban_content">
+                                <div class="o_kanban_record_top">
+                                    <div class="o_kanban_record_headings">
+                                        <strong class="o_kanban_record_title">
+                                            <field name="name"/>
+                                        </strong>
+                                    </div>
+                                </div>
+                                <div class="o_kanban_record_body">
+                                    <field name="tag_ids" widget="many2many_tags" options="{'color_field': 'color'}"/>
+                                    <div>
+                                        <i class="fa fa-cube"/> <field name="product_id"/>
+                                    </div>
+                                    <div>
+                                        <i class="fa fa-calculator"/> <field name="quantity"/> <field name="uom_id"/>
+                                    </div>
+                                    <div>
+                                        <i class="fa fa-money"/> <field name="unit_price" widget="monetary"/>
+                                    </div>
+                                    <div t-if="record.budget_name_main.raw_value">
+                                        <i class="fa fa-bank"/> <field name="budget_name_main"/>
+                                    </div>
+                                </div>
+                                <div class="o_kanban_record_bottom">
+                                    <div class="oe_kanban_bottom_left">
+                                        <field name="expected_date"/>
+                                    </div>
+                                    <div class="oe_kanban_bottom_right">
+                                        <strong>
+                                            <field name="amount" widget="monetary"/>
+                                        </strong>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </t>
+                </templates>
+            </kanban>
+        </field>
+    </record>
+</odoo>

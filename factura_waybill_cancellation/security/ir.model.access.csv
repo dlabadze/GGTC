@@ -1,0 +1,3 @@
+id,name,model_id:id,group_id:id,perm_read,perm_write,perm_create,perm_unlink
+access_account_move_cancel_factura,account.move.cancel.factura,account.model_account_move,base.group_user,1,1,0,0
+access_stock_picking_cancel_waybill,stock.picking.cancel.waybill,stock.model_stock_picking,base.group_user,1,1,0,0

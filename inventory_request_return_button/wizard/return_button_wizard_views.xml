@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="view_return_button_wizard_form" model="ir.ui.view">
+        <field name="name">return.button.wizard.form</field>
+        <field name="model">return.button.wizard</field>
+        <field name="arch" type="xml">
+            <form string="Return Button Wizard">
+                <group>
+                    <field name="stage_sequence" invisible="1"/>
+                    <field name="request_id" invisible="1"/>
+                    <field name="stage_id" required="1" domain="[('sequence', '&lt;', stage_sequence)]" options="{'no_create': True, 'no_create_edit': True}"/>
+                    <footer>
+                        <button string="Accept" name="action_return" type="object" class="btn-primary"/>
+                        <button string="Cancel" class="btn-secondary" special="cancel"/>
+                    </footer>
+                </group>
+            </form>
+        </field>
+    </record>
+
+    <record id="action_return_button_wizard" model="ir.actions.act_window">
+        <field name="name">Return Button Wizard</field>
+        <field name="res_model">return.button.wizard</field>
+        <field name="view_mode">form</field>
+        <field name="target">new</field>
+    </record>
+</odoo>

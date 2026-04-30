@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<odoo>
+    <record id="view_inherit_inventory_form_logic" model="ir.ui.view">
+        <field name="name">view.inherit.inventory.form.logic</field>
+        <field name="model">inventory.request</field>
+        <field name="inherit_id" ref="copy_of_sep_requests.view_inventory_request_form_inherit_depcode"/>
+        <field name="arch" type="xml">
+<!--            <xpath expr="//field[@name='finance_1']" position="after">-->
+<!--                <field name="enable_auto_logic" />-->
+<!--            </xpath>-->
+        </field>
+    </record>
+</odoo>

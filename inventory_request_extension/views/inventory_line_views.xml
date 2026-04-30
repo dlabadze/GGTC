@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="view_inventory_line_list" model="ir.ui.view">
+        <field name="name">inventory.line.list</field>
+        <field name="model">inventory.line</field>
+        <field name="inherit_id" ref="inventory_requests.view_inventory_line_list"/>
+        <field name="arch" type="xml">
+            <xpath expr="//list" position="attributes">
+                <attribute name="decoration-danger">exceeds_budget == True</attribute>
+            </xpath>
+            <xpath expr="//list" position="inside">
+                <field name="exceeds_budget" invisible="1"/>
+            </xpath>
+            <xpath expr="//list/header" position="inside">
+                <button name="action_ganfaseba" string="განფასება" type="object" class="oe_highlight"/>
+                <button name="action_dadastureba" string="დადასტურება" type="object" class="oe_highlight"/>
+                <button name="action_compute_update_unit_price" string="თანხის განახლება" type="object" class="btn-primary"/>
+            </xpath>
+        </field>
+    </record>
+</odoo>
+

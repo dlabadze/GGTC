@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="view_inventory_request_form_upload_excel_prices" model="ir.ui.view">
+        <field name="name">inventory.request.form.upload.excel.prices</field>
+        <field name="model">inventory.request</field>
+        <field name="inherit_id" ref="inventory_request_extension.view_inventory_request_form"/>
+        <field name="arch" type="xml">
+            <xpath expr="//form" position="inside">
+                <field name="can_upload_excel_prices" invisible="1"/>
+            </xpath>
+            <xpath expr="//button[@name='ganawileba_action']" position="before">
+                <button
+                    name="action_open_inventory_line_price_upload_wizard"
+                    string="ექსელის ატვირთვა"
+                    type="object"
+                    class="oe_highlight"
+                    invisible="not can_upload_excel_prices"
+                />
+            </xpath>
+        </field>
+    </record>
+</odoo>

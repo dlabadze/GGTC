@@ -1,0 +1,3 @@
+id,name,model_id:id,group_id:id,perm_read,perm_write,perm_create,perm_unlink
+access_accounting_library_user,accounting.library.user,model_accounting_library,base.group_user,1,1,1,1
+access_accounting_library_category_user,accounting.library.category.user,model_accounting_library_category,base.group_user,1,1,1,1

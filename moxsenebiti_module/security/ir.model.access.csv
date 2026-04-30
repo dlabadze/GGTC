@@ -1,0 +1,10 @@
+id,name,model_id:id,group_id:id,perm_read,perm_write,perm_create,perm_unlink
+access_moxsenebiti_user,moxsenebiti.user,model_moxsenebiti,base.group_user,1,1,1,1
+access_moxsenebiti_category_user,moxsenebiti.category.user,model_moxsenebiti_category,base.group_user,1,1,1,1
+access_moxsenebiti_approver_line_user,moxsenebiti.approver.line.user,model_moxsenebiti_approver_line,base.group_user,1,1,1,1
+access_moxsenebiti_employee_line_user,moxsenebiti.employee.line.user,model_moxsenebiti_employee_line,base.group_user,1,1,1,1
+access_moxsenebiti_send_to_order_user,moxsenebiti.send.to.order.user,model_moxsenebiti_send_to_order,base.group_user,1,1,1,1
+access_moxsenebiti_prepare_order_user,moxsenebiti.prepare.order.user,model_moxsenebiti_prepare_order,base.group_user,1,1,1,1
+access_moxsenebiti_reinitiate_user,moxsenebiti.reinitiate.user,model_moxsenebiti_reinitiate,base.group_user,1,1,1,1
+access_moxsenebiti_add_approver_user,moxsenebiti.add.approver.user,model_moxsenebiti_add_approver,base.group_user,1,1,1,1
+access_moxsenebiti_change_owner_user,moxsenebiti.change.owner.user,model_moxsenebiti_change_owner,base.group_user,1,1,1,1

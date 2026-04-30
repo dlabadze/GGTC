@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="view_inventory_department_report_wizard_form" model="ir.ui.view">
+        <field name="name">inventory.department.report.wizard.form</field>
+        <field name="model">inventory.department.report.wizard</field>
+        <field name="arch" type="xml">
+            <form string="Department Request Lines Report">
+                <group>
+                    <field name="date_start"/>
+                    <field name="date_end"/>
+                    <field name="request_id"/>
+                </group>
+                <footer>
+                    <button name="action_generate_report" string="Generate Report" type="object" class="btn-primary"/>
+                    <button string="Cancel" class="btn-secondary" special="cancel"/>
+                </footer>
+            </form>
+        </field>
+    </record>
+
+    <record id="action_inventory_department_report_wizard" model="ir.actions.act_window">
+        <field name="name">Department Request Lines Report</field>
+        <field name="res_model">inventory.department.report.wizard</field>
+        <field name="view_mode">form</field>
+        <field name="target">new</field>
+    </record>
+</odoo>

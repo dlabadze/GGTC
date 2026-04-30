@@ -1,0 +1,594 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <template id="visual_report_template" name="Budget Visual Report">
+        <t t-call="website.layout">
+            <div class="container-fluid mt-4">
+                <!-- Header -->
+                <div class="text-center mb-4">
+                    <h1 class="display-4 text-primary">ბიუჯეტის რეპორტი</h1>
+                    <p class="lead text-muted">CPV კატეგორიების მიხედვით ანალიზი</p>
+                </div>
+                
+                <!-- Filters Section -->
+                <div class="card shadow mb-4">
+                    <div class="card-header bg-primary text-white">
+                        <h4 class="mb-0">
+                            <i class="fa fa-filter mr-2"></i>
+                            ფილტრები
+                        </h4>
+                    </div>
+                    <div class="card-body">
+                        <div class="row">
+                            <div class="col-md-4 mb-3">
+                                <label class="form-label font-weight-bold">შესყიდვების გეგმა:</label>
+                                <select id="purchase_plan_select" class="form-control form-control-lg">
+                                    <option value="">აირჩიეთ შესყიდვების გეგმა...</option>
+                                    <t t-foreach="purchase_plans" t-as="plan">
+                                        <option t-att-value="plan.id">
+                                            <t t-esc="plan.name"/>
+                                        </option>
+                                    </t>
+                                </select>
+                            </div>
+                            <div class="col-md-4 mb-3">
+                                <label class="form-label font-weight-bold">ანალიტიკური ანგარიში:</label>
+                                <select id="budget_cpv_select" class="form-control form-control-lg" disabled="disabled">
+                                    <option value="">ჯერ აირჩიეთ შესყიდვების გეგმა...</option>
+                                </select>
+                            </div>
+                            <div class="col-md-4 mb-3">
+                                <label class="form-label font-weight-bold">მოქმედებები:</label>
+                                <div class="d-grid gap-2">
+                                    <button id="generate_report" class="btn btn-primary btn-lg" disabled="disabled">
+                                        <i class="fa fa-chart-line mr-2"></i>
+                                        ანგარიშის გენერირება
+                                    </button>
+                                    <button id="export_csv" class="btn btn-success btn-lg" disabled="disabled">
+                                        <i class="fa fa-download mr-2"></i>
+                                        ექსპორტი CSV
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Loading -->
+                <div id="loading" class="text-center py-5" style="display: none;">
+                    <div class="spinner-border text-primary" role="status" style="width: 3rem; height: 3rem;">
+                        <span class="sr-only">იტვირთება...</span>
+                    </div>
+                    <p class="mt-3 h5 text-muted">ანგარიშის გენერირება...</p>
+                </div>
+                
+                <!-- Results Section -->
+                <div id="results_section" style="display: none;">
+                    <!-- Summary Cards -->
+                    <div class="row mb-4" id="summary_cards">
+                        <!-- Cards will be populated by JavaScript -->
+                    </div>
+                    
+                    <!-- Charts -->
+                    <div class="row mb-4">
+                        <div class="col-lg-6 mb-4">
+                            <div class="card shadow h-100">
+                                <div class="card-header bg-info text-white">
+                                    <h5 class="mb-0">
+                                        <i class="fa fa-pie-chart mr-2"></i>
+                                        CPV კატეგორიების მიხედვით ბიუჯეტი
+                                    </h5>
+                                </div>
+                                <div class="card-body">
+                                    <div style="position: relative; height: 300px;">
+                                        <canvas id="pie_chart"></canvas>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-lg-6 mb-4">
+                            <div class="card shadow h-100">
+                                <div class="card-header bg-warning text-white">
+                                    <h5 class="mb-0">
+                                        <i class="fa fa-bar-chart mr-2"></i>
+                                        CPV კატეგორიების შედარება
+                                    </h5>
+                                </div>
+                                <div class="card-body">
+                                    <div style="position: relative; height: 300px;">
+                                        <canvas id="bar_chart"></canvas>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- Data Table -->
+                    <div class="card shadow">
+                        <div class="card-header bg-secondary text-white">
+                            <h5 class="mb-0">
+                                <i class="fa fa-table mr-2"></i>
+                                დეტალური ინფორმაცია CPV კატეგორიების მიხედვით
+                            </h5>
+                        </div>
+                        <div class="card-body p-0">
+                            <div class="table-responsive">
+                                <table id="data_table" class="table table-striped table-hover mb-0" style="font-size: 0.85rem;">
+                                    <thead class="thead-dark">
+                                        <tr>
+                                            <th class="border-0">CPV კატეგორია</th>
+                                            <th class="border-0">გეგმის დასახელება</th>
+                                            <th class="border-0">გამოყენებული თანხა</th>
+                                            <th class="border-0">დაფინანსების წყარო</th>
+                                            <th class="border-0">შესყიდვის საშუალებები</th>
+                                            <th class="border-0">პრეისკურანტი</th>
+                                            <th class="border-0">ვადები</th>
+                                            <th class="border-0">პირვანდელი ღირებულება</th>
+                                            <th class="border-0">მიმდინარე ღირებულება</th>
+                                            <th class="border-0">სხვაობა</th>
+                                            <th class="border-0">დარეზერვებული</th>
+                                            <th class="border-0">დარჩენილი რესურსი</th>
+                                            <th class="border-0">ხელშეკრულების თანხა</th>
+                                            <th class="border-0">დარჩენილი რესურსი ხელშეკრულებით</th>
+                                            <th class="border-0">გადახდილი თანხა</th>
+                                            <th class="border-0">დარჩენილი რესურსი</th>
+                                            <th class="border-0">Budget Lines Allocated</th>
+                                            <th class="border-0">Remaining to Allocate</th>
+                                            <th class="border-0">ბიუჯეტის ხაზი</th>
+                                            <th class="border-0">შერჩეული გეგმა</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <!-- Rows will be populated by JavaScript -->
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Error Message -->
+                <div id="error_message" class="alert alert-danger" style="display: none;" role="alert">
+                    <i class="fa fa-exclamation-triangle mr-2"></i>
+                    <span id="error_text"></span>
+                </div>
+            </div>
+            
+            <!-- Chart.js Library -->
+            <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/3.9.1/chart.min.js"></script>
+            
+            <!-- Custom JavaScript -->
+            <script>
+            //<![CDATA[
+            document.addEventListener('DOMContentLoaded', function() {
+                    // Global variables
+                    let pieChart = null;
+                    let barChart = null;
+                    let currentData = null;
+                    
+                    // DOM elements
+                    const purchasePlanSelect = document.getElementById('purchase_plan_select');
+                    const budgetCpvSelect = document.getElementById('budget_cpv_select');
+                    const generateBtn = document.getElementById('generate_report');
+                    const exportBtn = document.getElementById('export_csv');
+                    const loadingDiv = document.getElementById('loading');
+                    const resultsSection = document.getElementById('results_section');
+                    const errorDiv = document.getElementById('error_message');
+                    const errorText = document.getElementById('error_text');
+                    
+                    // Event listeners
+                    purchasePlanSelect.addEventListener('change', onPurchasePlanChange);
+                    budgetCpvSelect.addEventListener('change', onBudgetCpvChange);
+                    generateBtn.addEventListener('click', generateReport);
+                    exportBtn.addEventListener('click', exportCSV);
+                    
+                    // Functions
+                    function onPurchasePlanChange() {
+                        const planId = purchasePlanSelect.value;
+                        budgetCpvSelect.innerHTML = '<option value="">იტვირთება...</option>';
+                        budgetCpvSelect.disabled = true;
+                        generateBtn.disabled = true;
+                        hideResults();
+                        hideError();
+                        
+                        if (planId) {
+                            loadAnalyticAccounts(planId);
+                        } else {
+                            budgetCpvSelect.innerHTML = '<option value="">ჯერ აირჩიეთ შესყიდვების გეგმა...</option>';
+                        }
+                    }
+                    
+                    function onBudgetCpvChange() {
+                        const hasValue = budgetCpvSelect.value;
+                        generateBtn.disabled = !hasValue;
+                        exportBtn.disabled = !hasValue;
+                        hideResults();
+                        hideError();
+                    }
+                    
+                    function loadAnalyticAccounts(planId) {
+                        fetch('/budget/get_budget_cpvs', {
+                            method: 'POST',
+                            headers: {
+                                'Content-Type': 'application/json',
+                            },
+                            body: JSON.stringify({
+                                jsonrpc: '2.0',
+                                method: 'call',
+                                params: {
+                                    purchase_plan_id: planId
+                                }
+                            })
+                        })
+                        .then(response => response.json())
+                        .then(data => {
+                            budgetCpvSelect.innerHTML = '<option value="">აირჩიეთ ანალიტიკური ანგარიში...</option>';
+                            
+                            if (data.result && data.result.length > 0) {
+                                data.result.forEach(account => {
+                                    const option = document.createElement('option');
+                                    option.value = account.id;
+                                    option.textContent = account.name;
+                                    budgetCpvSelect.appendChild(option);
+                                });
+                                budgetCpvSelect.disabled = false;
+                            } else {
+                                budgetCpvSelect.innerHTML = '<option value="">ანალიტიკური ანგარიშები არ მოიძებნა...</option>';
+                            }
+                        })
+                        .catch(error => {
+                            console.error('Error loading analytic accounts:', error);
+                            budgetCpvSelect.innerHTML = '<option value="">შეცდომა ჩატვირთვისას</option>';
+                            showError('შეცდომა ანალიტიკური ანგარიშების ჩატვირთვისას: ' + error.message);
+                        });
+                    }
+                    
+                    function generateReport() {
+                        const planId = purchasePlanSelect.value;
+                        const analyticAccountId = budgetCpvSelect.value;
+                        
+                        if (!planId || !analyticAccountId) {
+                            showError('გთხოვთ, აირჩიოთ ყველა საჭირო ველი');
+                            return;
+                        }
+                        
+                        showLoading();
+                        hideError();
+                        
+                        fetch('/budget/get_chart_data', {
+                            method: 'POST',
+                            headers: {
+                                'Content-Type': 'application/json',
+                            },
+                            body: JSON.stringify({
+                                jsonrpc: '2.0',
+                                method: 'call',
+                                params: {
+                                    purchase_plan_id: planId,
+                                    budget_cpv_id: analyticAccountId
+                                }
+                            })
+                        })
+                        .then(response => response.json())
+                        .then(data => {
+                            hideLoading();
+                            
+                            if (data.result && Object.keys(data.result).length > 0) {
+                                if (data.result.error) {
+                                    showError('სერვერის შეცდომა: ' + data.result.error);
+                                    return;
+                                }
+                                
+                                currentData = data.result;
+                                renderReport(currentData);
+                                showResults();
+                                exportBtn.disabled = false;
+                            } else {
+                                showError('მონაცემები ვერ მოიძებნა არჩეული პარამეტრებისთვის');
+                            }
+                        })
+                        .catch(error => {
+                            console.error('Error generating report:', error);
+                            hideLoading();
+                            showError('შეცდომა ანგარიშის გენერირებისას: ' + error.message);
+                        });
+                    }
+                    
+                    function renderReport(data) {
+                        renderSummaryCards(data.summary);
+                        renderCharts(data);
+                        renderTable(data.table_data);
+                    }
+                    
+                    function renderSummaryCards(summary) {
+                        const cardsContainer = document.getElementById('summary_cards');
+                        cardsContainer.innerHTML = '<div class="col-lg-4 col-md-6 mb-3">' +
+                            '<div class="card bg-gradient-warning text-white shadow">' +
+                                '<div class="card-body text-center">' +
+                                    '<div class="row no-gutters align-items-center">' +
+                                        '<div class="col mr-2">' +
+                                            '<div class="text-xs font-weight-bold text-uppercase mb-1">გამოყენებული</div>' +
+                                            '<div class="h5 mb-0 font-weight-bold">' + summary.total_used.toLocaleString() + '</div>' +
+                                        '</div>' +
+                                        '<div class="col-auto">' +
+                                            '<i class="fa fa-credit-card fa-2x text-white-300"></i>' +
+                                        '</div>' +
+                                    '</div>' +
+                                '</div>' +
+                            '</div>' +
+                        '</div>' +
+                        '<div class="col-lg-4 col-md-6 mb-3">' +
+                            '<div class="card bg-gradient-success text-white shadow">' +
+                                '<div class="card-body text-center">' +
+                                    '<div class="row no-gutters align-items-center">' +
+                                        '<div class="col mr-2">' +
+                                            '<div class="text-xs font-weight-bold text-uppercase mb-1">დარჩენილი</div>' +
+                                            '<div class="h5 mb-0 font-weight-bold">' + summary.total_remaining.toLocaleString() + '</div>' +
+                                        '</div>' +
+                                        '<div class="col-auto">' +
+                                            '<i class="fa fa-bank fa-2x text-white-300"></i>' +
+                                        '</div>' +
+                                    '</div>' +
+                                '</div>' +
+                            '</div>' +
+                        '</div>' +
+                        '<div class="col-lg-4 col-md-6 mb-3">' +
+                            '<div class="card bg-gradient-info text-white shadow">' +
+                                '<div class="card-body text-center">' +
+                                    '<div class="row no-gutters align-items-center">' +
+                                        '<div class="col mr-2">' +
+                                            '<div class="text-xs font-weight-bold text-uppercase mb-1">ხაზების რაოდენობა</div>' +
+                                            '<div class="h5 mb-0 font-weight-bold">' + summary.lines_count + '</div>' +
+                                            '<div class="text-xs text-white-50">' + summary.cpv_categories + ' CPV კატეგორია</div>' +
+                                        '</div>' +
+                                        '<div class="col-auto">' +
+                                            '<i class="fa fa-list fa-2x text-white-300"></i>' +
+                                        '</div>' +
+                                    '</div>' +
+                                '</div>' +
+                            '</div>' +
+                        '</div>';
+                    }
+                    
+                    function renderCharts(data) {
+                        // Destroy existing charts
+                        if (pieChart) {
+                            pieChart.destroy();
+                            pieChart = null;
+                        }
+                        if (barChart) {
+                            barChart.destroy();
+                            barChart = null;
+                        }
+                        
+                        // Pie Chart
+                        const pieCtx = document.getElementById('pie_chart').getContext('2d');
+                        pieChart = new Chart(pieCtx, {
+                            type: 'pie',
+                            data: {
+                                labels: data.pie_chart.labels,
+                                datasets: [{
+                                    data: data.pie_chart.data,
+                                    backgroundColor: data.pie_chart.colors,
+                                    borderWidth: 2,
+                                    borderColor: '#fff'
+                                }]
+                            },
+                            options: {
+                                responsive: true,
+                                maintainAspectRatio: false,
+                                plugins: {
+                                    legend: {
+                                        position: 'bottom',
+                                        labels: {
+                                            padding: 15,
+                                            usePointStyle: true
+                                        }
+                                    },
+                                    tooltip: {
+                                        callbacks: {
+                                            label: function(context) {
+                                                return context.label + ': ' + context.parsed.toLocaleString() + ' ლარი';
+                                            }
+                                        }
+                                    }
+                                }
+                            }
+                        });
+                        
+                        // Bar Chart
+                        const barCtx = document.getElementById('bar_chart').getContext('2d');
+                        barChart = new Chart(barCtx, {
+                            type: 'bar',
+                            data: {
+                                labels: data.bar_chart.labels,
+                                datasets: [
+                                    {
+                                        label: 'ბიუჯეტი',
+                                        data: data.bar_chart.budget_amounts,
+                                        backgroundColor: '#36A2EB',
+                                        borderColor: '#36A2EB',
+                                        borderWidth: 1
+                                    },
+                                    {
+                                        label: 'გამოყენებული',
+                                        data: data.bar_chart.used_amounts,
+                                        backgroundColor: '#FF6384',
+                                        borderColor: '#FF6384',
+                                        borderWidth: 1
+                                    },
+                                    {
+                                        label: 'დარჩენილი',
+                                        data: data.bar_chart.remaining_amounts,
+                                        backgroundColor: '#4BC0C0',
+                                        borderColor: '#4BC0C0',
+                                        borderWidth: 1
+                                    }
+                                ]
+                            },
+                            options: {
+                                responsive: true,
+                                maintainAspectRatio: false,
+                                scales: {
+                                    y: {
+                                        beginAtZero: true,
+                                        ticks: {
+                                            callback: function(value, index, values) {
+                                                return value.toLocaleString() + ' ლარი';
+                                            }
+                                        }
+                                    }
+                                },
+                                plugins: {
+                                    legend: {
+                                        position: 'top'
+                                    },
+                                    tooltip: {
+                                        callbacks: {
+                                            label: function(context) {
+                                                return context.dataset.label + ': ' + context.parsed.y.toLocaleString() + ' ლარი';
+                                            }
+                                        }
+                                    }
+                                }
+                            }
+                        });
+                    }
+                    
+                    function renderTable(tableData) {
+                        const tbody = document.querySelector('#data_table tbody');
+                        tbody.innerHTML = '';
+                        
+                        if (!tableData || tableData.length === 0) {
+                            const tr = document.createElement('tr');
+                            tr.innerHTML = '<td colspan="22" class="text-center text-muted py-4">მონაცემები არ არის</td>';
+                            tbody.appendChild(tr);
+                            return;
+                        }
+                        
+                        // Group data by CPV category
+                        const groupedData = {};
+                        tableData.forEach(function(row) {
+                            if (!groupedData[row.cpv_name]) {
+                                groupedData[row.cpv_name] = [];
+                            }
+                            groupedData[row.cpv_name].push(row);
+                        });
+                        
+                        // Render grouped data
+                        Object.keys(groupedData).forEach(function(cpvName, groupIndex) {
+                            const rows = groupedData[cpvName];
+                            
+                            // Add a group header row
+                            if (groupIndex > 0) {
+                                const separatorTr = document.createElement('tr');
+                                separatorTr.innerHTML = '<td colspan="22" class="bg-light text-center font-weight-bold py-2" style="border-top: 2px solid #dee2e6;"><i class="fa fa-tag mr-2"></i>CPV კატეგორია: ' + cpvName + '</td>';
+                                tbody.appendChild(separatorTr);
+                            } else {
+                                const headerTr = document.createElement('tr');
+                                headerTr.innerHTML = '<td colspan="22" class="bg-primary text-white text-center font-weight-bold py-2"><i class="fa fa-tag mr-2"></i>CPV კატეგორია: ' + cpvName + '</td>';
+                                tbody.appendChild(headerTr);
+                            }
+                            
+                            // Add data rows for this group
+                            rows.forEach(function(row, rowIndex) {
+                                const tr = document.createElement('tr');
+                                tr.className = 'cpv-group-' + groupIndex;
+                                
+                                if (rowIndex % 2 === 0) {
+                                    tr.style.backgroundColor = '#f8f9fa';
+                                }
+                                
+                                const curr = row.currency_symbol || '';
+                                
+                                tr.innerHTML = '<td class="font-weight-bold text-info pl-4">' + row.cpv_name + '</td>' +
+                                    '<td class="font-weight-medium">' + row.plan_name + '</td>' +
+                                    '<td class="text-right font-weight-bold text-warning">' + row.used_amount.toLocaleString() + ' ' + curr + '</td>' +
+                                    '<td>' + row.funding_source + '</td>' +
+                                    '<td>' + row.purchase_method + '</td>' +
+                                    '<td>' + row.pricekurant + '</td>' +
+                                    '<td>' + row.variants + '</td>' +
+                                    '<td class="text-right">' + row.pu_st_am.toLocaleString() + ' ' + curr + '</td>' +
+                                    '<td class="text-right">' + row.pu_ac_am.toLocaleString() + ' ' + curr + '</td>' +
+                                    '<td class="text-right">' + row.pu_diff.toLocaleString() + ' ' + curr + '</td>' +
+                                    '<td class="text-right">' + row.x_studio_reserved.toLocaleString() + ' ' + curr + '</td>' +
+                                    '<td class="text-right">' + row.x_studio_remaining_resource.toLocaleString() + ' ' + curr + '</td>' +
+                                    '<td class="text-right">' + row.pcon_am.toLocaleString() + ' ' + curr + '</td>' +
+                                    '<td class="text-right">' + row.pc_re_am.toLocaleString() + ' ' + curr + '</td>' +
+                                    '<td class="text-right">' + row.paim_am.toLocaleString() + ' ' + curr + '</td>' +
+                                    '<td class="text-right">' + row.pa_re_am.toLocaleString() + ' ' + curr + '</td>' +
+                                    '<td class="text-right">' + row.budget_lines_allocated.toLocaleString() + ' ' + curr + '</td>' +
+                                    '<td class="text-right">' + row.remaining_to_allocate.toLocaleString() + ' ' + curr + '</td>' +
+                                    '<td class="text-muted">' + row.budget_line + '</td>' +
+                                    '<td class="text-info">' + (row.selected_plan_name || 'N/A') + '</td>';
+                                tbody.appendChild(tr);
+                            });
+                        });
+                    }
+                    
+                    function exportCSV() {
+                        if (!currentData || !currentData.table_data) {
+                            showError('ექსპორტისთვის საჭირო მონაცემები არ არის');
+                            return;
+                        }
+                        
+                        let csv = 'CPV კატეგორია,გეგმის დასახელება,ბიუჯეტის თანხა,გამოყენებული თანხა,დარჩენილი რესურსი,დაფინანსების წყარო,შესყიდვის მეთოდი,ფასკურანტი,ვარიანტები,საწყისი თანხა,ფაქტ. თანხა,სხვაობა,დაჯავშნილი,დარჩენილი რესურსი,კონტრაქტის თანხა,კონტრ. დარჩენილი,პერიოდ. თანხა,პერ. დარჩენილი,გამოყოფილი,დასაყოფი,ბიუჯეტის ხაზი,შერჩეული გეგმა\n';
+                        
+                        currentData.table_data.forEach(function(row) {
+                            csv += '"' + row.cpv_name + '","' + row.plan_name + '",' + 
+                                row.budget_amount + ',' + row.used_amount + ',' + row.remaining_amount + ',"' +
+                                row.funding_source + '","' + row.purchase_method + '","' + row.pricekurant + '","' +
+                                row.variants + '",' + row.pu_st_am + ',' + row.pu_ac_am + ',' + row.pu_diff + ',' +
+                                row.x_studio_reserved + ',' + row.x_studio_remaining_resource + ',' + 
+                                row.pcon_am + ',' + row.pc_re_am + ',' + row.paim_am + ',' + row.pa_re_am + ',' +
+                                row.budget_lines_allocated + ',' + row.remaining_to_allocate + ',"' +
+                                row.budget_line + '","' + (row.selected_plan_name || 'N/A') + '"\n';
+                        });
+                        
+                        const blob = new Blob([csv], { type: 'text/csv;charset=utf-8;' });
+                        const url = URL.createObjectURL(blob);
+                        const a = document.createElement('a');
+                        a.href = url;
+                        a.download = 'budget_cpv_report_' + new Date().toISOString().split('T')[0] + '.csv';
+                        a.style.display = 'none';
+                        document.body.appendChild(a);
+                        a.click();
+                        document.body.removeChild(a);
+                        URL.revokeObjectURL(url);
+                    }
+                    
+                    function showLoading() {
+                        loadingDiv.style.display = 'block';
+                        resultsSection.style.display = 'none';
+                        hideError();
+                    }
+                    
+                    function hideLoading() {
+                        loadingDiv.style.display = 'none';
+                    }
+                    
+                    function showResults() {
+                        resultsSection.style.display = 'block';
+                        hideError();
+                    }
+                    
+                    function hideResults() {
+                        resultsSection.style.display = 'none';
+                        exportBtn.disabled = true;
+                        currentData = null;
+                    }
+                    
+                    function showError(message) {
+                        errorText.textContent = message;
+                        errorDiv.style.display = 'block';
+                        hideLoading();
+                    }
+                    
+                    function hideError() {
+                        errorDiv.style.display = 'none';
+                    }
+                });
+            //]]>
+            </script>
+        </t>
+    </template>
+</odoo>

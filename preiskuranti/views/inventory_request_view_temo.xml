@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="inventory_request_form_inherit_add_preiskuranti" model="ir.ui.view">
+        <field name="name">inventory.request.form.inherit.add.preiskuranti</field>
+        <field name="model">inventory.request</field>
+        <field name="inherit_id" ref="inventory_requests.view_inventory_request_form"/>
+        <field name="arch" type="xml">
+            <xpath expr="//field[@name='description']" position="after">
+                <field name="preiskuranti_id_new" domain="[('id', 'in', allowed_preiskuranti_ids_new)]"/>
+            </xpath>
+
+            <xpath expr="//field[@name='description']" position="after">
+                <field name="bypass_preiskuranti_filter"/>
+            </xpath>
+
+            <xpath expr="//field[@name='line_ids']//list//field[@name='product_id']" position="attributes">
+                <attribute name="domain">[('id','in', parent.allowed_product_ids)] if parent.allowed_product_ids else []</attribute>
+            </xpath>
+
+
+            <xpath expr="//field[@name='line_ids']//list//field[@name='product_id']" position="after">
+                <field name="preiskurantidan"/>
+            </xpath>
+
+            <xpath expr="//field[@name='line_ids']//list//field[@name='product_id']" position="after">
+                <field name="preiskurantifasi"/>
+            </xpath>
+
+            
+        </field>
+    </record>
+</odoo>

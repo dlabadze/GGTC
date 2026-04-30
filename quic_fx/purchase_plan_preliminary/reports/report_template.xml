@@ -1,0 +1,272 @@
+<odoo>
+    <template id="report_purchase_plan_preliminary_template">
+        <div class="page">
+            <div class="oe_structure"/>
+            <div class="row">
+
+                <div class="col-8 offset-2 text-center">
+                    <h2 style="font-size: 30px; margin: 0; font-weight: bold; ">
+                        შპს გაზის ტრანსპორტირების კომპანიის <br/> 2025წ სახელმწიფო შესყიდვების გეგმის ცვლილება
+                    </h2>
+                </div>
+
+                <div class="col-2 text-left">
+                    <span style="font-size: 14px;">
+                        <t t-esc="o.create_date.strftime('%d/%m/%Y')"/>
+                    </span>
+                </div>
+            </div>
+
+            <div class="row mt-4">
+                <div class="col-12">
+                    <table class="table table-sm table-bordered">
+                        <thead>
+                            <tr>
+                                <th class="text-right">N</th>
+                                <th class="text-right">ძირითადი CVP</th>
+                                <th class="text-right">არსებული სავარაუდო ღირებულება </th>
+                                <th class="text-right">შესყიდვის საშუალება</th>
+                                <th class="text-right">შესყიდვების საფუძველი</th>
+                                <th class="text-right">რესურსი</th>
+                                <th class="text-right">შენიშვნა</th>
+                                <th class="text-right">ახალი სავარაუდო ღირებულება</th>
+                                <th class="text-right">სხვაობა</th>
+                                <th class="text-right">ახალი რესურსი</th>
+                                <th class="text-right">CPV დასახელება</th>
+                            </tr>
+                        </thead>
+
+                    <tbody>
+                        <t t-set="i" t-value="1"/>
+
+                        <t t-foreach="lines" t-as="line">
+                            <tr>
+                                <td class="text-right"><t t-esc="i"/></td>
+                                <td class="text-right"><span t-field="line.cpv_id.code"/></td>
+                                <td class="text-right"><span t-field="line.pu_st_am"/></td>
+                                <td class="text-right"><span t-field="line.purchase_method_id.name"/></td>
+                                <td class="text-right"><span t-field="line.purchase_reason_id.name"/></td>
+                                <td class="text-right"><span t-field="line.pc_re_am"/></td>
+                                <td class="text-right"></td>
+                                <td class="text-right"><span t-field="line.pu_ac_am"/></td>
+                                <td class="text-right"><span t-field="line.pu_diff"/></td>
+                                <td class="text-right"><span t-field="line.pa_re_am"/></td>
+                                <td class="text-right"><span t-field="line.cpv_name"/></td>
+                            </tr>
+
+                            <!-- Increase counter -->
+                            <t t-set="i" t-value="i + 1"/>
+                        </t>
+                    </tbody>
+                    </table>
+
+                    <div class="row mt-4 " >
+                        <div class="col-3">
+                            <p  style="font-size: 15px; margin: 0;">გენერალური დირექტორის მოადგილე</p>
+                        </div>
+                    </div>
+
+                    <div class="row mt-4 " >
+                        <div class="col-3">
+                            <p  style="font-size: 15px; margin: 0;">ირაკლი კანდელაკი</p>
+                        </div>
+                    </div>
+                    <br/>
+                    <div class="row mt-4 " >
+                        <div class="col-3">
+                            <p  style="font-size: 15px; margin: 0;">შესყიდვების დეპარტამენტის უფროსი</p>
+                        </div>
+                    </div>
+
+                    <div class="row mt-4 " >
+                        <div class="col-3">
+                            <p  style="font-size: 15px; margin: 0;">ეკატერინე ზაბახიძე</p>
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+        </div>
+    </template>
+
+    <!--    purchase plan part-->
+    <template id="report_purchase_plan_document">
+        <t t-call="web.html_container">
+            <t t-foreach="docs" t-as="o">
+                <t t-call="web.external_layout">
+                    <t t-call="purchase_plan_preliminary.report_purchase_plan_preliminary_template">
+                        <t t-set="plan" t-value="o"/>
+                        <t t-set="lines" t-value="o.line_ids"/>
+                    </t>
+                </t>
+            </t>
+        </t>
+    </template>
+
+    <!-- Purchase Plan Changes Template -->
+    <template id="report_purchase_plan_preliminary_template">
+        <div class="page">
+            <div class="oe_structure"/>
+            <div class="row">
+                <div class="col-8 offset-2 text-center">
+                    <h2 style="font-size: 30px; margin: 0; font-weight: bold;">
+                        შპს გაზის ტრანსპორტირების კომპანიის <br/> 2025წ სახელმწიფო შესყიდვების გეგმის ცვლილება
+                    </h2>
+                </div>
+                <div class="col-2 text-left">
+                    <span style="font-size: 14px;">
+                        <t t-esc="time.strftime('%d/%m/%Y')"/>
+                    </span>
+                </div>
+            </div>
+
+            <div class="row mt-4">
+                <div class="col-12">
+                    <t t-set="sum_existing_val" t-value="0"/>
+                    <t t-set="sum_existing_res" t-value="0"/>
+                    <t t-set="sum_new_val" t-value="0"/>
+                    <t t-set="sum_diff" t-value="0"/>
+                    <t t-set="sum_new_res" t-value="0"/>
+                    <t t-set="sum_change_amount" t-value="0"/>
+                    <t t-set="i" t-value="1"/>
+
+                    <div class="page">
+                        <table class="table table-sm table-bordered" style="font-size: 12px; table-layout: fixed; width: 100%;">
+                            <thead>
+                                <tr class="bg-light">
+                                    <th class="text-right" style="width: 30px;">N</th>
+                                    <th class="text-right">ძირითადი CPV</th>
+                                    <th class="text-right">არსებული სავარაუდო ღირებულება</th>
+                                    <th class="text-right">შესყიდვის საშუალება</th>
+                                    <th class="text-right">შესყიდვების საფუძველი</th>
+                                    <th class="text-right">რესურსი</th>
+                                    <th class="text-right">შენიშვნა</th>
+                                    <th class="text-right">ახალი სავარაუდო ღირებულება</th>
+                                    <th class="text-right">სხვაობა არსებულ და ახალ ღირებულებებს შორის</th>
+                                    <th class="text-right">ახალი რესურსი</th>
+                                    <th class="text-right">CPV დასახელება</th>
+                                </tr>
+                            </thead>
+
+                            <tbody>
+                                <t t-foreach="lines" t-as="change_line">
+                                    <t t-set="line" t-value="change_line.plan_line_id"/>
+
+                                    <t t-if="line">
+                                        <t t-set="sum_existing_val" t-value="sum(change_line.plan_id.line_ids.mapped('pu_ac_am'))"/>
+                                        <t t-set="sum_existing_res" t-value="sum(change_line.plan_id.line_ids.mapped('pc_re_am'))"/>
+                                        <t t-set="sum_diff" t-value="sum_diff + change_line.change_amount"/>
+                                        <t t-set="res" t-value="change_line.change_amount + line.pc_re_am"/>
+                                        <t t-set="sum_new_res" t-value="sum_diff + sum_existing_res"/>
+                                        <t t-set="sum_new_val" t-value="sum_existing_val + sum_diff"/>
+
+                                    </t>
+                                    <t t-else="">
+                                        <t t-set="sum_existing_val" t-value="sum(change_line.plan_id.line_ids.mapped('pu_ac_am'))"/>
+                                        <t t-set="sum_existing_res" t-value="sum(change_line.plan_id.line_ids.mapped('pc_re_am'))"/>
+                                        <t t-set="sum_diff" t-value="sum_diff + change_line.change_amount"/>
+                                        <t t-set="res" t-value="change_line.change_amount + line.pc_re_am"/>
+                                        <t t-set="sum_new_res" t-value="sum_diff + sum_existing_res"/>
+                                        <t t-set="sum_new_val" t-value="sum_existing_val + sum_diff"/>
+                                    </t>
+
+
+                                    <tr>
+                                        <td class="text-right"><t t-esc="i"/></td>
+
+                                        <td class="text-right">
+                                            <span t-if="line" t-field="line.cpv_id.code"/>
+                                            <span t-else="" t-field="change_line.new_cpv_code.code"/>
+                                        </td>
+
+                                        <td class="text-right"><span t-if="line" t-field="line.pu_ac_am"/></td>
+                                        <td class="text-right"><span t-field="change_line.purchase_method_id.name"/></td>
+                                        <td class="text-right"><span t-field="change_line.purchase_reason_id.name"/></td>
+                                        <td class="text-right"><span t-if="line" t-field="line.pc_re_am"/></td>
+                                        <td class="text-right"><span t-if="line" t-field="line.vadebi"/></td>
+
+                                        <td class="text-right" style="font-weight:bold;">
+                                            <span t-field="change_line.new_poss_amount"/>
+                                        </td>
+                                        <td class="text-right">
+                                            <span t-field="change_line.change_amount"/>
+                                        </td>
+                                        <td class="text-right" style="font-weight:bold;">
+                                            <span t-esc="res" t-options='{"widget": "monetary", "display_currency": lines[0].currency_id}'/>
+                                        </td>
+
+                                        <td class="text-right">
+                                            <span t-if="line" t-field="line.cpv_name"/>
+                                            <span t-else="" t-field="change_line.new_cpv_code.name"/>
+                                        </td>
+                                    </tr>
+                                    <t t-set="i" t-value="i + 1"/>
+                                </t>
+                            </tbody>
+
+                            <tfoot>
+                                <tr style="font-weight: bold; background-color: #f2f2f2;">
+                                    <td colspan="2" class="text-center">სულ (Total)</td>
+                                    <td class="text-right">
+                                        <span t-esc="sum_existing_val" t-options='{"widget": "monetary", "display_currency": lines[0].currency_id}'/>
+                                    </td>
+                                    <td/>
+                                    <td/>
+                                    <td class="text-right">
+                                        <span t-esc="sum_existing_res" t-options='{"widget": "monetary", "display_currency": lines[0].currency_id}'/>
+                                    </td>
+                                    <td/>
+                                    <td class="text-right">
+                                        <span t-esc="sum_new_val" t-options='{"widget": "monetary", "display_currency": lines[0].currency_id}'/>
+                                    </td>
+                                    <td class="text-right">
+                                        <span t-esc="sum_diff" t-options='{"widget": "monetary", "display_currency": lines[0].currency_id}'/>
+                                    </td>
+                                    <td class="text-right">
+                                        <span t-esc="sum_new_res" t-options='{"widget": "monetary", "display_currency": lines[0].currency_id}'/>
+                                    </td>
+                                    <td/>
+                                </tr>
+                            </tfoot>
+                        </table>
+                    </div>
+
+                    <div class="row mt-4">
+                        <div class="col-3">
+                            <p style="font-size: 15px; margin: 0;">გენერალური დირექტორის მოადგილე</p>
+                        </div>
+                    </div>
+
+                    <div class="row mt-4">
+                        <div class="col-3">
+                            <p style="font-size: 15px; margin: 0;">ირაკლი კანდელაკი</p>
+                        </div>
+                    </div>
+                    <br/>
+                    <div class="row mt-4">
+                        <div class="col-3">
+                            <p style="font-size: 15px; margin: 0;">შესყიდვების დეპარტამენტის უფროსი</p>
+                        </div>
+                    </div>
+
+                    <div class="row mt-4">
+                        <div class="col-3">
+                            <p style="font-size: 15px; margin: 0;">ეკატერინე ზაბახიძე</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </template>
+
+    <!--purchase plan changes part-->
+    <template id="report_purchase_plan_preliminary_document">
+            <t t-call="web.html_container">
+                <t t-call="web.external_layout">
+                    <t t-set="lines" t-value="docs"/>
+                    <t t-call="purchase_plan_preliminary.report_purchase_plan_preliminary_template"/>
+                </t>
+           </t>
+    </template>
+
+</odoo>

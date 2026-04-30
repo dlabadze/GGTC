@@ -1,0 +1,461 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <!-- Partner Selection Wizard (Kept for backward compatibility) -->
+    <record id="view_tbc_partner_selection_wizard_form" model="ir.ui.view">
+        <field name="name">tbc.partner.selection.wizard.form</field>
+        <field name="model">tbc.partner.selection.wizard</field>
+        <field name="arch" type="xml">
+            <form string="Select Partner">
+                <group>
+                    <group>
+                        <field name="transaction_id" invisible="1"/>
+                        <field name="transaction_type" readonly="1"/>
+                        <field name="partner_name" readonly="1"/>
+                        <field name="partner_inn" readonly="1"/>
+                    </group>
+                </group>
+                <group>
+                    <field name="partner_id" options="{'no_create': False, 'no_create_edit': False}"
+                           placeholder="Please select a partner..." required="1"/>
+                </group>
+                <div class="alert alert-info" role="alert">
+                    <strong>Information:</strong>
+                    <ul>
+                        <li>Partner not auto-detected from INN/tax code</li>
+                        <li>Please select an existing partner or create a new one</li>
+                        <li>Partner will be used when creating the bank statement line</li>
+                    </ul>
+                </div>
+                <footer>
+                    <button string="Confirm" name="action_confirm_partner" type="object" class="btn-primary"/>
+                    <button string="Cancel" class="btn-secondary" special="cancel"/>
+                </footer>
+            </form>
+        </field>
+    </record>
+    <!-- Form View for TBC Payment Integration -->
+    <record id="view_tbc_payment_integration_form" model="ir.ui.view">
+        <field name="name">tbc.payment.integration.form</field>
+        <field name="model">tbc_payment_integration.tbc_payment_integration</field>
+        <field name="arch" type="xml">
+            <form string="საქართველოს ბანკის ამონაწერი">
+                <header>
+                    <!-- NEW: Create statement line action -->
+                    <button name="action_create_statement_lines"
+                            type="object"
+                            string="Create Statement Line"
+                            class="btn-primary"
+                            invisible="state in ('imported', 'reconciled')"
+                            help="Create bank statement line from this transaction"/>
+                    <button name="action_open_reconciliation"
+                            type="object"
+                            string="Open Reconciliation"
+                            class="btn-info"
+                            invisible="state != 'imported'"
+                            help="Open reconciliation widget"/>
+                    <field name="state" widget="statusbar" statusbar_visible="draft,imported,reconciled"/>
+                </header>
+                <sheet>
+                    <group>
+                        <group string="Entry Details">
+                            <field name="statement_line_id" readonly="1"/>
+                            <field name="partner_id" readonly="1"/>
+                            <field name="suggested_mapping_id" readonly="1"/>
+                            <field name="is_reconciled" readonly="1"/>
+                            <field name="entry_date"/>
+                            <field name="my_bank_id"/>
+                            <field name="entry_document_number"/>
+                            <field name="entry_account_number"/>
+                            <field name="entry_amount_debit"/>
+                            <field name="entry_amount_debit_base"/>
+                            <field name="entry_amount_credit"/>
+                            <field name="entry_amount_credit_base"/>
+                            <field name="entry_amount_base"/>
+                            <field name="entry_amount"/>
+                            <field name="entry_comment"/>
+                            <field name="entry_department"/>
+                            <field name="entry_account_point"/>
+                        </group>
+
+                        <group string="Document Information">
+                            <field name="document_product_group"/>
+                            <field name="document_product_group_mapping"/>
+                            <field name="document_value_date"/>
+                            <field name="document_treasury_code"/>
+                            <field name="document_nomination"/>
+                            <field name="document_information"/>
+                            <field name="document_source_amount"/>
+                            <field name="document_source_currency"/>
+                            <field name="document_destination_amount"/>
+                            <field name="document_destination_currency"/>
+                            <field name="document_receive_date"/>
+                            <field name="document_branch"/>
+                            <field name="document_department"/>
+                            <field name="document_actual_date"/>
+                            <field name="document_expiry_date"/>
+                            <field name="document_rate_limit"/>
+                            <field name="document_rate"/>
+                            <field name="document_registration_rate"/>
+                        </group>
+
+                        <group string="Sender Details">
+                            <field name="sender_details_name"/>
+                            <field name="sender_details_inn"/>
+                            <field name="sender_details_account_number"/>
+                            <field name="sender_details_bank_code"/>
+                            <field name="sender_details_bank_name"/>
+                        </group>
+
+                        <group string="Beneficiary Details">
+                            <field name="beneficiary_details_name"/>
+                            <field name="beneficiary_details_inn"/>
+                            <field name="beneficiary_details_account_number"/>
+                            <field name="beneficiary_details_bank_code"/>
+                            <field name="beneficiary_details_bank_name"/>
+                        </group>
+
+                        <group string="Correspondent Details">
+                            <field name="document_correspondent_account_number"/>
+                            <field name="document_correspondent_bank_code"/>
+                            <field name="document_correspondent_bank_name"/>
+                        </group>
+
+                        <group string="Institution Details">
+                            <field name="document_sender_institution"/>
+                            <field name="document_intermediary_institution"/>
+                            <field name="document_beneficiary_institution"/>
+                        </group>
+
+                        <group string="Miscellaneous">
+                            <field name="document_payee"/>
+                            <field name="document_key"/>
+                            <field name="entry_id"/>
+                            <field name="doc_comment"/>
+                            <field name="document_payer_inn"/>
+                            <field name="document_payer_name"/>
+                        </group>
+                    </group>
+                </sheet>
+            </form>
+        </field>
+    </record>
+
+    <record id="view_tbc_payment_integration_list" model="ir.ui.view">
+        <field name="name">tbc.payment.integration.list</field>
+        <field name="model">tbc_payment_integration.tbc_payment_integration</field>
+        <field name="arch" type="xml">
+            <list js_class="payment_integration_list" create="false" string="საქართველოს ბანკის ამონაწერი">
+                <header>
+                    <button name="action_create_statement_lines"
+                            type="object"
+                            string="Create Statement Lines"
+                            class="btn-primary"
+                            help="Create bank statement lines from selected transactions"/>
+                </header>
+                <!-- Visible fields (main columns) -->
+                <field name="entry_date"/>
+                <field name="entry_document_number"/>
+                <field name="entry_account_number"/>
+                <field name="document_value_date"/>
+                <field name="entry_amount"/>
+                <field name="state"/>
+                <field name="partner_id" optional="show"/>
+                <field name="statement_line_id" optional="hide"/>
+                <field name="is_reconciled" optional="show"/>
+                
+                <!-- All other fields from form view - now visible for Excel export -->
+                <!-- Entry Details -->
+                <field name="my_bank_id"/>
+                <field name="entry_amount_debit"/>
+                <field name="entry_amount_debit_base"/>
+                <field name="entry_amount_credit"/>
+                <field name="entry_amount_credit_base"/>
+                <field name="entry_amount_base"/>
+                <field name="entry_comment"/>
+                <field name="entry_department"/>
+                <field name="entry_account_point"/>
+                
+                <!-- Document Information -->
+                <field name="document_product_group"/>
+                <field name="document_product_group_mapping"/>
+                <field name="document_treasury_code"/>
+                <field name="document_nomination"/>
+                <field name="document_information"/>
+                <field name="document_source_amount"/>
+                <field name="document_source_currency"/>
+                <field name="document_destination_amount"/>
+                <field name="document_destination_currency"/>
+                <field name="document_receive_date"/>
+                <field name="document_branch"/>
+                <field name="document_department"/>
+                <field name="document_actual_date"/>
+                <field name="document_expiry_date"/>
+                <field name="document_rate_limit"/>
+                <field name="document_rate"/>
+                <field name="document_registration_rate"/>
+                
+                <!-- Sender Details -->
+                <field name="sender_details_name"/>
+                <field name="sender_details_inn"/>
+                <field name="sender_details_account_number"/>
+                <field name="sender_details_bank_code"/>
+                <field name="sender_details_bank_name"/>
+                
+                <!-- Beneficiary Details -->
+                <field name="beneficiary_details_name"/>
+                <field name="beneficiary_details_inn"/>
+                <field name="beneficiary_details_account_number"/>
+                <field name="beneficiary_details_bank_code"/>
+                <field name="beneficiary_details_bank_name"/>
+                
+                <!-- Correspondent Details -->
+                <field name="document_correspondent_account_number"/>
+                <field name="document_correspondent_bank_code"/>
+                <field name="document_correspondent_bank_name"/>
+                
+                <!-- Institution Details -->
+                <field name="document_sender_institution"/>
+                <field name="document_intermediary_institution"/>
+                <field name="document_beneficiary_institution"/>
+                
+                <!-- Miscellaneous -->
+                <field name="document_payee"/>
+                <field name="document_key"/>
+                <field name="entry_id"/>
+                <field name="doc_comment"/>
+                <field name="document_payer_inn"/>
+                <field name="document_payer_name"/>
+            </list>
+        </field>
+    </record>
+	<record id="view_tbc_payment_integration_search" model="ir.ui.view">
+		<field name="name">tbc.payment.integration.search</field>
+		<field name="model">tbc_payment_integration.tbc_payment_integration</field>
+		<field name="arch" type="xml">
+			<search string="Search Payments">
+				<field name="entry_document_number"/>
+				<field name="entry_account_number"/>
+				<field name="entry_date"/>
+				<field name="document_value_date"/>
+				<filter name="filter_draft" string="Draft" domain="[('state','=','draft')]"/>
+				<filter name="filter_imported" string="Imported" domain="[('state','=','imported')]"/>
+				<filter name="filter_reconciled" string="Reconciled" domain="[('state','=','reconciled')]"/>
+				<filter name="filter_error" string="Error" domain="[('state','=','error')]"/>
+			</search>
+		</field>
+	</record>
+
+    
+
+    
+    <record id="view_bog_payment_wizard_form" model="ir.ui.view">
+        <field name="name">bog.payment.wizard.form</field>
+        <field name="model">bog.payment.wizard</field>
+        <field name="arch" type="xml">
+            <form string="BOG Payment Integration">
+                <group>
+                    <field name="currency"/>
+                    <field name="start_date"/>
+                    <field name="end_date"/>
+                    <field name="company_id" invisible="1"/>
+                    <field name="selected_bank_account_id"/>
+                </group>
+                <footer>
+                    <button string="Submit" type="object" name="fetch_transactions" class="btn-primary"/>
+                    <button string="Cancel" class="btn-secondary" special="cancel"/>
+                </footer>
+            </form>
+        </field>
+    </record>
+
+    <record id="action_bog_payment_wizard" model="ir.actions.act_window">
+        <field name="name">BOG Payment Wizard</field>
+        <field name="res_model">bog.payment.wizard</field>
+        <field name="view_mode">form</field>
+        <field name="view_id" ref="view_bog_payment_wizard_form"/>
+        <field name="target">new</field>
+    </record>
+
+
+
+
+    <!-- Action for TBC Payment Integration Model -->
+    <record id="action_tbc_payment_integration" model="ir.actions.act_window">
+        <field name="name">საქართველოს ბანკის ამონაწერი</field>
+        <field name="res_model">tbc_payment_integration.tbc_payment_integration</field>
+        <field name="view_mode">list,form</field>
+        <field name="view_id" ref="view_tbc_payment_integration_list"/>
+		<field name="search_view_id" ref="view_tbc_payment_integration_search"/>
+    </record>
+
+    <!-- Menu Items -->
+    <menuitem id="menu_tbc_payment_integration_root" name="ბანკის ამონაწერი" sequence="1"/>
+
+    <!-- Menu Action for TBC Payment Integration Model -->
+    <menuitem id="menu_action_tbc_payment_integration" name="საქართველოს ბანკის ამონაწერი" parent="menu_tbc_payment_integration_root" action="action_tbc_payment_integration" sequence="2"/>
+
+    <!-- New Menu Item for TBC Account Movements -->
+    <menuitem id="menu_tbc_movements" name="თიბისი ბანკის ამონაწერი" parent="menu_tbc_payment_integration_root" action="action_tbc_movements" sequence="3"/>
+    
+    <record id="access_bog_payment_wizard_user" model="ir.model.access">
+        <field name="name">bog.payment.wizard access for user</field>
+        <field name="model_id" ref="model_bog_payment_wizard"/>
+        <field name="group_id" ref="base.group_user"/>
+        <field name="perm_read" eval="1"/>
+        <field name="perm_write" eval="1"/>
+        <field name="perm_create" eval="1"/>
+        <field name="perm_unlink" eval="1"/>
+    </record>
+    <record id="action_tbc_movements" model="ir.actions.act_window">
+        <field name="name">თიბისი ბანკის ამონაწერი</field>
+        <field name="res_model">tbc.movements</field>
+        <field name="view_mode">list,form</field>
+
+    </record>
+
+    <record id="view_tbc_account_statement_wizard_form" model="ir.ui.view">
+        <field name="name">tbc.account.statement.wizard.form</field>
+        <field name="model">tbc.account.statement.wizard</field>
+        <field name="arch" type="xml">
+            <form string="Import Bank Statement from PDF">
+                <sheet>
+                    <group>
+                        <field name="file" widget="binary" filename="file_name" required="1"/>
+                    </group>
+                    <footer>
+                        <button string="Import" type="object" name="action_import_statement" class="btn-primary" />
+                        <button string="Cancel" type="object" class="btn-secondary" special="cancel" />
+                    </footer>
+                </sheet>
+            </form>
+        </field>
+    </record>
+
+
+    <record id="action_tbc_account_statement_wizard" model="ir.actions.act_window">
+        <field name="name">Import Bank Statement</field>
+        <field name="res_model">tbc.account.statement.wizard</field>
+        <field name="view_mode">form</field>  <!-- Keep only this line -->
+        <field name="view_id" ref="view_tbc_account_statement_wizard_form"/>
+        <field name="target">new</field>
+    </record>
+
+
+    <odoo>
+    <record id="view_bog_statement_pdf_wizard" model="ir.ui.view">
+        <field name="name">bog.statement.pdf.wizard.form</field>
+        <field name="model">bog.statement.pdf.wizard</field>
+        <field name="arch" type="xml">
+            <form string="BOG STATEMENT">
+                <group>
+                    <field name="pdf_file" filename="pdf_filename"/>
+                </group>
+                <footer>
+                    <button string="Process PDF" type="object" name="extract_and_process_transactions" class="btn-primary"/>
+                    <button string="Cancel" class="btn-secondary" special="cancel"/>
+                </footer>
+            </form>
+        </field>
+    </record>
+
+    <record id="action_bog_statement_pdf_wizard" model="ir.actions.act_window">
+        <field name="name">BOG STATEMENT PDF</field>
+        <field name="res_model">bog.statement.pdf.wizard</field>
+        <field name="view_mode">form</field>
+        <field name="target">new</field>
+    </record>
+
+<!-- Updated Form View for TBC Code Mapping -->
+<record id="view_tbc_code_mapping_form" model="ir.ui.view">
+    <field name="name">tbc.code.mapping.form</field>
+    <field name="model">tbc.code.mapping</field>
+    <field name="arch" type="xml">
+        <form string="TBC Code Mapping">
+            <sheet>
+                <group>
+                    <group string="Basic Information">
+                        <field name="code_field" required="1"/>
+                        <field name="debit_credit" required="1"/>
+                        <field name="account_id" required="1"/>
+                        <field name="partner_required" required="1"/>
+                    </group>
+                    <group string="Comment Keywords">
+                        <field name="comment" placeholder="Enter keywords separated by commas (e.g., ხელფასი, პრემია, ბონუსი)" 
+                               widget="text" 
+                               help="Enter keywords separated by commas to search in transaction comments"/>
+                    </group>
+                </group>
+            </sheet>
+        </form>
+    </field>
+</record>
+
+<!-- Updated List View for TBC Code Mapping -->
+<record id="view_tbc_code_mapping_list" model="ir.ui.view">
+    <field name="name">tbc.code.mapping.list</field>
+    <field name="model">tbc.code.mapping</field>
+    <field name="arch" type="xml">
+        <list string="TBC Code Mappings" editable="bottom">
+            <field name="code_field"/>
+            <field name="debit_credit"/>
+            <field name="account_id"/>
+            <field name="partner_required"/>
+            <field name="comment" widget="text" optional="show"/>
+        </list>
+    </field>
+</record>
+
+<!-- Updated Search View for TBC Code Mapping -->
+<record id="view_tbc_code_mapping_search" model="ir.ui.view">
+    <field name="name">tbc.code.mapping.search</field>
+    <field name="model">tbc.code.mapping</field>
+    <field name="arch" type="xml">
+        <search string="Search TBC Code Mappings">
+            <field name="code_field"/>
+            <field name="account_id"/>
+            <field name="comment"/>
+            <field name="partner_required"/>
+            <group expand="0" string="Group By">
+                <filter string="Debit/Credit" name="group_debit_credit" context="{'group_by': 'debit_credit'}"/>
+                <filter string="Account" name="group_account" context="{'group_by': 'account_id'}"/>
+                <filter string="Partner Required" name="group_partner_required" context="{'group_by': 'partner_required'}"/>
+            </group>
+            <filter string="Debit" name="filter_debit" domain="[('debit_credit','=','debit')]"/>
+            <filter string="Credit" name="filter_credit" domain="[('debit_credit','=','credit')]"/>
+            <filter string="Partner Required" name="filter_partner_yes" domain="[('partner_required','=','yes')]"/>
+            <filter string="Partner Not Required" name="filter_partner_no" domain="[('partner_required','=','no')]"/>
+        </search>
+    </field>
+</record>
+
+    <!-- Action for TBC Code Mapping -->
+    <record id="action_tbc_code_mapping" model="ir.actions.act_window">
+        <field name="name">TBC Code Mappings</field>
+        <field name="res_model">tbc.code.mapping</field>
+        <field name="view_mode">list,form</field>
+        <field name="view_id" ref="view_tbc_code_mapping_list"/>
+        <field name="search_view_id" ref="view_tbc_code_mapping_search"/>
+    </record>
+
+    <!-- New Menu Item for TBC Code Mapping -->
+    <menuitem id="menu_tbc_code_mapping" name="კოდების მეპინგი" parent="menu_tbc_payment_integration_root" action="action_tbc_code_mapping" sequence="4"/>
+
+    <!-- Access Rights for TBC Code Mapping -->
+    <record id="access_tbc_code_mapping_user" model="ir.model.access">
+        <field name="name">tbc.code.mapping access for user</field>
+        <field name="model_id" ref="model_tbc_code_mapping"/>
+        <field name="group_id" ref="base.group_user"/>
+        <field name="perm_read" eval="1"/>
+        <field name="perm_write" eval="1"/>
+        <field name="perm_create" eval="1"/>
+        <field name="perm_unlink" eval="1"/>
+    </record>
+
+    <!-- TBC Movements Code Mapping - Removed (use tbc.code.mapping instead) -->
+</odoo>
+
+
+
+
+
+</odoo>

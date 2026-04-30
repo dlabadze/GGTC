@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data>
+        <record id="server_action_location_from_users" model="ir.actions.server">
+            <field name="name">Get Location From Request</field>
+            <field name="model_id" ref="inventory_requests.model_inventory_request"/>
+            <field name="binding_model_id" ref="inventory_requests.model_inventory_request"/>
+            <field name="binding_type">action</field>
+            <field name="state">code</field>
+            <field name="code">records.action_set_user_location()</field>
+        </record>
+    </data>
+</odoo>

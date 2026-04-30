@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="view_september_line_form_inherit_button_copy" model="ir.ui.view">
+        <field name="name">september.line.form.inherit.button.copy</field>
+        <field name="model">september.request</field>
+        <field name="inherit_id" ref="september_requests.view_september_request_form"/>
+        <field name="arch" type="xml">
+            <xpath expr="//form/header" position="inside">
+                <button
+                        name="%(copy_of_sep_requests.server_action_copy_to_inventory)d"
+                        string="Copy To Inventory Requests"
+                        type="action"
+                        class="oe_highlight"/>
+            </xpath>
+        </field>
+    </record>
+</odoo>

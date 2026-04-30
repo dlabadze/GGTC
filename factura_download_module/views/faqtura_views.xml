@@ -1,0 +1,113 @@
+<odoo>
+    
+    <record id="action_faqturis_gadmowera_realizacia" model="ir.actions.act_window">
+        <field name="name">FAQTURI GADMO WERA REALIZACIA</field>
+        <field name="res_model">faqturis.gadmowera.realizacia</field>
+        <field name="view_mode">form</field>
+        <field name="target">new</field> <!-- This opens the wizard in a modal dialog -->
+    </record>
+    
+    <record id="view_faqturi_list" model="ir.ui.view">
+        <field name="name">faqturi.list</field>
+        <field name="model">faqturi</field>
+        <field name="arch" type="xml">
+            <list js_class="button_2_list_fac" create="false" string="FAQTURI List" decoration-success="mdgomareoba == 'korektirebuli'" decoration-warning="mdgomareoba == 'gadatanili'">
+                <!-- <header>
+                    <button name="%(action_faqturis_gadmowera_realizacia)d" type="action" string="Open Wizard" class="btn-primary"/>
+                </header> -->
+                <field name="invoice_id"/>
+                <field name="series"/>
+                <field name="number"/>
+                <field name="registration_date"/>
+                <field name="operation_date"/>
+                <field name="organization_name"/>
+                <field name="tanxa"/>
+                <field name="vat"/>
+                <field name="buyer_un_id" invisible="1"/>
+                <field name="sa_ident_no"/>
+                <field name="status"/>
+                <field name="status_text"/>
+                <field name="waybill_type"/>
+                <field name="mdgomareoba"/>
+            </list>
+        </field>
+    </record>
+
+    <record id="view_faqturi_form" model="ir.ui.view">
+        <field name="name">faqturi.form</field>
+        <field name="model">faqturi</field>
+        <field name="arch" type="xml">
+            <form string="FAQTURI Form">
+                <header>
+                    <!-- Button to trigger the create_invoice_or_bill method -->
+                    <button name="create_invoice_or_bill"
+                            string="ბუღალტერიაში გატარება"
+                            type="object"
+                            class="btn-primary"
+                            />
+                </header>
+                <sheet>
+                    <group>
+                        <field name="invoice_id"/>
+                        <field name="series"/>
+                        <field name="number"/>
+                        <field name="registration_date"/>
+                        <field name="operation_date"/>
+                        <field name="organization_name"/>
+                        <field name="tanxa"/>
+                        <field name="vat"/>
+                        <field name="buyer_un_id" invisible="1"/>
+                        <field name="sa_ident_no"/>
+                        <field name="status"/>
+                        <field name="status_text"/>
+                        <field name="waybill_type"/>
+                        <field name="xarjang"/>
+                    </group>
+                    <notebook>
+                        <page string="Lines">
+                            <field name="line_ids">
+                                <list editable="bottom">
+                                    <field name="GOODS"/>
+                                    <field name="G_UNIT"/>
+                                    <field name="G_NUMBER"/>
+                                    <field name="FULL_AMOUNT"/>
+                                    <field name="DRG_AMOUNT"/>
+                                    <field name="AKCIS_ID"/>
+                                    <field name="VAT_TYPE"/>
+                                    <field name="SDRG_AMOUNT"/>
+                                    <field name="xarjang"/>
+                                </list>    
+                            </field>
+                        </page>
+                        <page string="Documents">
+                            <field name="document_ids">
+                                <list editable="bottom">
+                                    <field name="document_number"/>
+                                    <field name="date"/>
+                                </list>
+                            </field>
+                        </page>
+                    </notebook>
+                </sheet>
+            </form>
+        </field>
+    </record>
+
+
+
+
+
+    <record id="action_faqturi" model="ir.actions.act_window">
+        <field name="name">რეალიზაცია</field>
+        <field name="res_model">faqturi</field>
+        <field name="view_mode">list,form</field>
+        <field name="view_id" ref="view_faqturi_list"/>
+        <field name="domain">[('waybill_type', '=', 'seller')] <!-- Add the domain to filter seller waybills --></field>
+    </record>
+
+    <menuitem id="menu_faqturi_root" name="RS ფაქტურა" sequence="1"/>
+    <menuitem id="menu_faqturi" name="რეალიზაცია" parent="menu_faqturi_root" action="action_faqturi" sequence="10"/>
+    <menuitem id="invoice_menu_root" name="Invoices" sequence="10"/>
+
+
+</odoo>

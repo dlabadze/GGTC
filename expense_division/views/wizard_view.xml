@@ -1,0 +1,81 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="view_account_line_wizard_form" model="ir.ui.view">
+        <field name="name">account.line.wizard.form</field>
+        <field name="model">divide.deb.wizard</field>
+        <field name="arch" type="xml">
+            <form string="ანგარიშების არჩევა">
+                <group>
+                    <group string="შენახული შაბლონი">
+                        <field name="preset_id" options="{'no_create': True}" />
+                    </group>
+                </group>
+                <group>
+                    <field name="debit_account_ids" widget="many2many_tags"/>
+                    <field name="credit_account_ids"/>
+                    <field name="amount"/>
+                    <field name="credit_account_id_1"/>
+                    <field name="amount_for_one"/>
+                    <field name="credit_account_id_2"/>
+                    <field name="amount_for_two"/>
+                    <field name="credit_account_id_4"/>
+                    <field name="amount_4"/>
+                    <field name="credit_account_id_5"/>
+                    <field name="amount_5"/>
+                    <field name="credit_account_id_6"/>
+                    <field name="amount_6"/>
+                </group>
+                <footer>
+                    <button string="შენახვა"
+                            type="object"
+                            name="action_save_preset"
+                            class="btn-secondary"
+                            icon="fa-save"/>
+                    <button string="დადასტურება"
+                            type="object"
+                            name="confirm"
+                            class="btn-primary"/>
+                    <button string="გაუქმება"
+                            class="btn-secondary"
+                            special="cancel"/>
+                </footer>
+            </form>
+        </field>
+    </record>
+
+    <!-- Preset Save Dialog -->
+    <record id="view_preset_save_form" model="ir.ui.view">
+        <field name="name">divide.deb.preset.save.form</field>
+        <field name="model">divide.deb.preset.save</field>
+        <field name="arch" type="xml">
+            <form string="შაბლონის შენახვა">
+                <group>
+                    <field name="name" placeholder="მაგ: ყოველთვიური ხარჯები"/>
+                    <field name="wizard_id" invisible="1"/>
+                </group>
+                <footer>
+                    <button string="შენახვა"
+                            type="object"
+                            name="action_confirm_save"
+                            class="btn-primary"/>
+                    <button string="გაუქმება"
+                            class="btn-secondary"
+                            special="cancel"/>
+                </footer>
+            </form>
+        </field>
+    </record>
+
+    <record id="action_account_line_wizard" model="ir.actions.act_window">
+        <field name="name">Account Line Wizard</field>
+        <field name="res_model">divide.deb.wizard</field>
+        <field name="view_mode">form</field>
+        <field name="target">new</field>
+    </record>
+
+    <menuitem id="menu_account_line_wizard"
+              name="Account Line Wizard"
+              parent="account.menu_finance_entries"
+              action="action_account_line_wizard"
+              sequence="50"/>
+</odoo>

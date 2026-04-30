@@ -1,0 +1,14 @@
+<odoo>
+    <record id="view_gza_stock_report_list_inherit" model="ir.ui.view">
+        <field name="name">gza.stock.report.list.inherit</field>
+        <field name="model">gza.stock.location.report</field>
+        <field name="inherit_id" ref="stock_report_location.view_gza_stock_location_report_list_no_category"/>
+        <field name="arch" type="xml">
+            <xpath expr="//field[@name='date_to']" position="after">
+            <field name="request_manual_num" string="მოთხოვნის ნომერი (ხელით)" optional="show"/>
+            <field name="x_studio_request_number"  string="მოთხოვნის ნომერი" optional="show"/>
+            <field name="request_date" string="მოთხოვნის თარიღი" optional="show"/>
+            </xpath>
+        </field>
+    </record>
+</odoo>

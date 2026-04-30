@@ -1,0 +1,85 @@
+<odoo>
+    <record id="view_trial_balance_wizard_form" model="ir.ui.view">
+        <field name="name">trial.balance.wizard.form</field>
+        <field name="model">trial.balance.wizard</field>
+        <field name="arch" type="xml">
+            <form string="მოძრაობის უწყისი">
+                <group>
+                    <field name="start_date"/>
+                    <field name="end_date"/>
+                    <field name="currency_id"/>
+                    <field name="account_id"/>
+                    <field name="partner_id"/>
+                </group>
+                <footer>
+                    <button name="action_generate_report" type="object" string="Generate Report" class="btn-primary"/>
+                    <button string="Cancel" class="btn-secondary" special="cancel"/>
+                </footer>
+            </form>
+        </field>
+    </record>
+
+    <record id="action_trial_balance_wizard" model="ir.actions.act_window">
+        <field name="name">მოძრაობის უწყისი</field>
+        <field name="res_model">trial.balance.wizard</field>
+        <field name="view_mode">form</field>
+        <field name="target">new</field>
+    </record>
+
+    <record id="view_trial_balance_move_line_tree" model="ir.ui.view">
+        <field name="name">trial.balance.move.line.tree</field>
+        <field name="model">trial.balance.move.line</field>
+        <field name="arch" type="xml">
+            <list>
+                <field name="date"/>
+                <field name="move_id"/>
+                <field name="partner_id"/>
+                <field name="comment"/>
+                <field name="currency_rate"/>
+                <field name="debit"/>
+                <field name="credit"/>
+                <field name="credit_in_currency"/>
+                <field name="running_balance"/>
+                <field name="opening_balance_gel"/>
+            </list>
+        </field>
+    </record>
+
+    <record id="view_trial_balance_result_list" model="ir.ui.view">
+        <field name="name">trial.balance.result.list</field>
+        <field name="model">trial.balance.result</field>
+        <field name="arch" type="xml">
+            <list>
+                <field name="account_id"/>
+                <field name="opening_balance"/>
+                <field name="period_debit"/>
+                <field name="period_credit"/>
+                <field name="closing_balance"/>
+                <field name="move_line_ids" widget="one2many_list" context="{'default_currency_id': currency_id}"/>
+            </list>
+        </field>
+    </record>
+
+    <record id="view_trial_balance_result_form" model="ir.ui.view">
+        <field name="name">trial.balance.result.form</field>
+        <field name="model">trial.balance.result</field>
+        <field name="arch" type="xml">
+            <form string="მოძრაობის უწყისი">
+                 <header>
+                    <button name="action_export_excel" type="object" string="Export Excel" class="oe_highlight"/>
+                 </header>
+                <group>
+                    <field name="account_id"/>
+                    <field name="opening_balance"/>
+                    <field name="opening_balance_gel"/>
+                    <field name="period_debit"/>
+                    <field name="period_credit"/>
+                    <field name="closing_balance"/>
+                    <field name="closing_balance_gel"/>
+                    <field name="currency_id"/>
+                </group>
+                <field name="move_line_ids" mode="list" context="{'default_currency_id': currency_id}"/>
+            </form>
+        </field>
+    </record>
+</odoo>

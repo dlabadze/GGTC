@@ -1,0 +1,14 @@
+<odoo>
+    <record id="view_hr_job_form_inherit_tracker" model="ir.ui.view">
+        <field name="name">hr.job.form.inherit.tracker</field>
+        <field name="model">hr.job</field>
+        <field name="inherit_id" ref="hr.view_hr_job_form"/>
+        <field name="arch" type="xml">
+            <xpath expr="//sheet" position="inside">
+                <div class="oe_chatter">
+                    <field name="message_ids" widget="mail_thread"/>
+                </div>
+            </xpath>
+        </field>
+    </record>
+</odoo>

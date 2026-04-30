@@ -1,0 +1,4 @@
+id,name,model_id:id,group_id:id,perm_read,perm_write,perm_create,perm_unlink
+access_change_scheduled_date_wizard_user,change.scheduled.date.wizard user,model_change_scheduled_date_wizard,stock.group_stock_user,1,1,1,1
+access_change_scheduled_date_wizard_manager,change.scheduled.date.wizard manager,model_change_scheduled_date_wizard,stock.group_stock_manager,1,1,1,1
+access_change_production_date_wizard,change.production.date.wizard,model_change_production_date_wizard,mrp.group_mrp_manager,1,1,1,1
