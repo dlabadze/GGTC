@@ -285,6 +285,12 @@ class GzaStockLocationReportWizard(models.TransientModel):
                 ('location_dest_id', '=', debug_location_dest_id),
                 ('date', '<', date_from_start_str),
             ]
+            initial_source_domain = [
+                ('move_id.state', '=', 'done'),
+                ('product_id', '=', debug_product_id),
+                ('location_id', '=', debug_location_dest_id),
+                ('date', '<', date_from_start_str),
+            ]
             period_dest_domain = [
                 ('move_id.state', '=', 'done'),
                 ('product_id', '=', debug_product_id),
@@ -301,6 +307,8 @@ class GzaStockLocationReportWizard(models.TransientModel):
             ]
 
             initial_qty_sum = sum(self.env['stock.move.line'].search(initial_domain).mapped('quantity'))
+            initial_source_qty_sum = sum(self.env['stock.move.line'].search(initial_source_domain).mapped('quantity'))
+            initial_computed_qty = initial_qty_sum - initial_source_qty_sum
             period_dest_lines = self.env['stock.move.line'].search(period_dest_domain, order='date, id')
             period_source_lines = self.env['stock.move.line'].search(period_source_domain, order='date, id')
             period_dest_qty_sum = sum(period_dest_lines.mapped('quantity'))
@@ -314,7 +322,9 @@ class GzaStockLocationReportWizard(models.TransientModel):
                 f"date_from_start_str: {date_from_start_str}\n"
                 f"date_to_end_str: {date_to_end_str}\n"
                 "--------------------\n"
-                f"initial sum(quantity) where product_id=43938, location_dest_id=266, date < date_from_start: {initial_qty_sum}\n"
+                f"initial location_dest_id=266 sum(quantity), date < date_from_start: {initial_qty_sum}\n"
+                f"initial location_id=266 sum(quantity), date < date_from_start: {initial_source_qty_sum}\n"
+                f"initial computed (dest - source): {initial_computed_qty}\n"
                 "--------------------\n"
                 "between period (date_from_start <= date <= date_to_end)\n"
                 f"location_dest_id=266 -> count: {len(period_dest_lines)}, sum(quantity): {period_dest_qty_sum}\n"
