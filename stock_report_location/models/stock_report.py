@@ -2,11 +2,30 @@ from datetime import datetime, timedelta
 from ast import literal_eval
 import logging
 import re
+import pytz
 
 from odoo import api, fields, models, tools
 from odoo.tools import DEFAULT_SERVER_DATE_FORMAT
 
 _logger = logging.getLogger(__name__)
+
+
+def _get_utc_day_bounds(env, date_from, date_to):
+    """Return UTC datetime strings for user-local day bounds."""
+    tz_name = env.user.tz or 'UTC'
+    try:
+        user_tz = pytz.timezone(tz_name)
+    except Exception:
+        user_tz = pytz.UTC
+
+    from_local = user_tz.localize(datetime.combine(date_from, datetime.min.time()))
+    to_local = user_tz.localize(datetime.combine(date_to, datetime.max.time()))
+    from_utc = from_local.astimezone(pytz.UTC).replace(tzinfo=None)
+    to_utc = to_local.astimezone(pytz.UTC).replace(tzinfo=None)
+    # Business requirement: shift selected boundaries by +4 hours.
+    from_utc += timedelta(hours=4)
+    to_utc += timedelta(hours=4)
+    return fields.Datetime.to_string(from_utc), fields.Datetime.to_string(to_utc)
 
 
 class GzaStockLocationReport(models.Model):
@@ -161,12 +180,9 @@ class GzaStockLocationReport(models.Model):
         ]
 
         if self.date_from or self.date_to:
-            date_from_str = fields.Date.to_string(self.date_from) if self.date_from else '1900-01-01'
-            date_to_dt = datetime.combine(
-                fields.Date.to_date(self.date_to) if self.date_to else fields.Date.context_today(self),
-                datetime.max.time(),
-            )
-            date_to_str = fields.Datetime.to_string(date_to_dt)
+            date_from = fields.Date.to_date(self.date_from) if self.date_from else fields.Date.from_string('1900-01-01')
+            date_to = fields.Date.to_date(self.date_to) if self.date_to else fields.Date.context_today(self)
+            date_from_str, date_to_str = _get_utc_day_bounds(self.env, date_from, date_to)
             domain.extend([
                 ('date', '>=', date_from_str),
                 ('date', '<=', date_to_str),
@@ -266,14 +282,11 @@ class GzaStockLocationReportWizard(models.TransientModel):
 
             date_from_str = self.date_from.strftime(DEFAULT_SERVER_DATE_FORMAT)
             date_to_str = self.date_to.strftime(DEFAULT_SERVER_DATE_FORMAT)
-            date_from_start = datetime.combine(self.date_from, datetime.min.time())
-            date_to_end = datetime.combine(self.date_to, datetime.max.time())
-            date_from_start_str = fields.Datetime.to_string(date_from_start)
-            date_to_end_str = fields.Datetime.to_string(date_to_end)
+            date_from_start_str, date_to_end_str = _get_utc_day_bounds(self.env, self.date_from, self.date_to)
 
             # Force refresh stored stock.move.line.value so report generation
             # always uses values recalculated by _compute_line_value().
-            self._recompute_move_line_values_for_report(fields.Datetime.to_string(date_to_end))
+            self._recompute_move_line_values_for_report(date_to_end_str)
 
             # Log all stock.move.line for product code 3312 between report dates
             product_3312 = self.env['product.product'].search([('default_code', '=', '3312')], limit=1)
