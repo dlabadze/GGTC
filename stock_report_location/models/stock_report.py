@@ -400,8 +400,8 @@ class GzaStockLocationReportWizard(models.TransientModel):
                         FROM stock_move_line sml
                         JOIN stock_move sm ON sml.move_id = sm.id
                         WHERE sm.state = 'done'
-                        AND sml.date >= %s
-                        AND sml.date <= %s
+                        AND (sml.date AT TIME ZONE 'UTC' AT TIME ZONE 'Asia/Tbilisi')::date >= %s::date
+                        AND (sml.date AT TIME ZONE 'UTC' AT TIME ZONE 'Asia/Tbilisi')::date <= %s::date
                         GROUP BY sml.product_id, sml.location_dest_id
                     ),
                     incoming_amount AS (
@@ -412,8 +412,8 @@ class GzaStockLocationReportWizard(models.TransientModel):
                         FROM stock_move_line sml
                         JOIN stock_move sm ON sml.move_id = sm.id
                         WHERE sm.state = 'done'
-                        AND sml.date >= %s
-                        AND sml.date <= %s
+                        AND (sml.date AT TIME ZONE 'UTC' AT TIME ZONE 'Asia/Tbilisi')::date >= %s::date
+                        AND (sml.date AT TIME ZONE 'UTC' AT TIME ZONE 'Asia/Tbilisi')::date <= %s::date
                         GROUP BY sml.product_id, sml.location_dest_id
                     ),
                     outgoing AS (
@@ -424,8 +424,8 @@ class GzaStockLocationReportWizard(models.TransientModel):
                         FROM stock_move_line sml
                         JOIN stock_move sm ON sml.move_id = sm.id
                         WHERE sm.state = 'done'
-                        AND sml.date >= %s
-                        AND sml.date <= %s
+                        AND (sml.date AT TIME ZONE 'UTC' AT TIME ZONE 'Asia/Tbilisi')::date >= %s::date
+                        AND (sml.date AT TIME ZONE 'UTC' AT TIME ZONE 'Asia/Tbilisi')::date <= %s::date
                         GROUP BY sml.product_id, sml.location_id
                     ),
                     outgoing_amount AS (
@@ -436,8 +436,8 @@ class GzaStockLocationReportWizard(models.TransientModel):
                         FROM stock_move_line sml
                         JOIN stock_move sm ON sml.move_id = sm.id
                         WHERE sm.state = 'done'
-                        AND sml.date >= %s
-                        AND sml.date <= %s
+                        AND (sml.date AT TIME ZONE 'UTC' AT TIME ZONE 'Asia/Tbilisi')::date >= %s::date
+                        AND (sml.date AT TIME ZONE 'UTC' AT TIME ZONE 'Asia/Tbilisi')::date <= %s::date
                         GROUP BY sml.product_id, sml.location_id
                     ),
                     incoming_after_from AS (
@@ -445,7 +445,7 @@ class GzaStockLocationReportWizard(models.TransientModel):
                         FROM stock_move_line sml
                         JOIN stock_move sm ON sml.move_id = sm.id
                         WHERE sm.state = 'done'
-                        AND sml.date >= %s
+                        AND (sml.date AT TIME ZONE 'UTC' AT TIME ZONE 'Asia/Tbilisi')::date >= %s::date
                         GROUP BY sml.product_id, sml.location_dest_id
                     ),
                     outgoing_after_from AS (
@@ -453,7 +453,7 @@ class GzaStockLocationReportWizard(models.TransientModel):
                         FROM stock_move_line sml
                         JOIN stock_move sm ON sml.move_id = sm.id
                         WHERE sm.state = 'done'
-                        AND sml.date >= %s
+                        AND (sml.date AT TIME ZONE 'UTC' AT TIME ZONE 'Asia/Tbilisi')::date >= %s::date
                         GROUP BY sml.product_id, sml.location_id
                     ),
                     incoming_after_to AS (
@@ -461,7 +461,7 @@ class GzaStockLocationReportWizard(models.TransientModel):
                         FROM stock_move_line sml
                         JOIN stock_move sm ON sml.move_id = sm.id
                         WHERE sm.state = 'done'
-                        AND sml.date > %s
+                        AND (sml.date AT TIME ZONE 'UTC' AT TIME ZONE 'Asia/Tbilisi')::date > %s::date
                         GROUP BY sml.product_id, sml.location_dest_id
                     ),
                     outgoing_after_to AS (
@@ -469,7 +469,7 @@ class GzaStockLocationReportWizard(models.TransientModel):
                         FROM stock_move_line sml
                         JOIN stock_move sm ON sml.move_id = sm.id
                         WHERE sm.state = 'done'
-                        AND sml.date > %s
+                        AND (sml.date AT TIME ZONE 'UTC' AT TIME ZONE 'Asia/Tbilisi')::date > %s::date
                         GROUP BY sml.product_id, sml.location_id
                     ),
                     incoming_up_to_from AS (
@@ -477,7 +477,7 @@ class GzaStockLocationReportWizard(models.TransientModel):
                         FROM stock_move_line sml
                         JOIN stock_move sm ON sml.move_id = sm.id
                         WHERE sm.state = 'done'
-                        AND sml.date < %s
+                        AND (sml.date AT TIME ZONE 'UTC' AT TIME ZONE 'Asia/Tbilisi')::date < %s::date
                         GROUP BY sml.product_id, sml.location_dest_id
                     ),
                     incoming_amount_up_to_from AS (
@@ -485,7 +485,7 @@ class GzaStockLocationReportWizard(models.TransientModel):
                         FROM stock_move_line sml
                         JOIN stock_move sm ON sml.move_id = sm.id
                         WHERE sm.state = 'done'
-                        AND sml.date < %s
+                        AND (sml.date AT TIME ZONE 'UTC' AT TIME ZONE 'Asia/Tbilisi')::date < %s::date
                         GROUP BY sml.product_id, sml.location_dest_id
                     ),
                     outgoing_up_to_from AS (
@@ -493,7 +493,7 @@ class GzaStockLocationReportWizard(models.TransientModel):
                         FROM stock_move_line sml
                         JOIN stock_move sm ON sml.move_id = sm.id
                         WHERE sm.state = 'done'
-                        AND sml.date < %s
+                        AND (sml.date AT TIME ZONE 'UTC' AT TIME ZONE 'Asia/Tbilisi')::date < %s::date
                         GROUP BY sml.product_id, sml.location_id
                     ),
                     outgoing_amount_up_to_from AS (
@@ -501,7 +501,7 @@ class GzaStockLocationReportWizard(models.TransientModel):
                         FROM stock_move_line sml
                         JOIN stock_move sm ON sml.move_id = sm.id
                         WHERE sm.state = 'done'
-                        AND sml.date < %s
+                        AND (sml.date AT TIME ZONE 'UTC' AT TIME ZONE 'Asia/Tbilisi')::date < %s::date
                         GROUP BY sml.product_id, sml.location_id
                     ),
                     all_locations AS (
