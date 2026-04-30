@@ -68,65 +68,6 @@ class GzaStockLocationReport(models.Model):
             name = record.product_id.display_name if record.product_id else ''
             record.product_name_clean = bracket_pattern.sub('', name or '').strip()
 
-    @api.depends('product_id', 'location_id', 'date_from', 'date_to')
-    def _compute_amounts(self):
-        for record in self:
-            record.initial_amount = 0.0
-            record.incoming_amount = 0.0
-            record.outgoing_amount = 0.0
-            record.final_amount = 0.0
-            if not record.product_id or not record.location_id:
-                continue
-
-            date_from_start, date_to_end, date_to_end_str = record._get_amount_date_bounds()
-            base_domain = [
-                ('product_id', '=', record.product_id.id),
-                ('move_id.state', '=', 'done'),
-                ('date', '<=', date_to_end_str),
-                '|',
-                ('location_id', '=', record.location_id.id),
-                ('location_dest_id', '=', record.location_id.id),
-            ]
-            move_lines = self.env['stock.move.line'].search(base_domain)
-
-            initial_amount = 0.0
-            incoming_amount = 0.0
-            outgoing_amount = 0.0
-
-            for line in move_lines:
-                # Recalculate line value live for report so stale stored values
-                # on stock.move.line do not affect generated amounts.
-                line_value = abs(line._compute_line_value() or 0.0)
-                if not line_value:
-                    continue
-                line_date = fields.Datetime.to_datetime(line.date)
-                is_incoming = line.location_dest_id.id == record.location_id.id
-                is_outgoing = line.location_id.id == record.location_id.id
-
-                if line_date < date_from_start:
-                    if is_incoming:
-                        initial_amount += line_value
-                    if is_outgoing:
-                        initial_amount -= line_value
-                else:
-                    if is_incoming:
-                        incoming_amount += line_value
-                    if is_outgoing:
-                        outgoing_amount += line_value
-
-            record.initial_amount = initial_amount
-            record.incoming_amount = incoming_amount
-            record.outgoing_amount = outgoing_amount
-            record.final_amount = initial_amount + incoming_amount - outgoing_amount
-
-    def _get_amount_date_bounds(self):
-        self.ensure_one()
-        date_from = fields.Date.to_date(self.date_from) if self.date_from else fields.Date.context_today(self)
-        date_to = fields.Date.to_date(self.date_to) if self.date_to else fields.Date.context_today(self)
-        date_from_start = datetime.combine(date_from, datetime.min.time())
-        date_to_end = datetime.combine(date_to, datetime.max.time())
-        return date_from_start, date_to_end, fields.Datetime.to_string(date_to_end)
-
     def _search_uom_name(self, operator, value):
         uoms = self.env['uom.uom'].search([('name', operator, value)])
         if uoms:
