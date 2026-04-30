@@ -2,7 +2,6 @@ from datetime import datetime
 from ast import literal_eval
 import logging
 import re
-import pytz
 
 from odoo import api, fields, models, tools
 from odoo.tools import DEFAULT_SERVER_DATE_FORMAT
@@ -11,18 +10,11 @@ _logger = logging.getLogger(__name__)
 
 
 def _get_utc_day_bounds(env, date_from, date_to):
-    """Return UTC datetime strings for user-local day bounds."""
-    tz_name = env.user.tz or 'UTC'
-    try:
-        user_tz = pytz.timezone(tz_name)
-    except Exception:
-        user_tz = pytz.UTC
-
-    from_local = user_tz.localize(datetime.combine(date_from, datetime.min.time()))
-    to_local = user_tz.localize(datetime.combine(date_to, datetime.max.time()))
-    from_utc = from_local.astimezone(pytz.UTC).replace(tzinfo=None)
-    to_utc = to_local.astimezone(pytz.UTC).replace(tzinfo=None)
-    return fields.Datetime.to_string(from_utc), fields.Datetime.to_string(to_utc)
+    """Return day bounds without timezone offset shifting."""
+    del env  # kept for backward-compatible signature
+    from_dt = datetime.combine(date_from, datetime.min.time())
+    to_dt = datetime.combine(date_to, datetime.max.time())
+    return fields.Datetime.to_string(from_dt), fields.Datetime.to_string(to_dt)
 
 
 class GzaStockLocationReport(models.Model):
