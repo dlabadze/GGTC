@@ -325,7 +325,10 @@ class GzaStockLocationReportWizard(models.TransientModel):
 
             date_from_str = self.date_from.strftime(DEFAULT_SERVER_DATE_FORMAT)
             date_to_str = self.date_to.strftime(DEFAULT_SERVER_DATE_FORMAT)
+            date_from_start = datetime.combine(self.date_from, datetime.min.time())
             date_to_end = datetime.combine(self.date_to, datetime.max.time())
+            date_from_start_str = fields.Datetime.to_string(date_from_start)
+            date_to_end_str = fields.Datetime.to_string(date_to_end)
 
             # Force refresh stored stock.move.line.value so report generation
             # always uses values recalculated by _compute_line_value().
@@ -337,8 +340,8 @@ class GzaStockLocationReportWizard(models.TransientModel):
                 move_lines = self.env['stock.move.line'].search([
                     ('product_id', '=', product_3312.id),
                     ('move_id.state', '=', 'done'),
-                    ('date', '>=', date_from_str),
-                    ('date', '<=', fields.Datetime.to_string(date_to_end)),
+                    ('date', '>=', date_from_start_str),
+                    ('date', '<=', date_to_end_str),
                 ], order='date, id')
                 _logger.info(
                     "Stock Report: stock.move.line records for product 3312 between %s and %s (count=%s)",
@@ -375,8 +378,8 @@ class GzaStockLocationReportWizard(models.TransientModel):
                         JOIN stock_location sl_dest ON sml.location_dest_id = sl_dest.id
                         WHERE sm.state = 'done'
                         AND sl_dest.usage = 'internal'
-                        AND sml.date::date >= %s
-                        AND sml.date::date <= %s
+                        AND sml.date >= %s
+                        AND sml.date <= %s
                         GROUP BY sml.product_id, sml.location_dest_id
                     ),
                     incoming_amount AS (
@@ -389,8 +392,8 @@ class GzaStockLocationReportWizard(models.TransientModel):
                         JOIN stock_location sl_dest ON sml.location_dest_id = sl_dest.id
                         WHERE sm.state = 'done'
                         AND sl_dest.usage = 'internal'
-                        AND sml.date::date >= %s
-                        AND sml.date::date <= %s
+                        AND sml.date >= %s
+                        AND sml.date <= %s
                         GROUP BY sml.product_id, sml.location_dest_id
                     ),
                     outgoing AS (
@@ -403,8 +406,8 @@ class GzaStockLocationReportWizard(models.TransientModel):
                         JOIN stock_location sl_source ON sml.location_id = sl_source.id
                         WHERE sm.state = 'done'
                         AND sl_source.usage = 'internal'
-                        AND sml.date::date >= %s
-                        AND sml.date::date <= %s
+                        AND sml.date >= %s
+                        AND sml.date <= %s
                         GROUP BY sml.product_id, sml.location_id
                     ),
                     outgoing_amount AS (
@@ -417,8 +420,8 @@ class GzaStockLocationReportWizard(models.TransientModel):
                         JOIN stock_location sl_source ON sml.location_id = sl_source.id
                         WHERE sm.state = 'done'
                         AND sl_source.usage = 'internal'
-                        AND sml.date::date >= %s
-                        AND sml.date::date <= %s
+                        AND sml.date >= %s
+                        AND sml.date <= %s
                         GROUP BY sml.product_id, sml.location_id
                     ),
                     incoming_after_from AS (
@@ -427,7 +430,7 @@ class GzaStockLocationReportWizard(models.TransientModel):
                         JOIN stock_move sm ON sml.move_id = sm.id
                         JOIN stock_location sl_dest ON sml.location_dest_id = sl_dest.id
                         WHERE sm.state = 'done' AND sl_dest.usage = 'internal'
-                        AND sml.date::date >= %s
+                        AND sml.date >= %s
                         GROUP BY sml.product_id, sml.location_dest_id
                     ),
                     outgoing_after_from AS (
@@ -436,7 +439,7 @@ class GzaStockLocationReportWizard(models.TransientModel):
                         JOIN stock_move sm ON sml.move_id = sm.id
                         JOIN stock_location sl_source ON sml.location_id = sl_source.id
                         WHERE sm.state = 'done' AND sl_source.usage = 'internal'
-                        AND sml.date::date >= %s
+                        AND sml.date >= %s
                         GROUP BY sml.product_id, sml.location_id
                     ),
                     incoming_after_to AS (
@@ -445,7 +448,7 @@ class GzaStockLocationReportWizard(models.TransientModel):
                         JOIN stock_move sm ON sml.move_id = sm.id
                         JOIN stock_location sl_dest ON sml.location_dest_id = sl_dest.id
                         WHERE sm.state = 'done' AND sl_dest.usage = 'internal'
-                        AND sml.date::date > %s
+                        AND sml.date > %s
                         GROUP BY sml.product_id, sml.location_dest_id
                     ),
                     outgoing_after_to AS (
@@ -454,7 +457,7 @@ class GzaStockLocationReportWizard(models.TransientModel):
                         JOIN stock_move sm ON sml.move_id = sm.id
                         JOIN stock_location sl_source ON sml.location_id = sl_source.id
                         WHERE sm.state = 'done' AND sl_source.usage = 'internal'
-                        AND sml.date::date > %s
+                        AND sml.date > %s
                         GROUP BY sml.product_id, sml.location_id
                     ),
                     incoming_up_to_from AS (
@@ -463,7 +466,7 @@ class GzaStockLocationReportWizard(models.TransientModel):
                         JOIN stock_move sm ON sml.move_id = sm.id
                         JOIN stock_location sl_dest ON sml.location_dest_id = sl_dest.id
                         WHERE sm.state = 'done' AND sl_dest.usage = 'internal'
-                        AND sml.date::date < %s
+                        AND sml.date < %s
                         GROUP BY sml.product_id, sml.location_dest_id
                     ),
                     incoming_amount_up_to_from AS (
@@ -472,7 +475,7 @@ class GzaStockLocationReportWizard(models.TransientModel):
                         JOIN stock_move sm ON sml.move_id = sm.id
                         JOIN stock_location sl_dest ON sml.location_dest_id = sl_dest.id
                         WHERE sm.state = 'done' AND sl_dest.usage = 'internal'
-                        AND sml.date::date < %s
+                        AND sml.date < %s
                         GROUP BY sml.product_id, sml.location_dest_id
                     ),
                     outgoing_up_to_from AS (
@@ -481,7 +484,7 @@ class GzaStockLocationReportWizard(models.TransientModel):
                         JOIN stock_move sm ON sml.move_id = sm.id
                         JOIN stock_location sl_source ON sml.location_id = sl_source.id
                         WHERE sm.state = 'done' AND sl_source.usage = 'internal'
-                        AND sml.date::date < %s
+                        AND sml.date < %s
                         GROUP BY sml.product_id, sml.location_id
                     ),
                     outgoing_amount_up_to_from AS (
@@ -490,7 +493,7 @@ class GzaStockLocationReportWizard(models.TransientModel):
                         JOIN stock_move sm ON sml.move_id = sm.id
                         JOIN stock_location sl_source ON sml.location_id = sl_source.id
                         WHERE sm.state = 'done' AND sl_source.usage = 'internal'
-                        AND sml.date::date < %s
+                        AND sml.date < %s
                         GROUP BY sml.product_id, sml.location_id
                     ),
                     all_locations AS (
@@ -558,22 +561,22 @@ class GzaStockLocationReportWizard(models.TransientModel):
                 )
                 """,
                 (
-                    date_from_str,
-                    date_to_str,
-                    date_from_str,
-                    date_to_str,
-                    date_from_str,
-                    date_to_str,
-                    date_from_str,
-                    date_to_str,
-                    date_from_str,
-                    date_from_str,
-                    date_to_str,
-                    date_to_str,
-                    date_from_str,
-                    date_from_str,
-                    date_from_str,
-                    date_from_str,
+                    date_from_start_str,
+                    date_to_end_str,
+                    date_from_start_str,
+                    date_to_end_str,
+                    date_from_start_str,
+                    date_to_end_str,
+                    date_from_start_str,
+                    date_to_end_str,
+                    date_from_start_str,
+                    date_from_start_str,
+                    date_to_end_str,
+                    date_to_end_str,
+                    date_from_start_str,
+                    date_from_start_str,
+                    date_from_start_str,
+                    date_from_start_str,
                     date_from_str,
                     date_to_str,
                     self.include_internal_transfers,
