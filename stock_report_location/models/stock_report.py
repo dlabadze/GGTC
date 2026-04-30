@@ -366,6 +366,19 @@ class GzaStockLocationReportWizard(models.TransientModel):
 
             # Use same filtering as log: product, move_id.state='done', date between from/to, plus location.
             # No picking_type filter so all done moves in date range are considered.
+            _logger.info(
+                "\n"
+                "==================== SQL PARAM DEBUG ====================\n"
+                "date_from_start_str [idx 13]: %s\n"
+                "date_from_start_str [idx 14]: %s\n"
+                "date_from_start_str [idx 15]: %s\n"
+                "date_from_start_str [idx 16]: %s\n"
+                "=========================================================\n",
+                date_from_start_str,
+                date_from_start_str,
+                date_from_start_str,
+                date_from_start_str,
+            )
             self.env.cr.execute(
                 """
                 CREATE OR REPLACE VIEW gza_stock_location_report AS (
