@@ -477,7 +477,8 @@ class GzaStockLocationReportWizard(models.TransientModel):
                         FROM stock_move_line sml
                         JOIN stock_move sm ON sml.move_id = sm.id
                         WHERE sm.state = 'done'
-                        AND (sml.date AT TIME ZONE 'UTC' AT TIME ZONE 'Asia/Tbilisi')::date < %s::date
+                        -- აი აქ ხდება ჯადოქრობა:
+                        AND (sml.date AT TIME ZONE 'UTC' AT TIME ZONE 'Asia/Tbilisi')::date < %s
                         GROUP BY sml.product_id, sml.location_dest_id
                     ),
                     incoming_amount_up_to_from AS (
