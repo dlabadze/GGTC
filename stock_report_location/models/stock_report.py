@@ -5,6 +5,7 @@ import re
 
 from odoo import api, fields, models, tools
 from odoo.tools import DEFAULT_SERVER_DATE_FORMAT
+from odoo.exceptions import UserError
 
 _logger = logging.getLogger(__name__)
 
@@ -272,6 +273,44 @@ class GzaStockLocationReportWizard(models.TransientModel):
             date_from_str = self.date_from.strftime(DEFAULT_SERVER_DATE_FORMAT)
             date_to_str = self.date_to.strftime(DEFAULT_SERVER_DATE_FORMAT)
             date_from_start_str, date_to_end_str = _get_utc_day_bounds(self.env, self.date_from, self.date_to)
+
+            # Debug helper requested by user:
+            # product_id = 43938, location_dest_id = 266
+            debug_product_id = 43938
+            debug_location_dest_id = 266
+
+            initial_domain = [
+                ('move_id.state', '=', 'done'),
+                ('product_id', '=', debug_product_id),
+                ('location_dest_id', '=', debug_location_dest_id),
+                ('date', '<', date_from_start_str),
+            ]
+            period_domain = [
+                ('move_id.state', '=', 'done'),
+                ('product_id', '=', debug_product_id),
+                ('location_dest_id', '=', debug_location_dest_id),
+                ('date', '>=', date_from_start_str),
+                ('date', '<=', date_to_end_str),
+            ]
+
+            initial_qty_sum = sum(self.env['stock.move.line'].search(initial_domain).mapped('quantity'))
+            period_lines = self.env['stock.move.line'].search(period_domain, order='date, id')
+            period_qty_sum = sum(period_lines.mapped('quantity'))
+
+            raise UserError(
+                "DEBUG STOCK CHECK\n"
+                "====================\n"
+                f"date_from: {date_from_str}\n"
+                f"date_to: {date_to_str}\n"
+                f"date_from_start_str: {date_from_start_str}\n"
+                f"date_to_end_str: {date_to_end_str}\n"
+                "--------------------\n"
+                f"initial sum(quantity) where product_id=43938, location_dest_id=266, date < date_from_start: {initial_qty_sum}\n"
+                "--------------------\n"
+                "between period (date_from_start <= date <= date_to_end)\n"
+                f"stock.move.line count: {len(period_lines)}\n"
+                f"stock.move.line sum(quantity): {period_qty_sum}"
+            )
 
             # Force refresh stored stock.move.line.value so report generation
             # always uses values recalculated by _compute_line_value().
