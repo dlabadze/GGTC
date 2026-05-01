@@ -47,6 +47,7 @@ class DoneFAQTURI(models.Model):
         ('seller', 'გაყიდვის გზამკვლევი')
     ], string='გზამკვლევის ტიპი')
     xarjang = fields.Many2one('account.account', string='დებეტ/კრედიტის ანგარიში', help="Account to use for invoicing")
+    journal_id = fields.Many2one('account.journal', string='ჟურნალი', copy=False)
     document_ids = fields.One2many('done.faqtura.document', 'done_factura_id', string='Documents')
     line_ids = fields.One2many('done.faqtura.line', 'done_factura_id', string='Lines')
     related_account_move_ids = fields.Many2many(
@@ -208,6 +209,30 @@ class DoneFAQTURI(models.Model):
             'domain': [('id', 'in', req_ids)] if req_ids else [('id', '=', 0)],
             'context': {},
         }
+
+    def action_pay_related_moves(self):
+        """Open standard payment register; amount prefilled from tanxa, optional journal from journal_id."""
+        self.ensure_one()
+        moves = self.related_account_move_ids.filtered(
+            lambda m: m.state == 'posted' and m.is_invoice(include_receipts=True)
+        )
+        if not moves:
+            raise UserError('დაკავშირებული გატარებული ინვოისი არ არის.')
+        currencies = moves.mapped('currency_id')
+        if len(currencies) > 1:
+            raise UserError(
+                'დაკავშირებულ ინვოისებს სხვადასხვა ვალუტა აქვთ; ერთი ვალუტის თანხა (თანხა) საჭიროა.'
+            )
+        pay_currency = currencies[0] if currencies else False
+        if not pay_currency:
+            pay_currency = moves[0].company_id.currency_id
+        ctx = {
+            'default_custom_user_amount': self.tanxa,
+            'default_custom_user_currency_id': pay_currency.id,
+        }
+        if self.journal_id:
+            ctx['default_journal_id'] = self.journal_id.id
+        return moves.with_context(**ctx).action_register_payment()
 
     @api.model
     def _get_purchase_orders_for_requisitions(self, requisitions):

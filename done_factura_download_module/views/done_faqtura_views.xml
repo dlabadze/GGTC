@@ -17,6 +17,7 @@
                 <field name="registration_date"/>
                 <field name="operation_date"/>
                 <field name="organization_id"/>
+                <field name="journal_id" optional="show"/>
                 <field name="related_account_move_ids" widget="many2many_tags" optional="show"/>
                 <field name="has_account_move_state" widget="badge" optional="show"
                     decoration-danger="has_account_move_state == '1'"
@@ -47,6 +48,7 @@
                     <button name="action_some" string="ბანკში ატვირთვა" type="object" class="btn-success"/>
                     <button name="action_reject" string="უარყოფა" type="object" class="btn-danger"/>
                     <button name="action_transfer_to_budget" string="ბიუჯეტში გატარება" type="object" class="btn-warning"/>
+                    <button name="action_pay_related_moves" string="გადახდა" type="object" class="btn-primary" invisible="not related_account_move_ids"/>
                 </header>
                 <sheet>
                     <div class="oe_button_box" name="button_box">
@@ -101,6 +103,7 @@
                         <field name="status_text"/>
                         <!-- <field name="waybill_type"/> -->
                         <field name="xarjang"/>
+                        <field name="journal_id"/>
                         <field name="purchase_order_id" readonly="1" invisible="1"/>
                         <field name="requisition_count" invisible="1"/>
                         <field name="arequisition_ids" widget="many2many_tags" readonly="1" invisible="requisition_count == 0"/>
