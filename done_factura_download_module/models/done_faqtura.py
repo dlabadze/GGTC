@@ -448,6 +448,7 @@ class DoneFAQTURI(models.Model):
             }
 
         Register = self.env['account.payment.register']
+        created_payments = self.env['account.payment']
         for move in to_pay:
             wizard = Register.with_context(
                 active_model='account.move',
@@ -456,7 +457,13 @@ class DoneFAQTURI(models.Model):
                 'journal_id': self.journal_id.id,
                 'payment_date': self.transfer_date,
             })
-            wizard.action_create_payments()
+            created_payments |= wizard._create_payments()
+
+        related_payments = (moves.mapped('matched_payment_ids') | created_payments)
+        if related_payments:
+            if not hasattr(related_payments, 'action_validate'):
+                raise UserError('account.payment-ზე action_validate მეთოდი ვერ მოიძებნა.')
+            related_payments.action_validate()
 
         moves.invalidate_recordset(['payment_state'])
         not_paid = moves.filtered(lambda m: m.payment_state != 'paid')
