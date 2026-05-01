@@ -4,6 +4,7 @@ from odoo import api, fields, models
 _logger = logging.getLogger(__name__)
 from datetime import datetime, timedelta
 from odoo.exceptions import UserError
+from odoo.tools.misc import clean_context
 
 
 class DoneFAQTURI(models.Model):
@@ -210,29 +211,127 @@ class DoneFAQTURI(models.Model):
             'context': {},
         }
 
+    def _get_invoice_lines_for_register_payment(self, moves):
+        """Payable/receivable move lines with open residual (same rules as account.payment.register)."""
+        Line = self.env['account.move.line']
+        available = Line.browse()
+        valid_account_types = self.env['account.payment']._get_valid_payment_account_types()
+        for line in moves.line_ids:
+            if line.account_type not in valid_account_types:
+                continue
+            if line.currency_id:
+                if line.currency_id.is_zero(line.amount_residual_currency):
+                    continue
+            else:
+                if line.company_currency_id.is_zero(line.amount_residual):
+                    continue
+            available |= line
+        return available
+
     def action_pay_related_moves(self):
-        """Open standard payment register; amount prefilled from tanxa, optional journal from journal_id."""
+        """Create and post account.payment(s): amount=tanxa, date=transfer_date, memo from each linked move."""
         self.ensure_one()
+        if not self.journal_id:
+            raise UserError('აირჩიეთ ჟურნალი (ჟურნალი).')
+        if not self.transfer_date:
+            raise UserError('მიუთითეთ გადარიცხვის თარიღი (გადარიცხვის თარიღი).')
+
         moves = self.related_account_move_ids.filtered(
             lambda m: m.state == 'posted' and m.is_invoice(include_receipts=True)
         )
         if not moves:
             raise UserError('დაკავშირებული გატარებული ინვოისი არ არის.')
+        if len(moves.company_id.root_id) > 1:
+            raise UserError('ინვოისები სხვადასხვა კომპანიისაა.')
+        if len(moves.partner_id) > 1:
+            raise UserError('დაკავშირებულ ინვოისებს ერთი პარტნიორი უნდა ჰყავდეთ.')
+
         currencies = moves.mapped('currency_id')
         if len(currencies) > 1:
             raise UserError(
-                'დაკავშირებულ ინვოისებს სხვადასხვა ვალუტა აქვთ; ერთი ვალუტის თანხა (თანხა) საჭიროა.'
+                'დაკავშირებულ ინვოისებს სხვადასხვა ვალუტა აქვთ; ერთი ვალუტა საჭიროა.'
             )
-        pay_currency = currencies[0] if currencies else False
-        if not pay_currency:
-            pay_currency = moves[0].company_id.currency_id
-        ctx = {
-            'default_custom_user_amount': self.tanxa,
-            'default_custom_user_currency_id': pay_currency.id,
+        pay_currency = currencies[0] if currencies and currencies[0] else moves[0].company_id.currency_id
+
+        lines = self._get_invoice_lines_for_register_payment(moves)
+        if not lines:
+            raise UserError('გადასახდელი ნაშთი არ არის (ყველა ხაზი დახურულია).')
+        if len(set(lines.mapped('account_type'))) > 1:
+            raise UserError('ერთდროულად შეუძლებელია შემომავალი და გამავალი გადახდის ხაზების შერჩევა.')
+
+        memo_parts = []
+        for m in moves:
+            label = (m.name or m.ref or '').strip()
+            memo_parts.append(label or str(m.id))
+        communication = ', '.join(memo_parts)
+
+        first = moves[0]
+        line0 = lines.sorted('id')[0]
+        payment_type = 'inbound' if line0.balance > 0 else 'outbound'
+        partner_type = 'customer' if line0.account_type == 'asset_receivable' else 'supplier'
+        if payment_type == 'outbound':
+            partner_bank_id = first.partner_bank_id.id
+            if not partner_bank_id and first.partner_id.bank_ids:
+                partner_bank_id = first.partner_id.bank_ids[:1].id
+        else:
+            partner_bank_id = self.journal_id.bank_account_id.id
+
+        pml = self.journal_id._get_available_payment_method_lines(payment_type)[:1]
+        if not pml:
+            raise UserError('ამ ჟურნალზე არჩეული მიმართულების გადახდის მეთოდი არ არის.')
+
+        payment_vals = {
+            'date': self.transfer_date,
+            'amount': self.tanxa,
+            'payment_type': payment_type,
+            'partner_type': partner_type,
+            'memo': communication,
+            'journal_id': self.journal_id.id,
+            'company_id': first.company_id.id,
+            'currency_id': pay_currency.id,
+            'partner_id': first.partner_id.id,
+            'payment_method_line_id': pml.id,
+            'destination_account_id': lines[0].account_id.id,
+            'write_off_line_vals': [],
         }
-        if self.journal_id:
-            ctx['default_journal_id'] = self.journal_id.id
-        return moves.with_context(**ctx).action_register_payment()
+        if partner_bank_id:
+            payment_vals['partner_bank_id'] = partner_bank_id
+
+        to_process = [{
+            'create_vals': payment_vals,
+            'to_reconcile': lines,
+            'batch': {'lines': lines, 'payment_values': {}},
+        }]
+
+        Register = self.env['account.payment.register']
+        wizard = Register.with_context(
+            active_model='account.move',
+            active_ids=moves.ids,
+        ).create({})
+        wctx = clean_context(dict(self.env.context))
+        payments = wizard.with_context(wctx)._init_payments(to_process, edit_mode=True)
+        wizard.with_context(wctx)._post_payments(to_process, edit_mode=True)
+        wizard.with_context(wctx)._reconcile_payments(to_process, edit_mode=True)
+
+        if len(payments) == 1:
+            return {
+                'name': 'გადახდა',
+                'type': 'ir.actions.act_window',
+                'res_model': 'account.payment',
+                'view_mode': 'form',
+                'res_id': payments.id,
+                'target': 'current',
+                'context': {'create': False},
+            }
+        return {
+            'name': 'გადახდა',
+            'type': 'ir.actions.act_window',
+            'res_model': 'account.payment',
+            'view_mode': 'list,form',
+            'domain': [('id', 'in', payments.ids)],
+            'target': 'current',
+            'context': {'create': False},
+        }
 
     @api.model
     def _get_purchase_orders_for_requisitions(self, requisitions):
