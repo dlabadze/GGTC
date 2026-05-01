@@ -1,4 +1,4 @@
-from odoo import fields, models
+from odoo import api, fields, models
 
 
 class PurchaseRequisitionAvansi(models.Model):
@@ -23,6 +23,24 @@ class PurchaseRequisitionInheritAvansi(models.Model):
         'requisition_id',
         string='ავანსები',
     )
+    related_account_move_ids = fields.Many2many(
+        comodel_name='account.move',
+        compute='_compute_related_account_move_ids',
+        string='ინვოისები (vendor bills)',
+        readonly=True,
+    )
+
+    @api.depends(
+        'purchase_ids.invoice_ids',
+        'purchase_ids.invoice_ids.payment_state',
+        'purchase_ids.invoice_ids.state',
+    )
+    def _compute_related_account_move_ids(self):
+        done_factura = self.env['done.factura']
+        PurchaseOrder = self.env['purchase.order']
+        for req in self:
+            pos = PurchaseOrder.search([('requisition_id', '=', req.id)])
+            req.related_account_move_ids = done_factura._get_vendor_moves_for_purchase_orders(pos)
 
     def action_create_done_factura_from_avansi(self):
         self.ensure_one()
