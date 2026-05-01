@@ -420,6 +420,63 @@ class DoneFAQTURI(models.Model):
             'context': {'create': False},
         }
 
+    def action_confirm_related_payments(self):
+        """Pay linked invoices fully and ensure they become paid."""
+        self.ensure_one()
+        if not self.journal_id:
+            raise UserError('აირჩიეთ ჟურნალი (ჟურნალი).')
+        if not self.transfer_date:
+            raise UserError('მიუთითეთ გადარიცხვის თარიღი (გადარიცხვის თარიღი).')
+
+        moves = self.related_account_move_ids.filtered(
+            lambda m: m.state == 'posted' and m.is_invoice(include_receipts=True)
+        )
+        if not moves:
+            raise UserError('დაკავშირებული გატარებული ინვოისი არ არის.')
+
+        to_pay = moves.filtered(lambda m: m.payment_state != 'paid')
+        if not to_pay:
+            return {
+                'type': 'ir.actions.client',
+                'tag': 'display_notification',
+                'params': {
+                    'title': 'გადახდის დადასტურება',
+                    'message': 'ყველა დაკავშირებული ინვოისი უკვე გადახდილია.',
+                    'type': 'success',
+                    'sticky': False,
+                },
+            }
+
+        Register = self.env['account.payment.register']
+        for move in to_pay:
+            wizard = Register.with_context(
+                active_model='account.move',
+                active_ids=[move.id],
+            ).create({
+                'journal_id': self.journal_id.id,
+                'payment_date': self.transfer_date,
+            })
+            wizard.action_create_payments()
+
+        moves.invalidate_recordset(['payment_state'])
+        not_paid = moves.filtered(lambda m: m.payment_state != 'paid')
+        if not_paid:
+            raise UserError(
+                'ზოგი დაკავშირებული ინვოისი არ გახდა გადახდილი: %s'
+                % ', '.join(not_paid.mapped(lambda m: m.name or m.ref or str(m.id)))
+            )
+
+        return {
+            'type': 'ir.actions.client',
+            'tag': 'display_notification',
+            'params': {
+                'title': 'გადახდის დადასტურება',
+                'message': 'დაკავშირებული ინვოისები წარმატებით გახდა paid სტატუსში.',
+                'type': 'success',
+                'sticky': False,
+            },
+        }
+
     @api.model
     def _get_purchase_orders_for_requisitions(self, requisitions):
         if not requisitions:

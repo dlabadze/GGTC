@@ -48,6 +48,7 @@
                     <button name="action_some" string="ბანკში ატვირთვა" type="object" class="btn-success"/>
                     <button name="action_reject" string="უარყოფა" type="object" class="btn-danger"/>
                     <button name="action_transfer_to_budget" string="ბიუჯეტში გატარება" type="object" class="btn-warning"/>
+                    <button name="action_confirm_related_payments" string="გადახდის დადასტურება" type="object" class="btn-success" invisible="not related_account_move_ids"/>
                     <button name="action_pay_related_moves" string="გადახდა" type="object" class="btn-primary" invisible="not related_account_move_ids"/>
                 </header>
                 <sheet>
