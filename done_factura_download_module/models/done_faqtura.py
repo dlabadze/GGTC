@@ -421,64 +421,48 @@ class DoneFAQTURI(models.Model):
         }
 
     def action_confirm_related_payments(self):
-        """Pay linked invoices fully and ensure they become paid."""
+        """Validate matched payments of posted related account moves."""
         self.ensure_one()
-        if not self.journal_id:
-            raise UserError('აირჩიეთ ჟურნალი (ჟურნალი).')
-        if not self.transfer_date:
-            raise UserError('მიუთითეთ გადარიცხვის თარიღი (გადარიცხვის თარიღი).')
-
         moves = self.related_account_move_ids.filtered(
             lambda m: m.state == 'posted' and m.is_invoice(include_receipts=True)
         )
         if not moves:
             raise UserError('დაკავშირებული გატარებული ინვოისი არ არის.')
 
-        to_pay = moves.filtered(lambda m: m.payment_state != 'paid')
-        if not to_pay:
+        _logger.info(
+            "Payment confirm | done_factura=%s | posted_moves=%s",
+            self.id,
+            moves.ids,
+        )
+        related_payments = moves.mapped('matched_payment_ids')
+        _logger.info(
+            "Payment confirm | done_factura=%s | matched_payments=%s",
+            self.id,
+            related_payments.ids,
+        )
+
+        if not related_payments:
             return {
                 'type': 'ir.actions.client',
                 'tag': 'display_notification',
                 'params': {
                     'title': 'გადახდის დადასტურება',
-                    'message': 'ყველა დაკავშირებული ინვოისი უკვე გადახდილია.',
-                    'type': 'success',
+                    'message': 'დაკავშირებულ გატარებულ ინვოისებზე matched payment ვერ მოიძებნა.',
+                    'type': 'warning',
                     'sticky': False,
                 },
             }
 
-        Register = self.env['account.payment.register']
-        created_payments = self.env['account.payment']
-        for move in to_pay:
-            wizard = Register.with_context(
-                active_model='account.move',
-                active_ids=[move.id],
-            ).create({
-                'journal_id': self.journal_id.id,
-                'payment_date': self.transfer_date,
-            })
-            created_payments |= wizard._create_payments()
-
-        related_payments = (moves.mapped('matched_payment_ids') | created_payments)
-        if related_payments:
-            if not hasattr(related_payments, 'action_validate'):
-                raise UserError('account.payment-ზე action_validate მეთოდი ვერ მოიძებნა.')
-            related_payments.action_validate()
-
-        moves.invalidate_recordset(['payment_state'])
-        not_paid = moves.filtered(lambda m: m.payment_state != 'paid')
-        if not_paid:
-            raise UserError(
-                'ზოგი დაკავშირებული ინვოისი არ გახდა გადახდილი: %s'
-                % ', '.join(not_paid.mapped(lambda m: m.name or m.ref or str(m.id)))
-            )
+        if not hasattr(related_payments, 'action_validate'):
+            raise UserError('account.payment-ზე action_validate მეთოდი ვერ მოიძებნა.')
+        related_payments.action_validate()
 
         return {
             'type': 'ir.actions.client',
             'tag': 'display_notification',
             'params': {
                 'title': 'გადახდის დადასტურება',
-                'message': 'დაკავშირებული ინვოისები წარმატებით გახდა paid სტატუსში.',
+                'message': 'დაკავშირებული payment ჩანაწერები წარმატებით დადასტურდა.',
                 'type': 'success',
                 'sticky': False,
             },
