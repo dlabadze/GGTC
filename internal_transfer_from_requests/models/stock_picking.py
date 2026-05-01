@@ -1,4 +1,4 @@
-from odoo import fields, models
+from odoo import api, fields, models
 
 class StockPicking(models.Model):
     _inherit = 'stock.picking'
@@ -18,3 +18,8 @@ class StockPicking(models.Model):
         copy=False,
     )
 
+    @api.onchange('location_id')
+    def _onchange_update_move_location_id(self):
+        if self.location_id:
+            for move in self.move_ids:
+                move.location_id = self.location_id
