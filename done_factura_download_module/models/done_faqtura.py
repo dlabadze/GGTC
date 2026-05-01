@@ -1,5 +1,5 @@
 import logging
-from odoo import models, fields, api
+from odoo import api, fields, models
 
 _logger = logging.getLogger(__name__)
 from datetime import datetime, timedelta
@@ -49,7 +49,14 @@ class DoneFAQTURI(models.Model):
     xarjang = fields.Many2one('account.account', string='დებეტ/კრედიტის ანგარიში', help="Account to use for invoicing")
     document_ids = fields.One2many('done.faqtura.document', 'done_factura_id', string='Documents')
     line_ids = fields.One2many('done.faqtura.line', 'done_factura_id', string='Lines')
-    related_account_move_ids = fields.One2many('account.move', 'done_factura_id', string='ინვოისები')
+    related_account_move_ids = fields.Many2many(
+        comodel_name='account.move',
+        relation='done_factura_account_move_rel',
+        column1='done_factura_id',
+        column2='account_move_id',
+        string='ინვოისები',
+        copy=False,
+    )
     related_account_move_count = fields.Integer(string='ინვოისები', compute='_compute_related_account_move_count')
     purchase_order_id = fields.Many2one('purchase.order', string='შეყიდვა', readonly=True, copy=False)
     purchase_order_count = fields.Integer(string='შეყიდვები', compute='_compute_purchase_order_count')
@@ -60,6 +67,24 @@ class DoneFAQTURI(models.Model):
         column2='purchase_order_id',
         string='დაკავშირებული შესყიდვები',
         copy=False,
+    )
+    arequisition_ids = fields.Many2many(
+        comodel_name='purchase.requisition',
+        relation='done_factura_purchase_requisition_rel',
+        column1='done_factura_id',
+        column2='purchase_requisition_id',
+        string='შესყიდვის მოთხოვნები',
+        copy=False,
+    )
+    requisition_avansi_id = fields.Many2one(
+        'purchase.requisition.avansi',
+        string='ავანსის ხაზი',
+        copy=False,
+        ondelete='set null',
+    )
+    requisition_count = fields.Integer(
+        string='მოთხოვნები',
+        compute='_compute_requisition_count',
     )
     has_purchase_state = fields.Selection(
         selection=[('1', 'ხელშეკრულების გარეშე'), ('2', 'ხელშეკრულება')],
@@ -86,10 +111,18 @@ class DoneFAQTURI(models.Model):
             number = (record.number or '').strip()
             record.name = f"{series} {number}".strip() or record.invoice_id or 'N/A'
 
-    @api.depends('line_ids.FULL_AMOUNT')
+    @api.depends('line_ids.FULL_AMOUNT', 'requisition_avansi_id', 'requisition_avansi_id.amount')
     def _compute_tanxa(self):
         for record in self:
-            record.tanxa = sum(record.line_ids.mapped('FULL_AMOUNT'))
+            if record.requisition_avansi_id:
+                record.tanxa = record.requisition_avansi_id.amount or 0.0
+            else:
+                record.tanxa = sum(record.line_ids.mapped('FULL_AMOUNT'))
+
+    @api.depends('arequisition_ids')
+    def _compute_requisition_count(self):
+        for record in self:
+            record.requisition_count = len(record.arequisition_ids)
 
     @api.depends('related_account_move_ids')
     def _compute_has_account_move_state(self):
@@ -150,8 +183,9 @@ class DoneFAQTURI(models.Model):
         self.ensure_one()
         action = self.env['ir.actions.actions']._for_xml_id('account.action_move_out_invoice_type')
         action['name'] = 'ინვოისები'
-        action['domain'] = [('done_factura_id', '=', self.id)]
-        action['context'] = {'default_done_factura_id': self.id}
+        move_ids = self.related_account_move_ids.ids
+        action['domain'] = [('id', 'in', move_ids)] if move_ids else [('id', '=', 0)]
+        action['context'] = {'default_related_done_factura_ids': [(6, 0, [self.id])]}
         return action
 
     def action_view_purchase_orders(self):
@@ -162,6 +196,70 @@ class DoneFAQTURI(models.Model):
         action['domain'] = [('id', 'in', po_ids)] if po_ids else [('id', '=', 0)]
         action['context'] = {'default_partner_id': self.organization_id.id} if self.organization_id else {}
         return action
+
+    def action_view_requisitions(self):
+        self.ensure_one()
+        req_ids = self.arequisition_ids.ids
+        return {
+            'type': 'ir.actions.act_window',
+            'name': 'შესყიდვის მოთხოვნები',
+            'res_model': 'purchase.requisition',
+            'view_mode': 'list,form',
+            'domain': [('id', 'in', req_ids)] if req_ids else [('id', '=', 0)],
+            'context': {},
+        }
+
+    @api.model
+    def _get_purchase_orders_for_requisitions(self, requisitions):
+        if not requisitions:
+            return self.env['purchase.order']
+        return self.env['purchase.order'].search([('requisition_id', 'in', requisitions.ids)])
+
+    @api.model
+    def _get_vendor_moves_for_purchase_orders(self, purchase_orders):
+        if not purchase_orders:
+            return self.env['account.move']
+        Move = self.env['account.move']
+        from_invoices = purchase_orders.invoice_ids.filtered(
+            lambda m: m.move_type in ('in_invoice', 'in_refund')
+        )
+        from_lines = Move.search([
+            ('move_type', 'in', ('in_invoice', 'in_refund')),
+            ('invoice_line_ids.purchase_line_id.order_id', 'in', purchase_orders.ids),
+        ])
+        return from_invoices | from_lines
+
+    def sync_vendor_bills_from_requisitions(self):
+        """Link vendor bills for arequisition_ids → PO → account.move (idempotent)."""
+        added = 0
+        for record in self:
+            if not record.arequisition_ids:
+                continue
+            pos = self._get_purchase_orders_for_requisitions(record.arequisition_ids)
+            moves = self._get_vendor_moves_for_purchase_orders(pos)
+            existing = set(record.related_account_move_ids.ids)
+            to_link = moves.filtered(lambda m: m.id not in existing)
+            if to_link:
+                record.write({'related_account_move_ids': [(4, m.id) for m in to_link]})
+                added += len(to_link)
+        return added
+
+    def action_sync_vendor_bills_from_requisitions(self):
+        added = self.sync_vendor_bills_from_requisitions()
+        if added:
+            msg = 'დაკავშირდა ახალი ინვოისი: %s' % added
+        else:
+            msg = 'ახალი ინვოისი არ დაემატა (უკვე დაკავშირებულია ან PO/ბილლი არ არის).'
+        return {
+            'type': 'ir.actions.client',
+            'tag': 'display_notification',
+            'params': {
+                'title': 'ინვოისები მოთხოვნიდან',
+                'message': msg,
+                'type': 'success' if added else 'info',
+                'sticky': False,
+            },
+        }
 
     def action_some(self):
         self.ensure_one()
@@ -224,7 +322,10 @@ class DoneFAQTURI(models.Model):
                 except KeyError:
                     pass
 
-                record.write({'mdgomareoba': 'gadatanili'})
+                record.write({
+                    'mdgomareoba': 'gadatanili',
+                    'related_account_move_ids': [(4, move.id)],
+                })
 
                 return {
                     'type': 'ir.actions.act_window',

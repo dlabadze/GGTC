@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="action_server_done_factura_sync_vendor_bills" model="ir.actions.server">
+        <field name="name">ინვოისების დაკავშირება მოთხოვნიდან</field>
+        <field name="model_id" ref="done_factura_download_module.model_done_factura"/>
+        <field name="binding_model_id" ref="done_factura_download_module.model_done_factura"/>
+        <field name="binding_view_types">list,form</field>
+        <field name="state">code</field>
+        <field name="code">action = records.action_sync_vendor_bills_from_requisitions()</field>
+    </record>
+</odoo>

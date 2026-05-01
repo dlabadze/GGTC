@@ -66,6 +66,14 @@
                                 <span class="o_stat_text">შესყიდვები</span>
                             </div>
                         </button>
+                        <button name="action_view_requisitions" type="object" class="oe_stat_button" icon="fa-list-alt" invisible="requisition_count == 0">
+                            <div class="o_field_widget o_stat_info">
+                                <span class="o_stat_value">
+                                    <field name="requisition_count" nolabel="1"/>
+                                </span>
+                                <span class="o_stat_text">მოთხოვნები</span>
+                            </div>
+                        </button>
                     </div>
                     <group>
                         <field name="invoice_id"/>
@@ -94,6 +102,8 @@
                         <!-- <field name="waybill_type"/> -->
                         <field name="xarjang"/>
                         <field name="purchase_order_id" readonly="1" invisible="1"/>
+                        <field name="requisition_count" invisible="1"/>
+                        <field name="arequisition_ids" widget="many2many_tags" readonly="1" invisible="requisition_count == 0"/>
                     </group>
                     <notebook>
                         <page string="Lines">
@@ -157,7 +167,7 @@
                     decoration-success="factura_status == '0'"
                     decoration-warning="factura_status == '2'"
                     invisible="1"/>
-                <field name="done_factura_id" readonly="1" invisible="1"/>
+                <field name="related_done_factura_ids" widget="many2many_tags" readonly="1" invisible="not related_done_factura_ids"/>
             </xpath>
         </field>
     </record>

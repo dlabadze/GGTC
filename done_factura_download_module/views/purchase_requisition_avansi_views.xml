@@ -5,6 +5,9 @@
         <field name="model">purchase.requisition</field>
         <field name="inherit_id" ref="purchase_requisition.view_purchase_requisition_form"/>
         <field name="arch" type="xml">
+            <xpath expr="//header" position="inside">
+                <button name="action_create_done_factura_from_avansi" type="object" string="ფაქტურის შექმნა" class="btn-secondary"/>
+            </xpath>
             <xpath expr="//sheet/notebook" position="inside">
                 <page string="ავანსები">
                     <field name="avansi_ids">

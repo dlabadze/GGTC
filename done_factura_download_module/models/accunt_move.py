@@ -31,7 +31,14 @@ GEORGIAN_MONTHS = {
 class AccountMove(models.Model):
     _inherit = 'account.move'
 
-    done_factura_id = fields.Many2one('done.factura', string='Done Factura')
+    related_done_factura_ids = fields.Many2many(
+        comodel_name='done.factura',
+        relation='done_factura_account_move_rel',
+        column1='account_move_id',
+        column2='done_factura_id',
+        string='Done ფაქტურები',
+        copy=False,
+    )
     factura_ids = fields.One2many('factura.checking', 'move_id', string='Factura Checks')
     rs_tanxa = fields.Float(
         string='RS Tanxa',
@@ -49,11 +56,12 @@ class AccountMove(models.Model):
         store=True,
     )
 
-    @api.depends('done_factura_id.agree_date')
+    @api.depends('related_done_factura_ids.agree_date')
     def _compute_done_factura_date(self):
         for record in self:
-            if record.done_factura_id and record.done_factura_id.agree_date:
-                record.done_factura_date = record.done_factura_id.agree_date + timedelta(days=10)
+            dates = [d for d in record.related_done_factura_ids.mapped('agree_date') if d]
+            if dates:
+                record.done_factura_date = min(dates) + timedelta(days=10)
             else:
                 record.done_factura_date = False
 
@@ -636,7 +644,7 @@ class AccountMove(models.Model):
 
             if not record.factura_ids or all_not_found:
                 record.write({
-                    'done_factura_id': False,
+                    'related_done_factura_ids': [(5, 0, 0)],
                     'factura_status': '2',
                 })
                 continue
@@ -651,7 +659,7 @@ class AccountMove(models.Model):
                 )
             ):
                 record.write({
-                    'done_factura_id': False,
+                    'related_done_factura_ids': [(5, 0, 0)],
                     'factura_status': '1',
                 })
                 continue
@@ -678,7 +686,7 @@ class AccountMove(models.Model):
 
             if not payload_rows:
                 record.write({
-                    'done_factura_id': False,
+                    'related_done_factura_ids': [(5, 0, 0)],
                     'factura_status': '1',
                 })
                 continue
@@ -732,8 +740,8 @@ class AccountMove(models.Model):
             })
             record._apply_account_line_analytics_to_done_lines(combined_record)
 
+            combined_record.write({'related_account_move_ids': [(4, record.id)]})
             record.write({
-                'done_factura_id': combined_record.id,
                 'factura_status': '0',
             })
 

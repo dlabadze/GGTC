@@ -1,6 +1,6 @@
 {
     'name': 'Done Invoice SOAP Integration',
-    'version': '1.0',
+    'version': '1.1.0',
     'category': 'Accounting',
     'summary': 'Fetch invoices by agree_date (RS get_user_invoices) with 30-day interval',
     'description': """
@@ -15,6 +15,7 @@
         'security/ir.model.access.csv',
         'views/done_faqtura_wizard.xml',
         'views/done_faqtura_views.xml',
+        'views/done_factura_server_actions.xml',
         'views/purchase_requisition_avansi_views.xml',
     ],
     'installable': True,
