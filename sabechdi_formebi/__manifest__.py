@@ -17,6 +17,7 @@
         'views/reset_reports.xml',
         'views/nimushis_forma_ori.xml',
         'views/nimushis_forma_ori_plus.xml',
+        'views/nimushis_forma_ori_plus_declaration.xml',
         'views/nimushis_forma_sami.xml',
         'views/nimushis_forma_sami_xelit.xml',
         'views/nimushis_forma_samia.xml',

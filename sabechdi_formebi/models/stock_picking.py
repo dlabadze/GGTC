@@ -3,6 +3,10 @@ from odoo import models, fields, api
 class StockPicking(models.Model):
     _inherit = 'stock.picking'
 
+    x_declaration_number = fields.Char(
+        string='დეკლარაციის ნომერი'
+    )
+
     x_request_number_manual = fields.Char(
         string='მოთხოვნის ნომერი (ხელით)'
     )

@@ -4,6 +4,7 @@
         <!-- Delete existing report actions to force re-creation in correct order -->
         <delete model="ir.actions.report" search="[('report_name','=','sabechdi_formebi.nimushis_forma_ori_document')]"/>
         <delete model="ir.actions.report" search="[('report_name','=','sabechdi_formebi.nimushis_forma_ori_plus_document')]"/>
+        <delete model="ir.actions.report" search="[('report_name','=','sabechdi_formebi.nimushis_forma_ori_plus_declaration_document')]"/>
         <delete model="ir.actions.report" search="[('report_name','=','sabechdi_formebi.nimushis_forma_sami_document')]"/>
         <delete model="ir.actions.report" search="[('report_name','=','sabechdi_formebi.nimushis_forma_sami_xelit_document')]"/>
         <delete model="ir.actions.report" search="[('report_name','=','sabechdi_formebi.nimushis_forma_sami_a_document')]"/>

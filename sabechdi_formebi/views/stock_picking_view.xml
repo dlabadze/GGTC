@@ -7,6 +7,7 @@
 
             <!-- Manual fields -->
             <xpath expr="//field[@name='origin']" position="after">
+                <field name="x_declaration_number"/>
                 <field name="x_request_number_manual"/>
                 <field name="x_contract_number_manual"/>
             </xpath>
