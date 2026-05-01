@@ -12,7 +12,11 @@
                 <field name="related_account_move_ids" nolabel="1" colspan="2" readonly="1">
                     <list create="false" delete="false" edit="false">
                         <field name="name"/>
-                        <field name="payment_state"/>
+                        <field name="payment_state" widget="badge"
+                            decoration-success="payment_state == 'paid'"
+                            decoration-warning="payment_state in ('partial', 'in_payment')"
+                            decoration-danger="payment_state == 'not_paid'"
+                            decoration-muted="payment_state in ('reversed', 'blocked', 'invoicing_legacy')"/>
                     </list>
                 </field>
             </xpath>
