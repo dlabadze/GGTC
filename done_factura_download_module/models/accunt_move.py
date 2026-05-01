@@ -577,6 +577,44 @@ class AccountMove(models.Model):
             purchase_orders |= self.purchase_id
         return bool(purchase_orders.mapped('requisition_id.avansi_ids'))
 
+    def _get_invoice_check_requisition_avansi_vals(self, has_requisition_avansi):
+        """Vals for done.factura from vendor bill check when PO/requisition has avansi lines."""
+        self.ensure_one()
+        po_model = self.env['purchase.order']
+        req_model = self.env['purchase.requisition']
+        if not has_requisition_avansi:
+            return {
+                'has_avansi': False,
+                'arequisition_ids': [(5, 0, 0)],
+                'requisition_avansi_id': False,
+            }
+        if 'requisition_id' not in po_model._fields or 'avansi_ids' not in req_model._fields:
+            return {
+                'has_avansi': False,
+                'arequisition_ids': [(5, 0, 0)],
+                'requisition_avansi_id': False,
+            }
+        purchase_orders = self.invoice_line_ids.mapped('purchase_line_id.order_id')
+        if 'purchase_id' in self._fields and self.purchase_id:
+            purchase_orders |= self.purchase_id
+        requisitions = purchase_orders.mapped('requisition_id').filtered(lambda r: r and r.avansi_ids)
+        if not requisitions:
+            return {
+                'has_avansi': False,
+                'arequisition_ids': [(5, 0, 0)],
+                'requisition_avansi_id': False,
+            }
+        all_avansi = requisitions.mapped('avansi_ids')
+        chosen = all_avansi.sorted(
+            key=lambda a: (a.date or fields.Date.from_string('1970-01-01'), a.id),
+            reverse=True,
+        )[:1]
+        return {
+            'has_avansi': 'invoice_avansi',
+            'arequisition_ids': [(6, 0, requisitions.ids)],
+            'requisition_avansi_id': chosen.id if chosen else False,
+        }
+
     def action_open_check_done_factura_wizard(self):
         self.ensure_one()
         return {
@@ -717,8 +755,8 @@ class AccountMove(models.Model):
                 'buyer_un_id': base_vals.get('buyer_un_id'),
                 'status': 2,
                 'waybill_type': base_vals.get('waybill_type'),
-                'has_avansi': 'avansi' if has_requisition_avansi else False,
             }
+            combined_vals.update(record._get_invoice_check_requisition_avansi_vals(has_requisition_avansi))
             if not combined_record:
                 combined_record = done_model.create(combined_vals)
                 created += 1
@@ -734,9 +772,10 @@ class AccountMove(models.Model):
                     payload['rs_invoice_id'],
                 )
 
+            vat_sum = sum(combined_record.line_ids.mapped('DRG_AMOUNT'))
             combined_record.write({
-                'vat': sum(combined_record.line_ids.mapped('DRG_AMOUNT')),
-                'has_avansi': 'avansi' if has_requisition_avansi else False,
+                'vat': vat_sum,
+                **record._get_invoice_check_requisition_avansi_vals(has_requisition_avansi),
             })
             record._apply_account_line_analytics_to_done_lines(combined_record)
 

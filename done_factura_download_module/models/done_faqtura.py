@@ -33,8 +33,10 @@ class DoneFAQTURI(models.Model):
     rs_acc = fields.Char(compute='_compute_rs_acc', string='rs.ge ექაუნთი', readonly=True)
     rs_pass = fields.Char(compute='_compute_rs_pass', string='rs.ge პაროლი', readonly=True)
     status = fields.Integer(string='Status', default=0)
-    has_avansi = fields.Selection(
-        [('avansi', 'ავანსი')],
+    has_avansi = fields.Selection([
+            ('avansi', 'ავანსი'),
+            ('invoice_avansi', 'Invoice ავანსი'),
+        ],
         string='ავანსი',
     )
     status_text = fields.Text(string='Status Text', compute='_compute_status_text')
@@ -113,13 +115,45 @@ class DoneFAQTURI(models.Model):
             number = (record.number or '').strip()
             record.name = f"{series} {number}".strip() or record.invoice_id or 'N/A'
 
-    @api.depends('line_ids.FULL_AMOUNT', 'requisition_avansi_id', 'requisition_avansi_id.amount')
+    @api.depends(
+        'line_ids.FULL_AMOUNT',
+        'has_avansi',
+        'arequisition_ids',
+        'requisition_avansi_id',
+        'requisition_avansi_id.amount',
+    )
     def _compute_tanxa(self):
         for record in self:
-            if record.requisition_avansi_id:
+            if record.has_avansi == 'invoice_avansi':
+                base = sum(record.line_ids.mapped('FULL_AMOUNT'))
+                deduct = record._sum_other_avansi_tanxa_for_shared_requisitions()
+                record.tanxa = max(0.0, base - deduct)
+            elif record.requisition_avansi_id:
                 record.tanxa = record.requisition_avansi_id.amount or 0.0
             else:
                 record.tanxa = sum(record.line_ids.mapped('FULL_AMOUNT'))
+
+    def _sum_other_avansi_tanxa_for_shared_requisitions(self):
+        self.ensure_one()
+        if not self.arequisition_ids or self.has_avansi != 'invoice_avansi':
+            return 0.0
+        others = self.env['done.factura'].search([
+            ('has_avansi', '=', 'avansi'),
+            ('id', '!=', self.id),
+            ('arequisition_ids', 'in', self.arequisition_ids.ids),
+        ])
+        return sum(others.mapped('tanxa'))
+
+    @api.model
+    def _flush_invoice_avansi_tanxa_by_requisitions(self, requisition_ids):
+        if not requisition_ids:
+            return
+        targets = self.search([
+            ('has_avansi', '=', 'invoice_avansi'),
+            ('arequisition_ids', 'in', list(requisition_ids)),
+        ])
+        if targets:
+            targets._compute_tanxa()
 
     @api.depends('arequisition_ids')
     def _compute_requisition_count(self):
@@ -158,12 +192,29 @@ class DoneFAQTURI(models.Model):
                 vals['transfer_date'] = ad + timedelta(days=10)
         records = super().create(vals_list)
         records._sync_related_purchases_from_organization()
+        req_ids = records.mapped('arequisition_ids').ids
+        if req_ids:
+            self._flush_invoice_avansi_tanxa_by_requisitions(req_ids)
         return records
 
     def write(self, vals):
+        old_req = set(self.mapped('arequisition_ids').ids)
         res = super().write(vals)
         if 'organization_id' in vals:
             self._sync_related_purchases_from_organization()
+        touched_req = old_req | set(self.mapped('arequisition_ids').ids)
+        if touched_req and any(
+            k in vals
+            for k in ('has_avansi', 'arequisition_ids', 'requisition_avansi_id', 'line_ids')
+        ):
+            self._flush_invoice_avansi_tanxa_by_requisitions(list(touched_req))
+        return res
+
+    def unlink(self):
+        req_ids = list(set(self.mapped('arequisition_ids').ids))
+        res = super().unlink()
+        if req_ids:
+            self.env['done.factura']._flush_invoice_avansi_tanxa_by_requisitions(req_ids)
         return res
 
     @api.onchange('agree_date')
