@@ -76,6 +76,14 @@
                                 <span class="o_stat_text">მოთხოვნები</span>
                             </div>
                         </button>
+                        <button name="action_view_related_done_facturas" type="object" class="oe_stat_button" icon="fa-files-o" invisible="related_done_factura_count == 0">
+                            <div class="o_field_widget o_stat_info">
+                                <span class="o_stat_value">
+                                    <field name="related_done_factura_count" nolabel="1"/>
+                                </span>
+                                <span class="o_stat_text">დაკავშირებული ფაქტურები</span>
+                            </div>
+                        </button>
                     </div>
                     <group>
                         <field name="invoice_id"/>
@@ -161,15 +169,22 @@
                 <field name="done_factura_date" readonly="1"/>
                 <field name="factura_ids">
                     <list editable="bottom">
-                        <field name="f_number"/>                       
+                        <field name="f_number"/>
+                        <field name="rs_tanxa" readonly="1"/>
+                        <field name="factura_status" readonly="1" widget="badge"
+                            decoration-danger="factura_status == '1'"
+                            decoration-success="factura_status == '0'"
+                            decoration-warning="factura_status == '2'"/>
                     </list>
                 </field>
-                <field name="rs_tanxa"/>
+                <field name="rs_tanxa" readonly="1"
+                    decoration-success="rs_tanxa == amount_total"
+                    decoration-danger="rs_tanxa != amount_total"/>
                 <field name="factura_status" readonly="1" widget="badge"
                     decoration-danger="factura_status == '1'"
                     decoration-success="factura_status == '0'"
                     decoration-warning="factura_status == '2'"
-                    invisible="1"/>
+                    invisible="not factura_ids"/>
                 <field name="related_done_factura_ids" widget="many2many_tags" readonly="1" invisible="not related_done_factura_ids"/>
             </xpath>
         </field>

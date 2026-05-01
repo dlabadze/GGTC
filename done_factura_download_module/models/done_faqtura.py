@@ -62,6 +62,10 @@ class DoneFAQTURI(models.Model):
         copy=False,
     )
     related_account_move_count = fields.Integer(string='ინვოისები', compute='_compute_related_account_move_count')
+    related_done_factura_count = fields.Integer(
+        string='დაკავშირებული ფაქტურები',
+        compute='_compute_related_done_factura_count',
+    )
     purchase_order_id = fields.Many2one('purchase.order', string='შეყიდვა', readonly=True, copy=False)
     purchase_order_count = fields.Integer(string='შეყიდვები', compute='_compute_purchase_order_count')
     related_purchase_ids = fields.Many2many(
@@ -232,6 +236,18 @@ class DoneFAQTURI(models.Model):
         for record in self:
             record.related_account_move_count = len(record.related_account_move_ids)
 
+    @api.depends('related_account_move_ids')
+    def _compute_related_done_factura_count(self):
+        Done = self.env['done.factura']
+        for record in self:
+            if not record.related_account_move_ids:
+                record.related_done_factura_count = 0
+                continue
+            record.related_done_factura_count = Done.search_count([
+                ('id', '!=', record.id),
+                ('related_account_move_ids', 'in', record.related_account_move_ids.ids),
+            ])
+
     def action_view_account_moves(self):
         self.ensure_one()
         action = self.env['ir.actions.actions']._for_xml_id('account.action_move_out_invoice_type')
@@ -240,6 +256,26 @@ class DoneFAQTURI(models.Model):
         action['domain'] = [('id', 'in', move_ids)] if move_ids else [('id', '=', 0)]
         action['context'] = {'default_related_done_factura_ids': [(6, 0, [self.id])]}
         return action
+
+    def action_view_related_done_facturas(self):
+        self.ensure_one()
+        move_ids = self.related_account_move_ids.ids
+        if not move_ids:
+            domain = [('id', '=', 0)]
+        else:
+            others = self.env['done.factura'].search([
+                ('id', '!=', self.id),
+                ('related_account_move_ids', 'in', move_ids),
+            ])
+            domain = [('id', 'in', others.ids)]
+        return {
+            'type': 'ir.actions.act_window',
+            'name': 'დაკავშირებული ფაქტურები',
+            'res_model': 'done.factura',
+            'view_mode': 'list,form',
+            'domain': domain,
+            'context': {},
+        }
 
     def action_view_purchase_orders(self):
         self.ensure_one()
