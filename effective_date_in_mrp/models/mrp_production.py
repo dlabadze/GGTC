@@ -71,6 +71,7 @@ class MrpProduction(models.Model):
                 (effective_dt, tuple(moves.ids)),
             )
             move_lines = moves.move_line_ids
+            raise UserError(f"Move lines: {move_lines}")
             if move_lines:
                 self.env.cr.execute(
                     "UPDATE stock_move_line SET date = %s WHERE id IN %s",
