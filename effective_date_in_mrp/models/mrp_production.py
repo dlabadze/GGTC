@@ -28,12 +28,15 @@ class MrpProduction(models.Model):
         for production in self:
             if not production.effective_date_in_mrp:
                 raise UserError("Please set Effective Date before marking this Manufacturing Order as done.")
-        return super(
+        res = super(
             MrpProduction,
             self.with_context(
                 **self._merge_effective_date_context_for_multi()
             ),
         ).button_mark_done()
+        for production in self.exists().filtered(lambda p: p.state == "done" and p.effective_date_in_mrp):
+            production.with_context(mail_notrack=True).write({"date_finished": production.effective_date_in_mrp})
+        return res
 
     def _merge_effective_date_context_for_multi(self):
         effective_map = {}
@@ -63,6 +66,16 @@ class MrpProduction(models.Model):
             ).filtered(lambda m: m.state == "done" and not m.scrapped)
             if not moves:
                 continue
+            self.env.cr.execute(
+                "UPDATE stock_move SET date = %s WHERE id IN %s",
+                (effective_dt, tuple(moves.ids)),
+            )
+            move_lines = moves.move_line_ids
+            if move_lines:
+                self.env.cr.execute(
+                    "UPDATE stock_move_line SET date = %s WHERE id IN %s",
+                    (effective_dt, tuple(move_lines.ids)),
+                )
             svls = moves.mapped("stock_valuation_layer_ids")
             if svls:
                 self.env.cr.execute(

@@ -6,7 +6,7 @@
         <field name="inherit_id" ref="mrp.mrp_production_form_view"/>
         <field name="arch" type="xml">
             <xpath expr="//group[@name='group_extra_info']" position="inside">
-                <field name="effective_date_in_mrp" required="1"/>
+                <field name="effective_date_in_mrp" required="1" readonly="state == 'done'"/>
             </xpath>
         </field>
     </record>
