@@ -245,6 +245,8 @@
                             <field name="service_date_from" readonly="state != 'initiated'"/>
                             <field name="service_date_to" readonly="state != 'initiated'"/>
                             <field name="total_amount"/>
+                            <field name="custom_amount" readonly="not can_edit_paragraphs"/>
+                            <field name="comment" readonly="not can_edit_paragraphs"/>
                         </group>
                         <group>
                             <field name="date_initiated" invisible="not date_initiated"/>

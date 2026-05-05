@@ -185,6 +185,13 @@ class Inspektireba(models.Model):
         string='ჯამური თანხა',
         compute='_compute_total_amount', store=True, tracking=True,
     )
+    custom_amount = fields.Float(
+        string='თანხა',
+        digits=(16, 2),
+        tracking=True,
+        help='ამ ველის შევსების შემთხვევაში აბზაცებში ხელშეკრულების თანხის ნაცვლად გამოყენებული იქნება აქ მითითებული თანხა.',
+    )
+    comment = fields.Text(string='საფუძველი', tracking=True)
 
     # ----------------------------------------------------------
     # Paragraph Fields (inspection report text)
@@ -303,7 +310,7 @@ class Inspektireba(models.Model):
                 elif old_pos and old_pos in text:
                     rec[field_name] = text.replace(old_pos, new_pos)
 
-    @api.onchange('requisition_id', 'date', 'service_date_from', 'service_date_to')
+    @api.onchange('requisition_id', 'date', 'service_date_from', 'service_date_to', 'custom_amount')
     def _onchange_requisition_for_paragraphs(self):
         for rec in self:
             # ---- populate service lines first ----
@@ -339,7 +346,10 @@ class Inspektireba(models.Model):
 
             date_str    = georgian_date(rec.date) if rec.date else ''
             req_name    = rec.requisition_id.contract_number or ''
-            req_amount  = getattr(rec.requisition_id, 'requested_amount', '')
+            if rec.custom_amount:
+                req_amount = rec.custom_amount
+            else:
+                req_amount = getattr(rec.requisition_id, 'requested_amount', '')
             req_amount_words = georgian_amount(req_amount)
 
             req_date_start = getattr(rec.requisition_id, 'contract_registration_date', False)
@@ -890,6 +900,45 @@ class InspektirebaFinanceUser(models.Model):
     _description = 'Finance Users for Inspektireba'
 
     user_id = fields.Many2one('res.users', string='მომხმარებელი (ფინანსები)', required=True)
+
+
+# ============================================================
+#  ATTACHMENT MIRROR — copy files from inspektireba to agreement
+# ============================================================
+
+class IrAttachmentMirrorToAgreement(models.Model):
+    _inherit = 'ir.attachment'
+
+    @api.model_create_multi
+    def create(self, vals_list):
+        attachments = super().create(vals_list)
+        for att in attachments:
+            if att.res_model != 'inspektireba' or not att.res_id:
+                continue
+            if self.env.context.get('inspektireba_mirror_skip'):
+                continue
+            inspektireba = self.env['inspektireba'].browse(att.res_id).exists()
+            if not inspektireba or not inspektireba.requisition_id:
+                continue
+            agreement = inspektireba.requisition_id
+            already = self.search_count([
+                ('res_model', '=', 'purchase.requisition'),
+                ('res_id', '=', agreement.id),
+                ('name', '=', att.name),
+                ('file_size', '=', att.file_size),
+                ('checksum', '=', att.checksum),
+            ])
+            if already:
+                continue
+            att.with_context(inspektireba_mirror_skip=True).copy({
+                'res_model': 'purchase.requisition',
+                'res_id': agreement.id,
+                'res_field': False,
+            })
+            agreement.message_post(body=_(
+                'ფაილი დაერთო ინსპექტირებიდან %s: %s'
+            ) % (inspektireba.display_name, att.name))
+        return attachments
 
 
 # ============================================================

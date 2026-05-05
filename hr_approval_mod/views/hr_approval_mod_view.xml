@@ -102,6 +102,25 @@
 
 
 
+    <!-- Add Approver Wizard -->
+    <record id="view_approval_add_approver_form" model="ir.ui.view">
+        <field name="name">approval.add.approver.form</field>
+        <field name="model">approval.add.approver</field>
+        <field name="arch" type="xml">
+            <form string="დამდასტურებლის დამატება">
+                <group>
+                    <field name="request_id" invisible="1"/>
+                    <field name="user_id" required="1" options="{'no_create': True}"/>
+                </group>
+                <footer>
+                    <button name="action_confirm" string="დამატება" type="object" class="btn-primary"/>
+                    <button string="გაუქმება" class="btn-secondary" special="cancel"/>
+                </footer>
+            </form>
+        </field>
+    </record>
+
+
     <record id="view_approval_request_search_inherit" model="ir.ui.view">
         <field name="name">approval.request.search.inherit</field>
         <field name="model">approval.request</field>

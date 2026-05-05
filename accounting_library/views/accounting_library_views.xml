@@ -2,39 +2,6 @@
 <odoo>
 
     <!-- =========================================================
-         Category views
-         ========================================================= -->
-    <record id="view_accounting_library_category_list" model="ir.ui.view">
-        <field name="name">accounting.library.category.list</field>
-        <field name="model">accounting.library.category</field>
-        <field name="arch" type="xml">
-            <list string="კატეგორიები" editable="bottom">
-                <field name="name"/>
-            </list>
-        </field>
-    </record>
-
-    <record id="view_accounting_library_category_form" model="ir.ui.view">
-        <field name="name">accounting.library.category.form</field>
-        <field name="model">accounting.library.category</field>
-        <field name="arch" type="xml">
-            <form string="კატეგორია">
-                <sheet>
-                    <group>
-                        <field name="name"/>
-                    </group>
-                </sheet>
-            </form>
-        </field>
-    </record>
-
-    <record id="action_accounting_library_category" model="ir.actions.act_window">
-        <field name="name">კატეგორიები</field>
-        <field name="res_model">accounting.library.category</field>
-        <field name="view_mode">list,form</field>
-    </record>
-
-    <!-- =========================================================
          Library list view
          ========================================================= -->
     <record id="view_accounting_library_list" model="ir.ui.view">
@@ -43,15 +10,15 @@
         <field name="arch" type="xml">
             <list string="რეესტრი"
                   decoration-success="state == 'done'"
-                  decoration-muted="state == 'sent'">
+                  decoration-warning="state == 'awaiting_invoice'"
+                  decoration-info="state == 'incoming'">
                 <field name="date"/>
-                <field name="category_id"/>
                 <field name="document_number"/>
-                <field name="inspektireba_id" optional="show"/>
-                <field name="approval_id" optional="show"/>
+                <field name="comment"/>
                 <field name="state" widget="badge"
                        decoration-success="state == 'done'"
-                       decoration-info="state == 'sent'"/>
+                       decoration-warning="state == 'awaiting_invoice'"
+                       decoration-info="state == 'incoming'"/>
             </list>
         </field>
     </record>
@@ -65,29 +32,39 @@
         <field name="arch" type="xml">
             <form string="ჩანაწერი">
                 <header>
-                    <button name="action_mark_done"
+                    <button name="action_create_vendor_bill"
                             type="object"
-                            string="დასრულება"
+                            string="vendor bill ის შექმნა"
                             class="oe_highlight"
-                            invisible="state == 'done'"/>
-                    <button name="action_reset_to_sent"
+                            invisible="vendor_bill_id"/>
+                    <button name="action_open_vendor_bill"
                             type="object"
-                            string="დაბრუნება"
-                            invisible="state == 'sent'"/>
+                            string="vendor bill ის ნახვა"
+                            invisible="not vendor_bill_id"/>
                     <field name="state" widget="statusbar"
-                           statusbar_visible="sent,done"/>
+                           statusbar_visible="incoming,awaiting_invoice,done"/>
                 </header>
                 <sheet>
                     <group>
                         <group>
-                            <field name="category_id"/>
                             <field name="date"/>
                             <field name="document_number" readonly="1"/>
+                            <field name="partner_id"/>
+                            <field name="vendor_bill_id" readonly="1"
+                                   invisible="not vendor_bill_id"/>
+                            <field name="is_vat_payer"
+                                   invisible="not vendor_bill_id"/>
+                            <field name="invoice_received"
+                                   invisible="not is_vat_payer"/>
                         </group>
                         <group>
                             <field name="inspektireba_id"/>
+                            <field name="moxsenebiti_id"/>
                             <field name="approval_id"/>
                         </group>
+                    </group>
+                    <group string="საფუძველი">
+                        <field name="comment" nolabel="1"/>
                     </group>
                 </sheet>
                 <chatter/>
@@ -107,8 +84,9 @@
                     records_draggable="0">
                 <field name="id"/>
                 <field name="state"/>
-                <field name="category_id"/>
                 <field name="document_number"/>
+                <field name="partner_id"/>
+                <field name="comment"/>
                 <field name="date"/>
                 <templates>
                     <t t-name="kanban-box">
@@ -121,7 +99,10 @@
                                 </div>
                             </div>
                             <div class="o_kanban_record_body">
-                                <field name="category_id"/>
+                                <field name="partner_id"/>
+                                <div t-if="record.comment.raw_value" class="text-muted">
+                                    <field name="comment"/>
+                                </div>
                             </div>
                             <div class="o_kanban_record_bottom">
                                 <div class="oe_kanban_bottom_left">
@@ -144,18 +125,27 @@
         <field name="arch" type="xml">
             <search string="ძიება">
                 <field name="document_number"/>
-                <field name="category_id"/>
+                <field name="partner_id"/>
+                <field name="comment"/>
                 <field name="inspektireba_id"/>
+                <field name="moxsenebiti_id"/>
                 <field name="approval_id"/>
-                <filter name="filter_sent" string="გაგზავნილი"
-                        domain="[('state', '=', 'sent')]"/>
+                <filter name="filter_incoming" string="შემოსული"
+                        domain="[('state', '=', 'incoming')]"/>
+                <filter name="filter_awaiting_invoice" string="ფაქტურის მოლოდინში"
+                        domain="[('state', '=', 'awaiting_invoice')]"/>
                 <filter name="filter_done" string="დასრულებული"
                         domain="[('state', '=', 'done')]"/>
+                <separator/>
+                <filter name="filter_vat_payer" string="დღგ-ს გადამხდელი"
+                        domain="[('is_vat_payer', '=', True)]"/>
+                <filter name="filter_invoice_received" string="ფაქტურა მიღებულია"
+                        domain="[('invoice_received', '=', True)]"/>
                 <group expand="0" string="დაჯგუფება">
                     <filter name="group_state" string="სტატუსი"
                             context="{'group_by': 'state'}"/>
-                    <filter name="group_category" string="კატეგორია"
-                            context="{'group_by': 'category_id'}"/>
+                    <filter name="group_partner" string="კონტრაგენტი"
+                            context="{'group_by': 'partner_id'}"/>
                 </group>
             </search>
         </field>
@@ -176,8 +166,8 @@
         <field name="res_model">accounting.library</field>
         <field name="view_mode">list,kanban,form</field>
         <field name="search_view_id" ref="view_accounting_library_search"/>
-        <field name="domain">[('state', '=', 'sent')]</field>
-        <field name="context">{'default_state': 'sent'}</field>
+        <field name="domain">[('state', 'in', ('incoming', 'awaiting_invoice'))]</field>
+        <field name="context">{'default_state': 'incoming'}</field>
     </record>
 
     <record id="action_accounting_library_done" model="ir.actions.act_window">
@@ -186,6 +176,16 @@
         <field name="view_mode">list,kanban,form</field>
         <field name="search_view_id" ref="view_accounting_library_search"/>
         <field name="domain">[('state', '=', 'done')]</field>
+    </record>
+
+    <!-- =========================================================
+         Refresh: pull signed moxsenebiti (for_accounting=True) into the registry
+         ========================================================= -->
+    <record id="action_accounting_library_refresh" model="ir.actions.server">
+        <field name="name">განახლება</field>
+        <field name="model_id" ref="model_accounting_library"/>
+        <field name="state">code</field>
+        <field name="code">action = model.action_refresh_from_moxsenebiti()</field>
     </record>
 
 </odoo>

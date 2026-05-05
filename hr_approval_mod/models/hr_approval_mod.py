@@ -1,4 +1,4 @@
-from odoo import models, fields, api, Command
+from odoo import models, fields, api, Command, _
 from odoo.exceptions import UserError
 from datetime import datetime, time
 
@@ -22,6 +22,31 @@ class ApprovalRequest(models.Model):
     )
 
     accounting_generated = fields.Boolean(string="Accounting Generated", default=False)
+
+    can_add_approver = fields.Boolean(compute="_compute_can_add_approver")
+
+    @api.depends('request_owner_id', 'request_status', 'signed_document')
+    def _compute_can_add_approver(self):
+        uid = self.env.user.id
+        for req in self:
+            req.can_add_approver = (
+                req.request_owner_id.id == uid
+                and req.request_status in ('new', 'pending')
+                and not req.signed_document
+            )
+
+    def action_open_add_approver(self):
+        self.ensure_one()
+        if not self.can_add_approver:
+            raise UserError(_("ამ ეტაპზე დამდასტურებლის დამატება არ არის შესაძლებელი."))
+        return {
+            'name': _('დამდასტურებლის დამატება'),
+            'type': 'ir.actions.act_window',
+            'res_model': 'approval.add.approver',
+            'view_mode': 'form',
+            'target': 'new',
+            'context': {'default_request_id': self.id},
+        }
 
     request_status = fields.Selection([
         ('new', 'შესასრულებლად'),
@@ -490,6 +515,63 @@ class ApprovalApprover(models.Model):
     required = fields.Boolean(
         default=True
     )
+
+
+class ApprovalAddApprover(models.TransientModel):
+    _name = 'approval.add.approver'
+    _description = 'Add Approver Wizard'
+
+    request_id = fields.Many2one('approval.request', string="Approval Request", required=True)
+    user_id = fields.Many2one(
+        'res.users',
+        string="დამდასტურებელი",
+        required=True,
+        domain=[('share', '=', False)],
+    )
+
+    def action_confirm(self):
+        self.ensure_one()
+        request = self.request_id
+
+        if request.request_status not in ('new', 'pending'):
+            raise UserError(_("დამდასტურებლის დამატება შესაძლებელია მხოლოდ აქტიურ ბრძანებაზე (ხელმოწერამდე)."))
+        if request.signed_document:
+            raise UserError(_("ხელმოწერის შემდეგ დამდასტურებლის დამატება არ არის შესაძლებელი."))
+
+        if self.env.user.id != request.request_owner_id.id and not self.env.user.has_group("base.group_system"):
+            raise UserError(_("დამდასტურებლის დამატება შეუძლია მხოლოდ ინიციატორს."))
+
+        existing = request.approver_ids.filtered(
+            lambda a: a.user_id.id == self.user_id.id and a.status in ('new', 'pending', 'approved')
+        )
+        if existing:
+            raise UserError(_("ეს მომხმარებელი უკვე დამატებულია დამდასტურებლად."))
+
+        max_seq = max(request.approver_ids.mapped('sequence') or [0])
+
+        self.env['approval.approver'].create({
+            'request_id': request.id,
+            'user_id': self.user_id.id,
+            'status': 'pending',
+            'required': True,
+            'sequence': max_seq + 10,
+        })
+
+        request.activity_schedule(
+            'approvals.mail_activity_data_approval',
+            user_id=self.user_id.id,
+            summary=_("გთხოვთ დაადასტუროთ ბრძანება"),
+            note=_("გთხოვთ დაადასტუროთ ბრძანება: %s") % request.display_name,
+        )
+
+        # Subscribe the new approver as a follower so they receive future updates
+        request.message_subscribe(partner_ids=self.user_id.partner_id.ids)
+
+        request.message_post(
+            body=_("დაემატა დამდასტურებელი: %s (%s-ის მიერ).") % (self.user_id.name, self.env.user.name)
+        )
+
+        return {'type': 'ir.actions.act_window_close'}
 
 
 
