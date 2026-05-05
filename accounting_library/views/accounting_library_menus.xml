@@ -24,15 +24,10 @@
               action="action_accounting_library_done"
               sequence="30"/>
 
-    <menuitem id="menu_accounting_library_config"
-              name="კონფიგურაცია"
+    <menuitem id="menu_accounting_library_refresh"
+              name="განახლება"
               parent="menu_accounting_library_root"
-              sequence="90"/>
-
-    <menuitem id="menu_accounting_library_categories"
-              name="კატეგორიები"
-              parent="menu_accounting_library_config"
-              action="action_accounting_library_category"
-              sequence="10"/>
+              action="action_accounting_library_refresh"
+              sequence="40"/>
 
 </odoo>

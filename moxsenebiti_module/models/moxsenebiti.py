@@ -158,6 +158,14 @@ class Moxsenebiti(models.Model):
         string="დარჩენის ტიპი",
         tracking=True,
     )
+
+    x_studio_advance_pay = fields.Boolean(string="ავანსი", tracking=True)
+    x_studio_invoice = fields.Boolean(string="ინვოისი", tracking=True)
+    for_accounting = fields.Boolean(
+        string="ბუღალტერიისთვის",
+        tracking=True,
+        help="თუ მონიშნულია, ხელმოწერის შემდეგ ეს მოხსენებითი დაემატება რეესტრში 'განახლების' დაჭერისას.",
+    )
     
     # -----------------------------
     # HR Admin / Order Separation
@@ -187,6 +195,8 @@ class Moxsenebiti(models.Model):
             self.mivlineba_type = source.mivlineba_type
             self.stay_type = source.stay_type
             self.comment = source.comment
+            self.x_studio_advance_pay = source.x_studio_advance_pay
+            self.x_studio_invoice = source.x_studio_invoice
             # Rebuild employee lines from source
             new_lines = []
             for line in source.employee_line_ids:
@@ -203,6 +213,8 @@ class Moxsenebiti(models.Model):
             self.mivlineba_type = False
             self.stay_type = False
             self.comment = False
+            self.x_studio_advance_pay = False
+            self.x_studio_invoice = False
             self.employee_line_ids = [(5, 0, 0)]
 
     @api.onchange('x_studio_time_off_id')
@@ -832,6 +844,8 @@ class Moxsenebiti(models.Model):
                 'x_studio_adresati': self.adresati_id.id,
                 'x_studio_spendtime': stay_map.get(self.stay_type),
                 'x_studio_comment1': self.number,
+                'x_studio_advance_pay': self.x_studio_advance_pay,
+                'x_studio_invoice': self.x_studio_invoice,
                 # Lines mapping
                 'table_line_ids': lines_vals,
             }
@@ -875,6 +889,8 @@ class Moxsenebiti(models.Model):
                 'x_studio_adresati': self.adresati_id.id,
                 'x_studio_spendtime': stay_map.get(self.stay_type),
                 'x_studio_comment1': self.number,
+                'x_studio_advance_pay': self.x_studio_advance_pay,
+                'x_studio_invoice': self.x_studio_invoice,
                 # Lines mapping
                 'table_line_ids': lines_vals,
                 'x_studio_type_selection': self.x_studio_type_selection,
@@ -899,6 +915,8 @@ class Moxsenebiti(models.Model):
                 'x_studio_comment1': self.number,
                 'x_studio_contract_start': self.start_date,
                 'x_studio_contract_end': self.end_date,
+                'x_studio_advance_pay': self.x_studio_advance_pay,
+                'x_studio_invoice': self.x_studio_invoice,
             }
             request = self.env['approval.request'].create(vals)
             #request.action_confirm()
@@ -922,6 +940,8 @@ class Moxsenebiti(models.Model):
                 'x_studio_contract_end': self.end_date,
                 'x_studio_type_selection': self.x_studio_type_selection,
                 'x_studio_time_off_id': self.x_studio_time_off_id.id,
+                'x_studio_advance_pay': self.x_studio_advance_pay,
+                'x_studio_invoice': self.x_studio_invoice,
             }
             request = self.env['approval.request'].create(vals)
             #request.action_confirm()

@@ -338,6 +338,12 @@
                         <field name="mivlineba_days" readonly="1"/>
                     </group>
 
+                    <group>
+                        <field name="x_studio_advance_pay"/>
+                        <field name="x_studio_invoice"/>
+                        <field name="for_accounting"/>
+                    </group>
+
                     <notebook class="mt16">
                         <page string="ვიზირება">
                             <field name="approver_line_ids" readonly="state != 'draft'">

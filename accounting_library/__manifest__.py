@@ -9,6 +9,7 @@
         'account',
         'approvals',
         'inspektireba_module',
+        'moxsenebiti_module',
     ],
     'data': [
         'security/ir.model.access.csv',
