@@ -18,6 +18,18 @@ class PurchaseRequisitionAvansi(models.Model):
 class PurchaseRequisitionInheritAvansi(models.Model):
     _inherit = 'purchase.requisition'
 
+    payment_condition = fields.Selection(
+        selection=[
+            ('avansi', 'ავანსი'),
+            ('acceptance', 'მიღება-ჩაბარება'),
+            ('invoice', 'ანგარიშ-ფაქტურა'),
+            ('other', 'სხვა'),
+        ],
+        string='გადახდის პირობები',
+    )
+    other_transfer_date = fields.Date(
+        string='სხვა - გადარიცხვის თარიღი',
+    )
     avansi_ids = fields.One2many(
         'purchase.requisition.avansi',
         'requisition_id',
