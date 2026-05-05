@@ -75,10 +75,7 @@ class MrpProduction(models.Model):
             move_lines = moves.move_line_ids
             if move_lines:
                 _logger.info(f"|----| Move lines: {move_lines}")
-                self.env.cr.execute(
-                    "UPDATE stock_move_line SET date = %s WHERE id IN %s",
-                    (effective_dt, tuple(move_lines.ids)),
-                )
+                move_lines.sudo().write({"date": effective_dt})
             svls = moves.mapped("stock_valuation_layer_ids")
             if svls:
                 self.env.cr.execute(
