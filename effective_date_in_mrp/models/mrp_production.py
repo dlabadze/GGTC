@@ -8,7 +8,7 @@ class MrpProduction(models.Model):
     _inherit = "mrp.production"
 
     effective_date_in_mrp = fields.Datetime(
-        string="Effective Date",
+        string="გატარების თარიღი",
         required=True,
         default=fields.Datetime.now,
         copy=False,
