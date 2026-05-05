@@ -1,5 +1,7 @@
 from odoo import fields, models
 from odoo.exceptions import UserError
+import logging
+_logger = logging.getLogger(__name__)
 
 
 class MrpProduction(models.Model):
@@ -72,6 +74,7 @@ class MrpProduction(models.Model):
             )
             move_lines = moves.move_line_ids
             if move_lines:
+                _logger.info(f"|----| Move lines: {move_lines}")
                 self.env.cr.execute(
                     "UPDATE stock_move_line SET date = %s WHERE id IN %s",
                     (effective_dt, tuple(move_lines.ids)),
