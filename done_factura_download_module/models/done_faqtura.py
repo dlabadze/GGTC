@@ -333,35 +333,58 @@ class DoneFAQTURI(models.Model):
                 if line_amount <= 0:
                     continue
 
+                # Budget line fallback: by analytic+account, else any line in analytic.
+                budget_line = False
                 if done_line.budget_analytic_id and done_line.xarjang:
                     budget_line = self.env['budget.line'].search([
                         ('budget_analytic_id', '=', done_line.budget_analytic_id.id),
                         ('account_id', '=', done_line.xarjang.id),
                     ], limit=1)
-                    if budget_line:
-                        budget_vals_list.append({
-                            'payment_id': payment.id,
-                            'budget_analytic_id': done_line.budget_analytic_id.id,
-                            'budget_line_id': budget_line.id,
-                            'amount': line_amount,
-                        })
+                if not budget_line and done_line.budget_analytic_id:
+                    budget_line = self.env['budget.line'].search([
+                        ('budget_analytic_id', '=', done_line.budget_analytic_id.id),
+                    ], limit=1)
+                if budget_line:
+                    budget_vals_list.append({
+                        'payment_id': payment.id,
+                        'budget_analytic_id': budget_line.budget_analytic_id.id,
+                        'budget_line_id': budget_line.id,
+                        'amount': line_amount,
+                    })
 
+                # Purchase plan fallback:
+                # 1) from done_line.account_move_line_id.purchase_line_id
+                # 2) else from related invoice lines by product
+                purchase_plan = False
+                purchase_plan_line = False
                 move_line = done_line.account_move_line_id
                 purchase_line = (
                     move_line.purchase_line_id
                     if move_line and 'purchase_line_id' in move_line._fields
                     else False
                 )
-                purchase_plan_line = (
-                    purchase_line.purchase_plan_line_id
-                    if purchase_line and 'purchase_plan_line_id' in purchase_line._fields
-                    else False
-                )
-                purchase_plan = (
-                    purchase_line.purchase_plan_id
-                    if purchase_line and 'purchase_plan_id' in purchase_line._fields and purchase_line.purchase_plan_id
-                    else (purchase_plan_line.plan_id if purchase_plan_line else False)
-                )
+                if purchase_line and 'purchase_plan_line_id' in purchase_line._fields:
+                    purchase_plan_line = purchase_line.purchase_plan_line_id
+                if purchase_line and 'purchase_plan_id' in purchase_line._fields:
+                    purchase_plan = purchase_line.purchase_plan_id
+                if purchase_plan_line and not purchase_plan:
+                    purchase_plan = purchase_plan_line.plan_id
+
+                if not (purchase_plan and purchase_plan_line):
+                    candidate_invoice_line = self.related_account_move_ids.mapped('invoice_line_ids').filtered(
+                        lambda l: not l.display_type and l.product_id == done_line.product_id
+                    )[:1]
+                    if candidate_invoice_line:
+                        if (
+                            'purchase_plan_line_id' in candidate_invoice_line._fields
+                            and candidate_invoice_line.purchase_plan_line_id
+                        ):
+                            purchase_plan_line = candidate_invoice_line.purchase_plan_line_id
+                        if 'purchase_plan_id' in candidate_invoice_line._fields and candidate_invoice_line.purchase_plan_id:
+                            purchase_plan = candidate_invoice_line.purchase_plan_id
+                        if purchase_plan_line and not purchase_plan:
+                            purchase_plan = purchase_plan_line.plan_id
+
                 if purchase_plan and purchase_plan_line:
                     purchase_vals_list.append({
                         'payment_id': payment.id,
@@ -369,7 +392,8 @@ class DoneFAQTURI(models.Model):
                         'purchase_plan_line_id': purchase_plan_line.id,
                         'amount': line_amount,
                     })
-
+            _logger.info(f"|----| Budget vals list: {budget_vals_list}")
+            _logger.info(f"|----| Purchase vals list: {purchase_vals_list}")
             if budget_vals_list:
                 payment_line_model.create(budget_vals_list)
             if purchase_vals_list:
