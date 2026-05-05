@@ -209,61 +209,84 @@ class GzaStockLocationReportWizard(models.TransientModel):
         domain=[('usage', '=', 'internal')],
         default=lambda self: self._get_last_location_ids(),
     )
-    category_ids = fields.Many2many(
-        'product.category',
-        string='Product Categories',
-    )
-    use_category_filter = fields.Boolean(string='Filter by Category')
-    include_internal_transfers = fields.Boolean(string='შიდა გადაცემების გათვალისწინება', default=True)
-    show_amount_columns = fields.Boolean(string='თანხის გრაფები')
+    def _get_user_filter(self):
+        return self.env['stock.report.filter'].search([('user_id', '=', self.env.user.id)], limit=1)
 
     def _get_last_date_to(self):
-        last_date_to = self.env['ir.config_parameter'].sudo().get_param(
-            'gza.stock.location.report.wizard.last_date_to'
-        )
-        if last_date_to:
-            return fields.Date.from_string(last_date_to)
+        user_filter = self._get_user_filter()
+        if user_filter and user_filter.date_to:
+            return user_filter.date_to
         return fields.Date.context_today(self)
 
     def _get_last_date_from(self):
-        last_date_from = self.env['ir.config_parameter'].sudo().get_param(
-            'gza.stock.location.report.wizard.last_date_from'
-        )
-        if last_date_from:
-            return fields.Date.from_string(last_date_from)
+        user_filter = self._get_user_filter()
+        if user_filter and user_filter.date_from:
+            return user_filter.date_from
         return fields.Date.context_today(self)
 
     def _get_last_location_ids(self):
-        param = self.env['ir.config_parameter'].sudo().get_param(
-            'gza.stock.location.report.wizard.last_location_ids'
-        )
-        if param:
-            try:
-                ids = [int(x) for x in param.split(',') if x.strip().isdigit()]
-                if ids:
-                    return [(6, 0, ids)]
-            except (ValueError, TypeError):
-                pass
+        user_filter = self._get_user_filter()
+        if user_filter and user_filter.location_ids:
+            return [(6, 0, user_filter.location_ids.ids)]
         return [(5, 0, 0)]
+
+    def _get_last_category_ids(self):
+        user_filter = self._get_user_filter()
+        if user_filter and user_filter.category_ids:
+            return [(6, 0, user_filter.category_ids.ids)]
+        return [(5, 0, 0)]
+
+    def _get_last_use_category_filter(self):
+        user_filter = self._get_user_filter()
+        return bool(user_filter.use_category_filter) if user_filter else False
+
+    def _get_last_include_internal_transfers(self):
+        user_filter = self._get_user_filter()
+        return user_filter.include_internal_transfers if user_filter else True
+
+    def _get_last_show_amount_columns(self):
+        user_filter = self._get_user_filter()
+        return bool(user_filter.show_amount_columns) if user_filter else False
+
+    category_ids = fields.Many2many(
+        'product.category',
+        string='Product Categories',
+        default=lambda self: self._get_last_category_ids(),
+    )
+    use_category_filter = fields.Boolean(
+        string='Filter by Category',
+        default=lambda self: self._get_last_use_category_filter(),
+    )
+    include_internal_transfers = fields.Boolean(
+        string='შიდა გადაცემების გათვალისწინება',
+        default=lambda self: self._get_last_include_internal_transfers(),
+    )
+    show_amount_columns = fields.Boolean(
+        string='თანხის გრაფები',
+        default=lambda self: self._get_last_show_amount_columns(),
+    )
+
+    def _save_user_filter(self):
+        filter_model = self.env['stock.report.filter']
+        user_filter = filter_model.search([('user_id', '=', self.env.user.id)], limit=1)
+        values = {
+            'date_from': self.date_from,
+            'date_to': self.date_to,
+            'location_ids': [(6, 0, self.location_ids.ids)],
+            'category_ids': [(6, 0, self.category_ids.ids)],
+            'use_category_filter': self.use_category_filter,
+            'include_internal_transfers': self.include_internal_transfers,
+            'show_amount_columns': self.show_amount_columns,
+        }
+        if user_filter:
+            user_filter.write(values)
+        else:
+            values['user_id'] = self.env.user.id
+            filter_model.create(values)
 
     def action_generate_report(self):
         self.ensure_one()
-
-
-        self.env['ir.config_parameter'].sudo().set_param(
-            'gza.stock.location.report.wizard.last_date_to',
-            fields.Date.to_string(self.date_to)
-        )
-
-        self.env['ir.config_parameter'].sudo().set_param(
-            'gza.stock.location.report.wizard.last_date_from',
-            fields.Date.to_string(self.date_from)
-        )
-
-        self.env['ir.config_parameter'].sudo().set_param(
-            'gza.stock.location.report.wizard.last_location_ids',
-            ','.join(str(i) for i in self.location_ids.ids)
-        )
+        self._save_user_filter()
 
         try:
             self.env.cr.execute("SAVEPOINT stock_location_report_savepoint")
