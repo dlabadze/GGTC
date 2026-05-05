@@ -315,6 +315,108 @@ class DoneFAQTURI(models.Model):
             available |= line
         return available
 
+    @api.model
+    def _scale_amount_map_to_target(self, amount_map, target_amount):
+        if not amount_map:
+            return {}
+        source_total = sum(amount_map.values())
+        if source_total <= 0:
+            return {}
+        if source_total <= target_amount:
+            return amount_map
+        ratio = target_amount / source_total
+        return {
+            key: (value * ratio)
+            for key, value in amount_map.items()
+        }
+
+    def _prepare_payment_distribution_maps(self, moves):
+        budget_amount_map = {}
+        purchase_plan_amount_map = {}
+        for move in moves:
+            for inv_line in move.invoice_line_ids.filtered(lambda l: not l.display_type):
+                amount = abs(inv_line.price_subtotal or 0.0)
+                if not amount:
+                    continue
+
+                budget_line = inv_line.budget_line_id if 'budget_line_id' in inv_line._fields else False
+                budget_analytic = (
+                    inv_line.budget_analytic_id
+                    if 'budget_analytic_id' in inv_line._fields
+                    else False
+                )
+                if budget_line:
+                    bkey = (budget_analytic.id if budget_analytic else False, budget_line.id)
+                    budget_amount_map[bkey] = budget_amount_map.get(bkey, 0.0) + amount
+
+                purchase_plan_line = False
+                purchase_plan = False
+                if 'purchase_plan_line_id' in inv_line._fields and inv_line.purchase_plan_line_id:
+                    purchase_plan_line = inv_line.purchase_plan_line_id
+                    purchase_plan = (
+                        inv_line.purchase_plan_id
+                        if 'purchase_plan_id' in inv_line._fields and inv_line.purchase_plan_id
+                        else purchase_plan_line.plan_id
+                    )
+                elif (
+                    'purchase_line_id' in inv_line._fields
+                    and inv_line.purchase_line_id
+                    and 'purchase_plan_line_id' in inv_line.purchase_line_id._fields
+                    and inv_line.purchase_line_id.purchase_plan_line_id
+                ):
+                    purchase_plan_line = inv_line.purchase_line_id.purchase_plan_line_id
+                    purchase_plan = (
+                        inv_line.purchase_line_id.purchase_plan_id
+                        if 'purchase_plan_id' in inv_line.purchase_line_id._fields
+                        and inv_line.purchase_line_id.purchase_plan_id
+                        else purchase_plan_line.plan_id
+                    )
+                if purchase_plan and purchase_plan_line:
+                    pkey = (purchase_plan.id, purchase_plan_line.id)
+                    purchase_plan_amount_map[pkey] = purchase_plan_amount_map.get(pkey, 0.0) + amount
+        return budget_amount_map, purchase_plan_amount_map
+
+    def _create_payment_distribution_lines(self, payments, moves):
+        if not payments:
+            return
+        budget_map, purchase_map = self._prepare_payment_distribution_maps(moves)
+        if not budget_map and not purchase_map:
+            return
+
+        payment_line_model = self.env['account.payment.line']
+        payment_plan_line_model = self.env['account.payment.purchase.plan.line']
+
+        for payment in payments:
+            scaled_budget_map = self._scale_amount_map_to_target(budget_map, payment.amount)
+            if scaled_budget_map:
+                budget_vals_list = [
+                    {
+                        'payment_id': payment.id,
+                        'budget_analytic_id': budget_analytic_id or False,
+                        'budget_line_id': budget_line_id,
+                        'amount': amount,
+                    }
+                    for (budget_analytic_id, budget_line_id), amount in scaled_budget_map.items()
+                    if amount > 0
+                ]
+                if budget_vals_list:
+                    payment_line_model.create(budget_vals_list)
+
+            scaled_purchase_map = self._scale_amount_map_to_target(purchase_map, payment.amount)
+            if scaled_purchase_map:
+                purchase_vals_list = [
+                    {
+                        'payment_id': payment.id,
+                        'purchase_plan_id': purchase_plan_id,
+                        'purchase_plan_line_id': purchase_plan_line_id,
+                        'amount': amount,
+                    }
+                    for (purchase_plan_id, purchase_plan_line_id), amount in scaled_purchase_map.items()
+                    if amount > 0
+                ]
+                if purchase_vals_list:
+                    payment_plan_line_model.create(purchase_vals_list)
+
     def action_pay_related_moves(self):
         """Create and post account.payment(s): amount=tanxa, date=transfer_date, memo from each linked move."""
         self.ensure_one()
@@ -399,6 +501,7 @@ class DoneFAQTURI(models.Model):
         payments = wizard.with_context(wctx)._init_payments(to_process, edit_mode=True)
         wizard.with_context(wctx)._post_payments(to_process, edit_mode=True)
         wizard.with_context(wctx)._reconcile_payments(to_process, edit_mode=True)
+        self._create_payment_distribution_lines(payments, moves)
 
         if len(payments) == 1:
             return {
