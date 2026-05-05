@@ -7,6 +7,7 @@
         <field name="arch" type="xml">
             <xpath expr="//header" position="inside">
                 <button name="action_create_done_factura_from_avansi" type="object" string="ფაქტურის შექმნა" class="btn-secondary"/>
+                <button name="action_create_done_factura_from_other" type="object" string="სხვა" class="btn-secondary" invisible="payment_condition != 'other'"/>
             </xpath>
             <xpath expr="//sheet/group/group[2]" position="inside">
                 <field name="payment_condition"/>
