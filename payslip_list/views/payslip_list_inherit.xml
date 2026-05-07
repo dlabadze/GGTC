@@ -5,6 +5,7 @@
     <field name="inherit_id" ref="hr_payroll.view_hr_payslip_tree"/>
     <field name="arch" type="xml">
         <xpath expr="//field[@name='gross_wage']" position="after">
+            <!-- <field name="contract_wage"/> -->
             <field name="line_basic"/>
             <field name="line_sap"/>
             <field name="line_sapcomp"/>

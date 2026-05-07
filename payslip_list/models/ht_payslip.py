@@ -144,6 +144,12 @@ class HrPayslip(models.Model):
         store=True,
         group_operator='sum'
     )
+    contract_wage = fields.Monetary(
+        string='ხელფასი',
+        related='contract_id.wage',
+        store=True,
+        group_operator='sum',
+    )
 
     @api.depends('line_ids.total', 'line_ids.salary_rule_id.name')
     def _compute_lines(self):
