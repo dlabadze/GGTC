@@ -19,6 +19,17 @@
         </field>
     </record>
 
+    <record id="view_shegavati_employee_report_search" model="ir.ui.view">
+        <field name="name">shegavati.employee.report.search</field>
+        <field name="model">shegavati.employee.report</field>
+        <field name="arch" type="xml">
+            <search string="Search Shegavati Employee Report">
+                <field name="partner_id" string="თანამშრომელი"/>
+                <field name="partner_vat" string="პირადი ნომერი"/>
+            </search>
+        </field>
+    </record>
+
     <!-- Wizard form -->
     <record id="view_shegavati_employee_report_wizard_form" model="ir.ui.view">
         <field name="name">shegavati.employee.report.wizard.form</field>
@@ -47,6 +58,7 @@
         <field name="name">შეღავათის რეპორტი</field>
         <field name="res_model">shegavati.employee.report</field>
         <field name="view_mode">list</field>
+        <field name="search_view_id" ref="view_shegavati_employee_report_search"/>
     </record>
 
     <menuitem id="menu_shegavati_employee_report"
