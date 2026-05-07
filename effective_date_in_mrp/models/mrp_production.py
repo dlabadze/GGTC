@@ -83,11 +83,12 @@ class MrpProduction(models.Model):
                     (effective_dt, tuple(svls.ids)),
                 )
             account_moves = (moves.account_move_ids | svls.mapped("account_move_id")).exists()
-            if account_moves:
-                account_moves.with_context(
+            draft_account_moves = account_moves.filtered(lambda m: m.state == "draft")
+            if draft_account_moves:
+                draft_account_moves.with_context(
                     check_move_validity=False,
                     skip_account_move_synchronization=True,
                 ).write({"date": local_date})
-                account_moves.line_ids.with_context(check_move_validity=False).write({"date": local_date})
+                draft_account_moves.line_ids.with_context(check_move_validity=False).write({"date": local_date})
         return res
 
