@@ -75,15 +75,6 @@ class AgreementVendorSelectionWizard(models.TransientModel):
         _logger.info(
             f"Updated tender status to 'ხელშეკრულება დადებულია' for {len(self.inventory_line_ids)} inventory lines (direct agreement creation)")
 
-        # Update request stage to "დადასტურებული" (id=18) for parent inventory requests
-        requests = self.inventory_line_ids.mapped('request_id')
-        if requests:
-            confirmed_stage = self.env['inventory.request.stage'].browse(18)
-            if confirmed_stage.exists():
-                requests.write({'stage_id': confirmed_stage.id})
-                _logger.info(
-                    f"Updated request stage to 'დადასტურებული' (id=18) for {len(requests)} inventory requests")
-
         return self.inventory_line_ids._return_agreement_action(agreement)
 
 class VendorSelectionWizard(models.TransientModel):
@@ -1600,6 +1591,17 @@ class PurchaseRequisition(models.Model):
         """Override action_confirm to create a new quotation after confirmation"""
         # Call the original action_confirm method
         res = super(PurchaseRequisition, self).action_confirm()
+
+        # Update related inventory requests to "დადასტურებული" (id=18)
+        confirmed_stage = self.env['inventory.request.stage'].browse(18)
+        if confirmed_stage.exists():
+            requests = self.mapped('line_ids.inventory_line_ids.request_id')
+            if requests:
+                requests.write({'stage_id': confirmed_stage.id})
+                _logger.info(
+                    "Updated request stage to 'დადასტურებული' (id=18) for %s inventory requests on agreement confirmation",
+                    len(requests),
+                )
 
         # Call action_create_new_quotation after confirmation
         self.action_create_new_quotation()
