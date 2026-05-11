@@ -16,7 +16,7 @@ class RequisitionPaymentCondition(models.Model):
         string='გადახდის პირობები',
         required=True,
     )
-    days = fields.Integer(string='Days', required=True, default=0)
+    days = fields.Integer(string='დღეების რაოდენობა', required=True, default=0)
     requisition_id = fields.Many2one(
         'purchase.requisition',
         string='Purchase Requisition',
