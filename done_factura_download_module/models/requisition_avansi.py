@@ -135,7 +135,7 @@ class PurchaseRequisitionInheritAvansi(models.Model):
                 'has_avansi': 'avansi',
                 'requisition_avansi_id': avansi.id,
                 'arequisition_ids': [(6, 0, [self.id])],
-                'agree_date': today,
+                'agree_date': avansi.date,
             }
             vendor = self.vendor_id if 'vendor_id' in self._fields else False
             if vendor:
