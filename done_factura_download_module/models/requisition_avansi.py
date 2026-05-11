@@ -17,6 +17,12 @@ class RequisitionPaymentCondition(models.Model):
         required=True,
     )
     days = fields.Integer(string='Days', required=True, default=0)
+    requisition_id = fields.Many2one(
+        'purchase.requisition',
+        string='Purchase Requisition',
+        required=True,
+        ondelete='cascade',
+    )
 
     @api.depends('payment_condition', 'days')
     def _compute_name(self):
@@ -62,9 +68,11 @@ class PurchaseRequisitionAvansi(models.Model):
 class PurchaseRequisitionInheritAvansi(models.Model):
     _inherit = 'purchase.requisition'
 
-    payment_condition_ids = fields.Many2many(
+    payment_condition_ids = fields.One2many(
         'requisition.payment.condition',
+        'requisition_id',
         string='გადახდის პირობები',
+
     )
     has_other_payment_condition = fields.Boolean(
         compute='_compute_has_other_payment_condition',
