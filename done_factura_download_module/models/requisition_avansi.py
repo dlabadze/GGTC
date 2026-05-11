@@ -1,6 +1,31 @@
 from odoo import api, fields, models
 
 
+class RequisitionPaymentCondition(models.Model):
+    _name = 'requisition.payment.condition'
+    _description = 'Requisition Payment Condition'
+
+    name = fields.Char(string='Name', compute='_compute_name', store=True)
+    payment_condition = fields.Selection(
+        selection=[
+            ('avansi', 'ავანსი'),
+            ('acceptance', 'მიღება-ჩაბარება'),
+            ('invoice', 'ანგარიშ-ფაქტურა'),
+            ('other', 'სხვა'),
+        ],
+        string='გადახდის პირობები',
+        required=True,
+    )
+    days = fields.Integer(string='Days', required=True, default=0)
+
+    @api.depends('payment_condition', 'days')
+    def _compute_name(self):
+        labels = dict(self._fields['payment_condition'].selection)
+        for rec in self:
+            label = labels.get(rec.payment_condition, '')
+            rec.name = f'{label} ({rec.days})' if label else str(rec.days)
+
+
 class PurchaseRequisitionAvansi(models.Model):
     _name = 'purchase.requisition.avansi'
     _description = 'Purchase Requisition Avansi'
@@ -37,14 +62,13 @@ class PurchaseRequisitionAvansi(models.Model):
 class PurchaseRequisitionInheritAvansi(models.Model):
     _inherit = 'purchase.requisition'
 
-    payment_condition = fields.Selection(
-        selection=[
-            ('avansi', 'ავანსი'),
-            ('acceptance', 'მიღება-ჩაბარება'),
-            ('invoice', 'ანგარიშ-ფაქტურა'),
-            ('other', 'სხვა'),
-        ],
+    payment_condition_ids = fields.Many2many(
+        'requisition.payment.condition',
         string='გადახდის პირობები',
+    )
+    has_other_payment_condition = fields.Boolean(
+        compute='_compute_has_other_payment_condition',
+        string='Has Other Payment Condition',
     )
     other_transfer_date = fields.Date(
         string='სხვა - გადარიცხვის თარიღი',
@@ -60,6 +84,14 @@ class PurchaseRequisitionInheritAvansi(models.Model):
         string='ინვოისები (vendor bills)',
         readonly=True,
     )
+
+    @api.depends('payment_condition_ids', 'payment_condition_ids.payment_condition')
+    def _compute_has_other_payment_condition(self):
+        for rec in self:
+            rec.has_other_payment_condition = any(
+                cond.payment_condition == 'other'
+                for cond in rec.payment_condition_ids
+            )
 
     @api.depends(
         'purchase_ids.invoice_ids',
@@ -123,7 +155,7 @@ class PurchaseRequisitionInheritAvansi(models.Model):
 
     def action_create_done_factura_from_other(self):
         self.ensure_one()
-        if self.payment_condition != 'other':
+        if not self.has_other_payment_condition:
             return {
                 'type': 'ir.actions.client',
                 'tag': 'display_notification',
