@@ -10,7 +10,12 @@
                 <button name="action_create_done_factura_from_other" type="object" string="სხვა" class="btn-secondary" invisible="not has_other_payment_condition"/>
             </xpath>
             <xpath expr="//sheet/group/group[2]" position="inside">
-                <field name="payment_condition_ids" widget="many2many_tags"/>
+                <field name="payment_condition_ids">
+                    <list editable="bottom">
+                        <field name="payment_condition"/>
+                        <field name="days"/>
+                    </list>
+                </field>
                 <field name="has_other_payment_condition" invisible="1"/>
                 <field name="other_transfer_date" invisible="not has_other_payment_condition"/>
                 <field name="related_account_move_ids" nolabel="1" colspan="2" readonly="1">
