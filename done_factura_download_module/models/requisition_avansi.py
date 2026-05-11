@@ -1,4 +1,5 @@
 from odoo import api, fields, models
+from datetime import timedelta
 
 
 class RequisitionPaymentCondition(models.Model):
@@ -117,6 +118,9 @@ class PurchaseRequisitionInheritAvansi(models.Model):
         self.ensure_one()
         today = fields.Date.context_today(self)
         candidates = self.avansi_ids
+        avansi_payment_condition = self.payment_condition_ids.filtered(
+            lambda c: c.payment_condition == 'avansi'
+        )[:1]
         if not candidates:
             return {
                 'type': 'ir.actions.client',
@@ -131,12 +135,15 @@ class PurchaseRequisitionInheritAvansi(models.Model):
         DoneFactura = self.env['done.factura']
         vals_list = []
         for avansi in candidates:
+            agree_date = avansi.date or today
             vals = {
                 'has_avansi': 'avansi',
                 'requisition_avansi_id': avansi.id,
                 'arequisition_ids': [(6, 0, [self.id])],
-                'agree_date': avansi.date,
+                'agree_date': agree_date,
             }
+            if avansi_payment_condition:
+                vals['transfer_date'] = agree_date + timedelta(days=avansi_payment_condition.days or 0)
             vendor = self.vendor_id if 'vendor_id' in self._fields else False
             if vendor:
                 vals['organization_id'] = vendor.id
