@@ -13,6 +13,25 @@ class PurchaseRequisitionAvansi(models.Model):
     )
     amount = fields.Float(string='ავანსი', required=True)
     date = fields.Date(string='თარიღი', required=True, default=fields.Date.today)
+    percentage = fields.Float(string='პროცენტი', required=True)
+
+    @api.onchange('amount', 'requisition_id')
+    def _onchange_amount_set_percentage(self):
+        for rec in self:
+            contract_amount = rec.requisition_id.contract_amount if 'contract_amount' in rec.requisition_id._fields else 0.0
+            if contract_amount:
+                rec.percentage = (rec.amount * 100.0) / contract_amount
+            else:
+                rec.percentage = 0.0
+
+    @api.onchange('percentage', 'requisition_id')
+    def _onchange_percentage_set_amount(self):
+        for rec in self:
+            contract_amount = rec.requisition_id.contract_amount if 'contract_amount' in rec.requisition_id._fields else 0.0
+            if contract_amount:
+                rec.amount = (contract_amount * rec.percentage) / 100.0
+            else:
+                rec.amount = 0.0
 
 
 class PurchaseRequisitionInheritAvansi(models.Model):

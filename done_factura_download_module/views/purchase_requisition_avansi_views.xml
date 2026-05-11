@@ -28,6 +28,7 @@
                     <field name="avansi_ids">
                         <list editable="bottom">
                             <field name="amount"/>
+                            <field name="percentage"/>
                             <field name="date"/>
                         </list>
                     </field>
