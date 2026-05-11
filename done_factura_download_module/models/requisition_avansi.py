@@ -76,7 +76,7 @@ class PurchaseRequisitionInheritAvansi(models.Model):
     def action_create_done_factura_from_avansi(self):
         self.ensure_one()
         today = fields.Date.context_today(self)
-        candidates = self.avansi_ids.filtered(lambda a: a.date == today)
+        candidates = self.avansi_ids
         if not candidates:
             return {
                 'type': 'ir.actions.client',
