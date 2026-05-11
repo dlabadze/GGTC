@@ -55,6 +55,10 @@ class AccountMove(models.Model):
         compute='_compute_done_factura_date',
         store=True,
     )
+    has_requisition_other_payment_condition = fields.Boolean(
+        string='Has Requisition Other Payment Condition',
+        compute='_compute_has_requisition_other_payment_condition',
+    )
 
     @api.depends('related_done_factura_ids.agree_date')
     def _compute_done_factura_date(self):
@@ -69,6 +73,16 @@ class AccountMove(models.Model):
     def _compute_rs_tanxa(self):
         for record in self:
             record.rs_tanxa = sum(record.factura_ids.mapped('rs_tanxa'))
+
+    @api.depends(
+        'invoice_line_ids.purchase_line_id.order_id.requisition_id.payment_condition_ids.payment_condition',
+        'purchase_id.requisition_id.payment_condition_ids.payment_condition',
+    )
+    def _compute_has_requisition_other_payment_condition(self):
+        for record in self:
+            record.has_requisition_other_payment_condition = bool(
+                record._get_requisition_payment_condition_days('other')
+            )
 
     def _xml_text_by_local_name(self, root, local_name):
         for elem in root.iter():
@@ -577,6 +591,60 @@ class AccountMove(models.Model):
             purchase_orders |= self.purchase_id
         return bool(purchase_orders.mapped('requisition_id.avansi_ids'))
 
+    def _get_linked_requisitions(self):
+        self.ensure_one()
+        po_model = self.env['purchase.order']
+        if 'requisition_id' not in po_model._fields:
+            return self.env['purchase.requisition']
+        purchase_orders = self.invoice_line_ids.mapped('purchase_line_id.order_id')
+        if 'purchase_id' in self._fields and self.purchase_id:
+            purchase_orders |= self.purchase_id
+        return purchase_orders.mapped('requisition_id').filtered(lambda r: r)
+
+    def _get_requisition_payment_condition_days(self, payment_condition_code):
+        self.ensure_one()
+        requisitions = self._get_linked_requisitions()
+        conditions = requisitions.mapped('payment_condition_ids').filtered(
+            lambda c: c.payment_condition == payment_condition_code
+        )
+        return conditions.mapped('days')
+
+    def action_create_done_factura_from_other(self):
+        self.ensure_one()
+        requisitions = self._get_linked_requisitions()
+        if not requisitions:
+            raise UserError('ინვოისს არ აქვს PO-დან დაკავშირებული მოთხოვნა.')
+
+        other_days = self._get_requisition_payment_condition_days('other')
+        if not other_days:
+            raise UserError('დაკავშირებულ მოთხოვნაზე გადახდის პირობებში "სხვა" არ არის მითითებული.')
+
+        agree_date = self.invoice_date or self.date or fields.Date.today()
+        done_vals = {
+            'invoice_id': f'MOVE-{self.id}-OTHER',
+            'series': 'MOVE',
+            'number': (self.name or self.ref or str(self.id)),
+            'registration_date': self.date or fields.Date.today(),
+            'agree_date': agree_date,
+            'arequisition_ids': [(6, 0, requisitions.ids)],
+            'related_account_move_ids': [(4, self.id)],
+            'organization_id': self.partner_id.id if self.partner_id else False,
+            'status': 2,
+        }
+        done_vals['transfer_date'] = agree_date + timedelta(days=max(other_days))
+
+        done_factura = self.env['done.factura'].create(done_vals)
+        self.write({'related_done_factura_ids': [(4, done_factura.id)]})
+        done_factura.sync_vendor_bills_from_requisitions()
+        return {
+            'type': 'ir.actions.act_window',
+            'name': 'Done ფაქტურა',
+            'res_model': 'done.factura',
+            'view_mode': 'form',
+            'res_id': done_factura.id,
+            'target': 'current',
+        }
+
     def _get_invoice_check_requisition_avansi_vals(self, has_requisition_avansi):
         """Vals for done.factura from vendor bill check when PO/requisition has avansi lines."""
         self.ensure_one()
@@ -756,6 +824,9 @@ class AccountMove(models.Model):
                 'status': 2,
                 'waybill_type': base_vals.get('waybill_type'),
             }
+            invoice_days = record._get_requisition_payment_condition_days('invoice')
+            if combined_vals.get('agree_date') and invoice_days:
+                combined_vals['transfer_date'] = combined_vals['agree_date'] + timedelta(days=max(invoice_days))
             combined_vals.update(record._get_invoice_check_requisition_avansi_vals(has_requisition_avansi))
             if not combined_record:
                 combined_record = done_model.create(combined_vals)

@@ -79,9 +79,6 @@ class PurchaseRequisitionInheritAvansi(models.Model):
         compute='_compute_has_other_payment_condition',
         string='Has Other Payment Condition',
     )
-    other_transfer_date = fields.Date(
-        string='სხვა - გადარიცხვის თარიღი',
-    )
     avansi_ids = fields.One2many(
         'purchase.requisition.avansi',
         'requisition_id',
@@ -181,17 +178,6 @@ class PurchaseRequisitionInheritAvansi(models.Model):
                     'sticky': False,
                 },
             }
-        if not self.other_transfer_date:
-            return {
-                'type': 'ir.actions.client',
-                'tag': 'display_notification',
-                'params': {
-                    'title': 'ფაქტურა',
-                    'message': 'შეავსეთ სხვა - გადარიცხვის თარიღი.',
-                    'type': 'warning',
-                    'sticky': False,
-                },
-            }
         if not self.line_ids:
             return {
                 'type': 'ir.actions.client',
@@ -208,7 +194,6 @@ class PurchaseRequisitionInheritAvansi(models.Model):
         vals = {
             'arequisition_ids': [(6, 0, [self.id])],
             'agree_date': today,
-            'transfer_date': self.other_transfer_date,
             # Intentionally not setting has_avansi.
         }
         vendor = self.vendor_id if 'vendor_id' in self._fields else False

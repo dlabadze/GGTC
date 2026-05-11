@@ -17,7 +17,6 @@
                     </list>
                 </field>
                 <field name="has_other_payment_condition" invisible="1"/>
-                <field name="other_transfer_date" invisible="not has_other_payment_condition"/>
                 <field name="related_account_move_ids" nolabel="1" colspan="2" readonly="1">
                     <list create="false" delete="false" edit="false">
                         <field name="name"/>

@@ -165,8 +165,14 @@
                         type="object"
                         class="oe_highlight"
                         invisible="not factura_ids"/>
+                <button name="action_create_done_factura_from_other"
+                        string="სხვა"
+                        type="object"
+                        class="btn-secondary"
+                        invisible="not has_requisition_other_payment_condition"/>
             </xpath>
             <xpath expr="//group[@id='header_left_group']" position="inside">
+                <field name="has_requisition_other_payment_condition" invisible="1"/>
                 <field name="done_factura_date" readonly="1"/>
                 <field name="factura_ids">
                     <list editable="bottom">
