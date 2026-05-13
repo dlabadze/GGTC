@@ -562,7 +562,7 @@ class WaybillCustom(models.Model):
                     'location_id': internal_delivery.location_id.id,  # Source location
                     'location_dest_id': internal_delivery.location_dest_id.id,  # Destination location
                     'result_package_id': False,
-                    
+                    'picked': True,
                 })
     
             # Update the internal delivery with move lines

@@ -14,6 +14,10 @@ class StockPicking(models.Model):
         draft_pickings = self.filtered(lambda p: p.state == 'draft')
         if draft_pickings:
             draft_pickings.action_confirm()
+            for picking in draft_pickings:
+                if picking.x_studio_request_ref:
+
+                    picking.move_ids.picked = True
 
         all_products = self.move_ids.mapped('product_id')
         all_locations = self.move_ids.mapped('location_id')
