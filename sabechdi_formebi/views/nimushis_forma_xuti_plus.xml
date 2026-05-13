@@ -33,7 +33,7 @@
                 <main class="o-main">
                     <t t-foreach="docs" t-as="doc">
 
-                        <t t-set="related_picking" t-value="doc.env['stock.picking'].search([('x_studio_request_ref', '=', doc.x_studio_request_ref.id), ('location_dest_id', '=', doc.location_id.id)], limit=1)"/>
+
 
                         <div style="font-family: 'DejaVu Sans', sans-serif; font-size: 12px; padding: 20px;">
 
@@ -118,9 +118,10 @@
                                             <t t-esc="counter"/>
                                         </td>
                                         <td style="border: 1px solid #000; padding: 6px; text-align:center;">
+                                            <t t-set="line_picking" t-value="doc.env['stock.picking'].search([('x_studio_request_ref', '=', doc.x_studio_request_ref.id), ('location_dest_id', '=', doc.location_id.id), ('move_ids_without_package.product_id', '=', line.product_id.id), ('state', '=', 'done')], limit=1)"/>
                                             <t t-if="doc.x_studio_request_ref">
-                                                <t t-if="related_picking">
-                                                    <t t-esc="related_picking.x_studio_aqtis_nomeri"/>
+                                                <t t-if="line_picking">
+                                                    <t t-esc="line_picking.x_studio_aqtis_nomeri"/>
                                                 </t>
                                             </t>
                                             <t t-else="">
@@ -131,8 +132,8 @@
                                         </td>
                                         <td style="border: 1px solid #000; padding: 6px; text-align:center;">
                                             <t t-if="doc.x_studio_request_ref">
-                                                <t t-if="doc.date_of_transfer">
-                                                    <t t-esc="doc.date_of_transfer.strftime('%d/%m/%Y')"/>
+                                                <t t-if="line_picking and line_picking.date_done">
+                                                    <t t-esc="line_picking.date_done.strftime('%d/%m/%Y')"/>
                                                 </t>
                                             </t>
                                             <t t-else="">
