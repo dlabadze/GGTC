@@ -14,10 +14,11 @@ class StockPicking(models.Model):
         draft_pickings = self.filtered(lambda p: p.state == 'draft')
         if draft_pickings:
             draft_pickings.action_confirm()
-            for picking in draft_pickings:
-                if picking.x_studio_request_ref:
-
-                    picking.move_ids.picked = True
+        for picking in self:
+            if picking.state not in ('done', 'cancel') and picking.x_studio_request_ref:
+                for move in picking.move_ids:
+                    if move.quantity > 0 and not move.picked:
+                        move.picked = True
 
         all_products = self.move_ids.mapped('product_id')
         all_locations = self.move_ids.mapped('location_id')

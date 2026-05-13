@@ -54,6 +54,7 @@ class StockPicking(models.Model):
 
             new_quantity = target_move.quantity + quantity
             target_move.quantity = min(new_quantity, target_move.product_uom_qty)
+            # target_move.picked = True
 
         self.reserve_clicked = True
         return True

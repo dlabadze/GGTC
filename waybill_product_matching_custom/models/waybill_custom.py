@@ -777,6 +777,7 @@ class WaybillCustom(models.Model):
                     'location_id': source_location.id,
                     'location_dest_id': dest_location.id,
                     'result_package_id': False,
+                    # 'picked': True,
                 })
     
             if move_lines:
