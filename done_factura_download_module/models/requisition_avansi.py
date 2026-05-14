@@ -118,6 +118,17 @@ class PurchaseRequisitionInheritAvansi(models.Model):
         avansi_payment_condition = self.payment_condition_ids.filtered(
             lambda c: c.payment_condition == 'avansi'
         )[:1]
+        if not avansi_payment_condition:
+            return {
+                'type': 'ir.actions.client',
+                'tag': 'display_notification',
+                'params': {
+                    'title': 'ფაქტურა',
+                    'message': 'გადახდის პირობებში "ავანსი" არ არის მითითებული.',
+                    'type': 'warning',
+                    'sticky': False,
+                },
+            }
         if not candidates:
             return {
                 'type': 'ir.actions.client',
