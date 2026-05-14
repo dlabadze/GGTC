@@ -589,7 +589,13 @@ class AccountMove(models.Model):
         purchase_orders = self.invoice_line_ids.mapped('purchase_line_id.order_id')
         if 'purchase_id' in self._fields and self.purchase_id:
             purchase_orders |= self.purchase_id
-        return bool(purchase_orders.mapped('requisition_id.avansi_ids'))
+        requisitions = purchase_orders.mapped('requisition_id').filtered(lambda r: r)
+        has_avansi_condition = any(
+            c.payment_condition == 'avansi'
+            for r in requisitions
+            for c in r.payment_condition_ids
+        )
+        return has_avansi_condition and bool(requisitions.mapped('avansi_ids'))
 
     def _get_linked_requisitions(self):
         self.ensure_one()
