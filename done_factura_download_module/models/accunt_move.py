@@ -803,32 +803,25 @@ class AccountMove(models.Model):
                 })
                 continue
 
-            first_payload, first_row, first_agree_date = payload_rows[0]
-            base_vals = record._extract_done_factura_vals_from_root(
-                first_payload['root'],
-                first_payload['status'],
-                first_payload['user_id'],
-                invoice_identifier=first_payload['invoice_identifier'],
-                forced_agree_date=first_agree_date,
-                date_from=date_from,
-                date_to=date_to,
-            )
+            # Build done.factura from account.move data (not from RS XML)
+            confirmed_f_numbers = [p['invoice_identifier'] for p, _r, _ad in payload_rows]
+            number = confirmed_f_numbers[0] if len(confirmed_f_numbers) == 1 else 'N/A'
+            agree_date = max((ad for _p, _r, ad in payload_rows if ad), default=record.invoice_date or record.date)
+
             combined_invoice_id = f'COMBINED-MOVE-{record.id}'
             combined_record = done_model.search([('invoice_id', '=', combined_invoice_id)], limit=1)
             combined_vals = {
                 'invoice_id': combined_invoice_id,
-                'series': 'MULTI',
-                'number': ', '.join(
-                    str(r.get('f_number') or p['number'] or '') for p, r, _ad in payload_rows
-                ),
-                'registration_date': base_vals.get('registration_date'),
-                'operation_date': base_vals.get('operation_date'),
-                'agree_date': max((ad for _p, _r, ad in payload_rows if ad), default=base_vals.get('agree_date')),
-                'organization_id': base_vals.get('organization_id'),
-                'sa_ident_no': base_vals.get('sa_ident_no'),
-                'buyer_un_id': base_vals.get('buyer_un_id'),
+                'series': 'N/A',
+                'number': number,
+                'registration_date': record.invoice_date or record.date or fields.Date.today(),
+                'operation_date': record._operation_date_to_georgian_month(record.invoice_date or record.date),
+                'agree_date': agree_date,
+                'organization_id': record.partner_id.id if record.partner_id else False,
+                'sa_ident_no': record.partner_id.vat if record.partner_id else False,
+                'buyer_un_id': 'N/A',
                 'status': 2,
-                'waybill_type': base_vals.get('waybill_type'),
+                'waybill_type': 'buyer',
             }
             invoice_days = record._get_requisition_payment_condition_days('invoice')
             if combined_vals.get('agree_date') and invoice_days:
