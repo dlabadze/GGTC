@@ -23,8 +23,8 @@ class PurchaseRequisitionCron(models.Model):
             if not avansi_payment_condition or not req.avansi_ids:
                 continue
             existing_avansi_ids = self.env['done.factura'].search([
-                ('requisition_avansi_id', 'in', req.avansi_ids.ids),
-            ]).mapped('requisition_avansi_id').ids
+                ('requisition_avansi_daily_id', 'in', req.avansi_ids.ids),
+            ]).mapped('requisition_avansi_daily_id').ids
             new_avansis = req.avansi_ids.filtered(lambda a: a.id not in existing_avansi_ids)
             if not new_avansis:
                 continue
@@ -35,6 +35,7 @@ class PurchaseRequisitionCron(models.Model):
                 vals = {
                     'has_avansi': 'avansi',
                     'requisition_avansi_id': avansi.id,
+                    'requisition_avansi_daily_id': avansi.id,
                     'arequisition_ids': [(6, 0, [req.id])],
                     'agree_date': agree_date,
                     'transfer_date': agree_date + timedelta(days=avansi_payment_condition.days or 0),
