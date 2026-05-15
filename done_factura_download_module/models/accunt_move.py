@@ -803,9 +803,9 @@ class AccountMove(models.Model):
                 })
                 continue
 
-            # Build done.factura from account.move data (not from RS XML)
-            confirmed_f_numbers = [p['invoice_identifier'] for p, _r, _ad in payload_rows]
-            number = confirmed_f_numbers[0] if len(confirmed_f_numbers) == 1 else 'N/A'
+            # number uses all factura_ids on the move (not just confirmed in this period)
+            all_f_numbers = [fc.f_number for fc in record.factura_ids if fc.f_number]
+            number = all_f_numbers[0] if len(all_f_numbers) == 1 else 'N/A'
             agree_date = max((ad for _p, _r, ad in payload_rows if ad), default=record.invoice_date or record.date)
 
             combined_invoice_id = f'COMBINED-MOVE-{record.id}'
@@ -831,9 +831,8 @@ class AccountMove(models.Model):
                 combined_record = done_model.create(combined_vals)
                 created += 1
             else:
+                # Lines are accumulated across runs so tanxa grows with each confirmed factura
                 combined_record.write(combined_vals)
-                combined_record.line_ids.unlink()
-                combined_record.document_ids.unlink()
 
             for payload, _user_row, _agree_date in payload_rows:
                 record._fill_done_factura_lines_and_documents(
