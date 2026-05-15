@@ -640,6 +640,44 @@ class AccountMove(models.Model):
         done_vals['transfer_date'] = agree_date + timedelta(days=max(other_days))
 
         done_factura = self.env['done.factura'].create(done_vals)
+
+        done_line_vals = []
+        for req in requisitions:
+            for req_line in req.line_ids:
+                product = req_line.product_id if 'product_id' in req_line._fields else False
+                qty = req_line.product_qty if 'product_qty' in req_line._fields else 0.0
+                price_unit = req_line.price_unit if 'price_unit' in req_line._fields else 0.0
+                full_amount = req_line.total_amount if 'total_amount' in req_line._fields else qty * price_unit
+
+                goods_name = ''
+                if 'product_description_variants' in req_line._fields and req_line.product_description_variants:
+                    goods_name = req_line.product_description_variants
+                elif 'name' in req_line._fields and req_line.name:
+                    goods_name = req_line.name
+                elif product:
+                    goods_name = product.display_name
+
+                line_vals = {
+                    'done_factura_id': done_factura.id,
+                    'product_id': product.id if product else False,
+                    'GOODS': goods_name,
+                    'G_UNIT': req_line.product_uom_id.name if 'product_uom_id' in req_line._fields and req_line.product_uom_id else '',
+                    'G_NUMBER': qty,
+                    'FULL_AMOUNT': full_amount,
+                    'price_unit': price_unit,
+                    'DRG_AMOUNT': 0.0,
+                    'AKCIS_ID': 0,
+                    'VAT_TYPE': 0,
+                    'SDRG_AMOUNT': 0.0,
+                }
+                if 'analytic_distribution' in req_line._fields and req_line.analytic_distribution:
+                    line_vals['analytic_distribution'] = req_line.analytic_distribution
+                if 'budget_analytic_id' in req_line._fields and req_line.budget_analytic_id:
+                    line_vals['budget_analytic_id'] = req_line.budget_analytic_id.id
+                done_line_vals.append(line_vals)
+        if done_line_vals:
+            self.env['done.faqtura.line'].create(done_line_vals)
+
         self.write({'related_done_factura_ids': [(4, done_factura.id)]})
         done_factura.sync_vendor_bills_from_requisitions()
         return {
