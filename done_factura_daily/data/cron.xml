@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data noupdate="1">
+        <record id="ir_cron_done_factura_daily" model="ir.cron">
+            <field name="name">Daily Done Factura Download</field>
+            <field name="model_id" ref="purchase_requisition.model_purchase_requisition"/>
+            <field name="state">code</field>
+            <field name="code">model._cron_done_factura_download()</field>
+            <field name="interval_number">1</field>
+            <field name="interval_type">days</field>
+            <field name="numbercall">-1</field>
+            <field name="active">True</field>
+            <field name="user_id" ref="base.user_root"/>
+        </record>
+    </data>
+</odoo>
